@@ -3,130 +3,122 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>Smart Trading AI - Yenom Cloud</title>
+<title>Smart Trading AI - YenomV2</title>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  // Configuration Firebase (COLLE TES INFOS ICI)
+  // Ta configuration Firebase spécifique
   const firebaseConfig = {
-    apiKey: "XXXX",
-    authDomain: "XXXX.firebaseapp.com",
-    projectId: "XXXX",
-    storageBucket: "XXXX.appspot.com",
-    messagingSenderId: "XXXX",
-    appId: "XXXX"
+    apiKey: "bWNAOWQyVkJG0yqhw5Er2Acwy9ZAsh5hiqXyRTCw", 
+    authDomain: "yenom-d0182.firebaseapp.com",
+    databaseURL: "https://yenom-d0182-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "yenom-d0182",
+    storageBucket: "yenom-d0182.appspot.com",
+    appId: "1:221764654313:web:5d63f72146e2797e884db0" // Note: Vérifie cet ID dans ta console Firebase
   };
 
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const db = getDatabase(app);
 
-  // Exposer les fonctions au reste du code
+  // Fonctions de synchronisation Cloud
   window.saveToCloud = async (data) => {
-    await setDoc(doc(db, "users", "yenom_profile"), data, { merge: true });
+    try {
+      await set(ref(db, 'users/yenom_profile'), data);
+      console.log("Données sauvegardées sur Firebase");
+    } catch (e) { console.error("Erreur de sauvegarde:", e); }
   };
 
   window.loadFromCloud = async () => {
-    const snap = await getDoc(doc(db, "users", "yenom_profile"));
-    return snap.exists() ? snap.data() : null;
+    try {
+      const snapshot = await get(ref(db, 'users/yenom_profile'));
+      return snapshot.exists() ? snapshot.val() : null;
+    } catch (e) { return null; }
   };
 </script>
 
 <style>
-  :root {
-    --bg: #0F172A; --glass: rgba(255,255,255,0.05);
-    --cyan: #22D3EE; --green: #10B981; --red: #EF4444;
-  }
-  body { background: var(--bg); color: #F1F5F9; font-family: 'Inter', sans-serif; min-height: 100vh; }
-  .bg-grid { background-image: radial-gradient(ellipse at 20% 50%, rgba(34,211,238,0.06) 0%, transparent 50%); }
-  .glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; }
-  .neon-cyan { color: var(--cyan); text-shadow: 0 0 20px rgba(34,211,238,0.5); }
+  :root {
+    --bg: #0F172A;
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.10);
+    --cyan: #22D3EE;
+    --green: #10B981;
+    --red: #EF4444;
+  }
+  body { background: var(--bg); color: #F1F5F9; font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  .glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; }
+  .neon-cyan { color: var(--cyan); text-shadow: 0 0 20px rgba(34,211,238,0.5); }
+  .neon-green { color: var(--green); text-shadow: 0 0 12px rgba(16,185,129,0.4); }
   .blurred { filter: blur(12px) !important; user-select: none; pointer-events: none; }
-  
-  @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-  .ticker-track { display: flex; animation: ticker-scroll 30s linear infinite; width: max-content; }
-  .live-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; }
-  .opportunity-card { cursor: pointer; transition: 0.2s; background: rgba(255,255,255,0.04); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); }
-  .chat-msg-ai { background: rgba(255,255,255,0.05); border-radius: 16px 16px 16px 4px; padding: 10px; margin-bottom: 8px; font-size: 14px; }
-  .chat-msg-user { background: rgba(34,211,238,0.15); border-radius: 16px 16px 4px 16px; padding: 10px; margin-bottom: 8px; align-self: flex-end; font-size: 14px; }
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
-  .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--cyan); }
-  .pin-dot.filled { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  .ticker-track { display: flex; animation: ticker-scroll 30s linear infinite; width: max-content; }
+  @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .live-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .opportunity-card { cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 16px; transition: 0.2s; }
+  .opportunity-card:hover { border-color: var(--cyan); transform: translateY(-2px); }
+  .chat-msg-ai { background: rgba(255,255,255,0.05); border-radius: 16px 16px 16px 4px; padding: 10px 14px; max-width: 85%; font-size: 14px; }
+  .chat-msg-user { background: rgba(34,211,238,0.15); border-radius: 16px 16px 4px 16px; padding: 10px 14px; align-self: flex-end; max-width: 85%; font-size: 14px; }
 </style>
 </head>
-<body class="bg-grid p-4">
+<body class="p-4">
 
-<div id="signal-banner" class="fixed top-0 left-0 right-0 z-[200] hidden translate-y-[-100%] transition-transform duration-500">
+<div id="signal-banner" class="fixed top-0 left-0 right-0 z-[100] hidden translate-y-[-100%] transition-transform duration-500">
   <div class="bg-cyan-950/90 border-b border-cyan-500/50 p-4 flex justify-between items-center backdrop-blur-md">
     <div class="flex items-center gap-3">
       <div class="live-dot" style="background:var(--cyan)"></div>
       <span class="font-bold text-cyan-400 tracking-widest text-sm uppercase">Sniper Signal Détecté</span>
     </div>
-    <button onclick="closeBanner()" class="text-white/50">✕</button>
+    <button onclick="document.getElementById('signal-banner').classList.add('hidden')" class="text-white/50">✕</button>
   </div>
 </div>
 
 <div class="max-w-[900px] mx-auto space-y-4">
-  <div class="flex justify-between items-center">
-    <div onclick="handleTitleClick()" class="cursor-pointer">
-      <h1 class="font-black text-xl tracking-tighter">SMART TRADING AI</h1>
-      <div class="flex items-center gap-2 text-[10px] text-slate-500">
-        <div class="live-dot"></div> LIVE CLOUD FEED
-      </div>
-    </div>
-    <div class="flex gap-2">
-      <button onclick="toggleBlur()" id="eye-btn" class="glass px-3 py-2 text-slate-400">👁</button>
-      <button onclick="showPinModal()" class="glass px-3 py-2 text-slate-400">⚙️</button>
-    </div>
-  </div>
 
-  <div class="glass overflow-hidden py-2 text-[11px]">
-    <div class="ticker-track" id="ticker-track">
-      <div class="px-4">BTC/USDT --</div><div class="px-4">ETH/USDT --</div><div class="px-4">SOL/USDT --</div>
-      <div class="px-4">BTC/USDT --</div><div class="px-4">ETH/USDT --</div><div class="px-4">SOL/USDT --</div>
-    </div>
-  </div>
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-black tracking-tighter cursor-pointer" onclick="handleTitleClick()">YENOM V2 — AI</h1>
+      <div class="flex items-center gap-2 text-[10px] text-slate-500"><div class="live-dot"></div> CLOUD CONNECTED</div>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="toggleBlur()" id="eye-btn" class="glass px-3 py-2 text-slate-400">👁</button>
+      <button onclick="showPinModal()" class="glass px-3 py-2 text-slate-400">⚙️</button>
+    </div>
+  </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="glass p-5 space-y-4" id="price-card">
-      <div class="flex justify-between items-center">
-        <span class="text-[10px] font-bold text-slate-500 tracking-widest uppercase">Solana Live</span>
-        <div class="flex gap-2">
-          <button onclick="setPair('SOL')" class="text-[11px] px-2 py-1 rounded bg-cyan-500/10 text-cyan-400">SOL</button>
-          <button onclick="setPair('BTC')" class="text-[11px] px-2 py-1 rounded bg-slate-800">BTC</button>
-        </div>
+  <div class="glass overflow-hidden py-2 text-[11px]">
+    <div class="ticker-track" id="ticker-track">
       </div>
-      <div>
-        <h2 id="current-pair-text" class="text-slate-400 text-xs">SOL / USDT</h2>
-        <div id="main-price" class="text-5xl font-black neon-cyan py-2">$0.00</div>
-        <div id="price-change" class="text-sm font-bold text-emerald-400">+0.00%</div>
-      </div>
-    </div>
+  </div>
 
-    <div class="glass p-5 flex flex-col justify-center" id="capital-card">
-      <span class="text-[10px] font-bold text-slate-500 tracking-widest mb-2 text-white">PORTEFEUILLE</span>
-      <div id="capital-val" class="text-4xl font-black text-emerald-400">$20.57</div>
-      <div class="mt-4 space-y-1">
-        <div class="flex justify-between text-[10px] text-slate-500">
-          <span>Objectif $50.00</span>
-          <span id="goal-pct">41%</span>
-        </div>
-        <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-          <div id="goal-bar" class="h-full bg-emerald-500" style="width: 41%"></div>
-        </div>
-      </div>
-    </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="glass p-5 space-y-4" id="price-card">
+      <div class="flex justify-between items-center text-[10px] font-bold text-slate-500 tracking-widest uppercase">Solana Live</div>
+      <div>
+        <div id="main-price" class="text-5xl font-black neon-cyan py-2">$0.00</div>
+        <div id="price-change" class="text-sm font-bold text-emerald-400">+0.00%</div>
+      </div>
+    </div>
 
-    <div class="glass p-5 md:col-span-2 h-[350px] flex flex-col">
-      <div id="chat-content" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4 flex flex-col"></div>
-      <div class="flex gap-2">
-        <input id="chat-input" type="text" placeholder="Analyser le marché..." class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-2 text-sm outline-none focus:border-cyan-500">
-        <button onclick="sendMsg()" class="bg-cyan-500 text-slate-900 font-bold px-4 rounded-xl text-sm">ENVOYER</button>
-      </div>
-    </div>
-  </div>
+    <div class="glass p-5 flex flex-col justify-center" id="capital-card">
+      <span class="text-[10px] font-bold text-slate-500 tracking-widest mb-2 uppercase">Portefeuille Cloud</span>
+      <div id="capital-val" class="text-4xl font-black text-emerald-400">$20.57</div>
+    </div>
+
+    <div class="glass p-5 md:col-span-2">
+      <div class="flex justify-between items-center mb-4"><span class="text-[10px] font-bold text-slate-500 uppercase">Hub Opportunités</span></div>
+      <div id="opp-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>
+
+    <div class="glass p-5 md:col-span-2 h-[350px] flex flex-col">
+      <div id="chat-content" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4 flex flex-col"></div>
+      <div class="flex gap-2">
+        <input id="chat-input" type="text" placeholder="Analyser le marché..." class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-2 text-sm outline-none focus:border-cyan-500">
+        <button onclick="sendMsg()" class="bg-cyan-500 text-slate-900 font-bold px-4 rounded-xl text-sm">ENVOYER</button>
+    </div>
+  </div>
 </div>
 
 <div id="pin-modal" class="fixed inset-0 bg-slate-950/95 z-[300] hidden flex items-center justify-center">
@@ -135,16 +127,16 @@
       <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
     </div>
     <div class="grid grid-cols-3 gap-4" id="keypad"></div>
-    <button onclick="closePin()" class="text-slate-600 text-sm">Annuler</button>
   </div>
 </div>
 
-<div id="settings-modal" class="overlay hidden">
-  <div class="glass w-full max-w-md p-8 rounded-b-none space-y-6">
-    <h3 class="text-xl font-bold">Réglages Cloud</h3>
+<div id="settings-modal" class="fixed inset-0 bg-black/80 backdrop-blur-lg z-[400] hidden flex items-center justify-center">
+  <div class="glass w-full max-w-md p-8 space-y-6 mx-4">
+    <h3 class="text-xl font-bold uppercase">Réglages Cloud</h3>
     <input id="api-key" type="password" placeholder="Clé API Gemini" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-white">
     <input id="set-cap" type="number" step="0.01" placeholder="Capital" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-white">
-    <button onclick="saveSettings()" class="w-full py-4 bg-emerald-500 text-slate-900 font-bold rounded-xl uppercase">Sauvegarder</button>
+    <button onclick="saveSettings()" class="w-full py-4 bg-emerald-500 text-slate-900 font-bold rounded-xl uppercase">Mettre à jour Cloud</button>
+    <button onclick="document.getElementById('settings-modal').classList.add('hidden')" class="w-full text-slate-500 text-sm">Fermer</button>
   </div>
 </div>
 
@@ -152,101 +144,86 @@
   const PIN_CODE = "1704";
   let currentPin = "";
   let isBlurred = false;
-  let titleClicks = 0;
   let capital = 20.57;
   let apiKey = "";
-  let currentPair = "SOLUSDT";
+  let titleClicks = 0;
 
-  // CHARGEMENT CLOUD
+  // INITIALISATION
   window.addEventListener('load', async () => {
     const data = await window.loadFromCloud();
     if(data) {
       capital = data.capital || 20.57;
       apiKey = data.apiKey || "";
-      updateCapUI();
+      document.getElementById('capital-val').innerText = `$${parseFloat(capital).toFixed(2)}`;
     }
     initBinance();
     buildKeypad();
-    addChatMsg("Système Yenom prêt. Connecté au Cloud.");
+    refreshOpps();
   });
 
-  // BINANCE
   function initBinance() {
-    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${currentPair.toLowerCase()}@ticker`);
+    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/solusdt@ticker`);
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data);
-      const price = parseFloat(data.c);
-      const change = parseFloat(data.P);
-      document.getElementById('main-price').innerText = isBlurred ? "****" : `$${price.toFixed(2)}`;
-      document.getElementById('price-change').innerText = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
+      document.getElementById('main-price').innerText = isBlurred ? "****" : `$${parseFloat(data.c).toFixed(2)}`;
+      document.getElementById('price-change').innerText = `${parseFloat(data.P) > 0 ? '+' : ''}${parseFloat(data.P).toFixed(2)}%`;
     };
   }
 
-  function setPair(p) { currentPair = p + "USDT"; initBinance(); }
-
-  // PIN & SETTINGS
   function buildKeypad() {
     const keys = [1,2,3,4,5,6,7,8,9,'C',0,'⌫'];
     const container = document.getElementById('keypad');
     container.innerHTML = "";
     keys.forEach(k => {
       const btn = document.createElement('button');
-      btn.className = "w-16 h-16 glass flex items-center justify-center text-xl font-bold active:bg-cyan-500";
+      btn.className = "w-16 h-16 glass flex items-center justify-center text-xl font-bold";
       btn.innerText = k;
-      btn.onclick = () => pressPin(k.toString());
+      btn.onclick = () => {
+        if(k === 'C') currentPin = "";
+        else if(k === '⌫') currentPin = currentPin.slice(0, -1);
+        else if(currentPin.length < 4) currentPin += k;
+        document.querySelectorAll('.pin-dot').forEach((d, i) => d.classList.toggle('filled', i < currentPin.length));
+        if(currentPin === PIN_CODE) { 
+          document.getElementById('pin-modal').classList.add('hidden');
+          document.getElementById('settings-modal').classList.remove('hidden');
+          currentPin = "";
+        }
+      };
       container.appendChild(btn);
     });
-  }
-
-  function pressPin(k) {
-    if(k === 'C') currentPin = "";
-    else if(k === '⌫') currentPin = currentPin.slice(0, -1);
-    else if(currentPin.length < 4) currentPin += k;
-    
-    document.querySelectorAll('.pin-dot').forEach((d, i) => d.classList.toggle('filled', i < currentPin.length));
-    if(currentPin === PIN_CODE) { setTimeout(() => { closePin(); showSettings(); }, 200); }
-  }
-
-  function showPinModal() { document.getElementById('pin-modal').classList.remove('hidden'); }
-  function closePin() { currentPin = ""; document.getElementById('pin-modal').classList.add('hidden'); }
-  function showSettings() { 
-    document.getElementById('api-key').value = apiKey;
-    document.getElementById('set-cap').value = capital;
-    document.getElementById('settings-modal').classList.remove('hidden'); 
   }
 
   async function saveSettings() {
     apiKey = document.getElementById('api-key').value;
     capital = parseFloat(document.getElementById('set-cap').value);
-    
-    // Sauvegarde Cloud
     await window.saveToCloud({ capital: capital, apiKey: apiKey });
-    
-    updateCapUI();
-    document.getElementById('settings-modal').classList.add('hidden');
-    addChatMsg("Données synchronisées avec Firebase.");
-  }
-
-  function updateCapUI() {
     document.getElementById('capital-val').innerText = `$${capital.toFixed(2)}`;
-    const pct = Math.min((capital / 50) * 100, 100);
-    document.getElementById('goal-pct').innerText = `${pct.toFixed(0)}%`;
-    document.getElementById('goal-bar').style.width = `${pct}%`;
+    document.getElementById('settings-modal').classList.add('hidden');
   }
 
-  function toggleBlur() {
-    isBlurred = !isBlurred;
-    document.getElementById('price-card').classList.toggle('blurred', isBlurred);
-    document.getElementById('capital-card').classList.toggle('blurred', isBlurred);
+  function toggleBlur() { 
+    isBlurred = !isBlurred; 
+    document.getElementById('price-card').classList.toggle('blurred'); 
+    document.getElementById('capital-card').classList.toggle('blurred');
   }
 
-  function handleTitleClick() {
-    titleClicks++;
-    if(titleClicks >= 5) { titleClicks = 0; showPinModal(); }
-    setTimeout(() => { titleClicks = 0; }, 2000);
+  function handleTitleClick() { titleClicks++; if(titleClicks >= 5) { titleClicks = 0; document.getElementById('pin-modal').classList.remove('hidden'); } }
+
+  function refreshOpps() {
+    const list = document.getElementById('opp-list');
+    const opps = [
+      { pair: "SOL", type: "LONG", lev: "x13", conf: "92%" },
+      { pair: "BTC", type: "SHORT", lev: "x5", conf: "78%" },
+      { pair: "PEPE", type: "LONG", lev: "x10", conf: "85%" }
+    ];
+    list.innerHTML = opps.map(o => `
+      <div class="opportunity-card">
+        <div class="flex justify-between font-bold"><span>${o.pair}</span><span class="${o.type === 'LONG' ? 'text-emerald-400' : 'text-red-400'}">${o.type}</span></div>
+        <div class="text-cyan-400 text-xs mt-1">${o.lev} — ${o.conf} confiance</div>
+      </div>
+    `).join('');
   }
 
-  // GEMINI
   async function sendMsg() {
     const input = document.getElementById('chat-input');
     const msg = input.value;
@@ -256,12 +233,16 @@
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: `Trader Yenom. Cap: ${capital}$. Analyse: ${msg}. Termine par VIBRATE_SIGNAL si signal.` }] }] })
+        body: JSON.stringify({ contents: [{ parts: [{ text: `Tu es l'IA Yenom. Capital: ${capital}$. Analyser: ${msg}. Si signal, inclus VIBRATE_SIGNAL.` }] }] })
       });
       const data = await res.json();
       const reply = data.candidates[0].content.parts[0].text;
       addChatMsg(reply);
-      if(reply.includes("VIBRATE_SIGNAL")) triggerSniper();
+      if(reply.includes("VIBRATE_SIGNAL")) {
+        const b = document.getElementById('signal-banner');
+        b.classList.remove('hidden'); b.style.transform = "translateY(0)";
+        setTimeout(() => b.style.transform = "translateY(-100%)", 5000);
+      }
     } catch (e) { addChatMsg("Erreur API."); }
   }
 
@@ -272,13 +253,6 @@
     div.innerText = t;
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
-  }
-
-  function triggerSniper() {
-    const b = document.getElementById('signal-banner');
-    b.classList.remove('hidden'); b.style.transform = "translateY(0)";
-    if(navigator.vibrate) navigator.vibrate([300, 100, 300]);
-    setTimeout(() => { b.style.transform = "translateY(-100%)"; }, 4000);
   }
 </script>
 </body>
