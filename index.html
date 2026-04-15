@@ -1,205 +1,417 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Yenom Trading Pro V2</title>
-<script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yenom Smart AI - Trading Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0F172A; --glass: rgba(255, 255, 255, 0.03);
+            --cyan: #22D3EE; --green: #10B981; --red: #EF4444;
+        }
+        body {
+            background: var(--bg);
+            color: #F1F5F9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+        }
+        .neon-cyan { color: var(--cyan); text-shadow: 0 0 20px rgba(34, 211, 238, 0.4); }
+        .neon-green { color: var(--green); text-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+        .blurred { filter: blur(12px); pointer-events: none; user-select: none; }
+        
+        /* Animations */
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .bottom-sheet { animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(34, 211, 238, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); } }
+        .live-dot { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; animation: pulse-ring 2s infinite; }
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        .ticker-track { display: flex; width: max-content; animation: scroll 30s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-  const firebaseConfig = {
-    apiKey: "bWNAOWQyVkJG0yqhw5Er2Acwy9ZAsh5hiqXyRTCw",
-    authDomain: "yenom-30feb.firebaseapp.com",
-    databaseURL: "https://yenom-30feb-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "yenom-30feb",
-    storageBucket: "yenom-30feb.appspot.com",
-    appId: "1:221764654313:web:5d63f72146e2797e884db0"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  window.saveToCloud = async (path, data) => {
-    try { await set(ref(db, path), data); } catch (e) { console.error(e); }
-  };
-
-  window.syncCloud = (callback) => {
-    onValue(ref(db, 'users/yenom_profile'), (snapshot) => {
-      callback(snapshot.val());
-    });
-  };
-</script>
-
-<style>
-  :root { --bg: #020617; --cyan: #22d3ee; --green: #10b981; --red: #ef4444; }
-  body { background-color: var(--bg); color: #f8fafc; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-  .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; }
-  .neon-text { color: var(--cyan); text-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
-  .btn-action { transition: all 0.2s ease; border-radius: 12px; }
-  .btn-action:active { transform: scale(0.95); }
-  .blurred { filter: blur(10px); pointer-events: none; }
-  
-  /* Animation Signal */
-  @keyframes ripple { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
-  .live-pulse { position: relative; width: 8px; height: 8px; background: var(--green); border-radius: 50%; }
-  .live-pulse::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--green); animation: ripple 1.5s infinite; }
-</style>
+        .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--cyan); transition: 0.2s; }
+        .pin-dot.active { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+    </style>
 </head>
-<body class="p-4 selection:bg-cyan-500/30">
+<body class="p-4 md:p-8">
 
-  <div id="notif" class="fixed top-4 left-4 right-4 z-[500] transform -translate-y-32 transition-transform duration-500">
-    <div class="glass p-4 border-l-4 border-cyan-500 flex items-center gap-3">
-      <div class="text-2xl">🤖</div>
-      <div>
-        <div class="text-xs font-bold text-cyan-400 uppercase tracking-tighter">Yenom AI Alert</div>
-        <div id="notif-text" class="text-sm text-slate-200">Initialisation du système...</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="max-w-[500px] mx-auto space-y-5">
-    
-    <div class="flex justify-between items-center">
-      <div onclick="handleSecret()" class="cursor-pointer">
-        <h1 class="text-2xl font-black tracking-tighter italic">YENOM<span class="text-cyan-400">V2</span></h1>
-        <div class="flex items-center gap-2 mt-1">
-          <div class="live-pulse"></div>
-          <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Cloud RTDB Online</span>
+    <div id="sniper-banner" class="fixed top-0 left-0 right-0 z-[1000] hidden">
+        <div class="bg-cyan-500 text-slate-950 font-black p-4 text-center tracking-widest text-sm shadow-2xl">
+            ⚡ SNIPER SIGNAL DÉTECTÉ PAR GEMINI ⚡
         </div>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="toggleBlur()" class="glass p-3 text-slate-400">👁</button>
-      </div>
     </div>
 
-    <div id="price-card" class="glass p-6 space-y-4">
-      <div class="flex justify-between items-center">
-        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Solana / USDT</span>
-        <div id="market-sentiment" class="text-[10px] px-2 py-1 rounded bg-green-500/10 text-green-400 font-bold uppercase">Euphoria</div>
-      </div>
-      <div class="text-center py-4">
-        <div id="sol-price" class="text-6xl font-black neon-text">$0.00</div>
-        <div id="sol-change" class="text-sm font-bold mt-2 text-green-400">+0.00%</div>
-      </div>
-      <div class="grid grid-cols-2 gap-3 pt-4 border-t border-white/5">
-        <div class="text-center">
-          <div class="text-[9px] text-slate-500 uppercase">Vol 24h</div>
-          <div id="sol-vol" class="text-xs font-bold">--</div>
+    <div class="max-w-4xl mx-auto space-y-6">
+        
+        <div class="flex justify-between items-center px-2">
+            <div>
+                <h1 id="main-title" class="text-xl md:text-2xl font-black tracking-tighter cursor-pointer select-none" onclick="handleTitleClick()">SMART TRADING AI</h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="live-dot"></div>
+                    <span class="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Binance Cloud Link</span>
+                </div>
+            </div>
+            <button onclick="toggleDiscreteMode()" class="glass p-3 text-slate-400 hover:text-cyan-400 transition-colors">
+                <span id="eye-icon">👁</span>
+            </button>
         </div>
-        <div class="text-center">
-          <div class="text-[9px] text-slate-500 uppercase">Sentiment IA</div>
-          <div class="text-xs font-bold text-cyan-400 italic">Strong Buy</div>
+
+        <div class="glass overflow-hidden py-3">
+            <div class="ticker-track" id="ticker-content">
+                </div>
         </div>
-      </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div id="price-card" class="glass p-8 space-y-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex gap-2">
+                        <button onclick="changeAsset('SOL')" class="px-3 py-1 text-[10px] font-bold rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">SOL</button>
+                        <button onclick="changeAsset('BTC')" class="px-3 py-1 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400">BTC</button>
+                        <button onclick="changeAsset('PEPE')" class="px-3 py-1 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400">PEPE</button>
+                    </div>
+                </div>
+                <div>
+                    <h2 id="pair-name" class="text-xs font-bold text-slate-500 tracking-widest uppercase">SOL / USDT</h2>
+                    <div id="live-price" class="text-6xl font-black neon-cyan tracking-tighter py-2">$0.00</div>
+                    <div id="price-change" class="text-sm font-bold text-green-400">+0.00%</div>
+                </div>
+            </div>
+
+            <div id="capital-card" class="glass p-8 flex flex-col justify-center">
+                <span class="text-[10px] font-bold text-slate-500 tracking-widest uppercase mb-2">Portfolio Value</span>
+                <div id="capital-val" class="text-5xl font-black neon-green tracking-tighter">$20.57</div>
+                <div class="mt-6">
+                    <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-2">
+                        <span>GOAL: $50.00</span>
+                        <span id="goal-pct">41%</span>
+                    </div>
+                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="goal-bar" class="h-full bg-gradient-to-r from-green-500 to-cyan-400 transition-all duration-1000" style="width: 41%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-8 md:col-span-2">
+                <h3 class="text-[10px] font-bold text-slate-500 tracking-widest uppercase mb-6">Intelligence Hub</h3>
+                <div id="opp-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    </div>
+            </div>
+
+            <div class="glass p-6 md:col-span-2 flex flex-col h-[400px]">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="text-[10px] font-bold text-slate-500 tracking-widest uppercase">Gemini Terminal</span>
+                </div>
+                <div id="chat-box" class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
+                    <div class="bg-white/5 rounded-2xl p-4 text-sm text-slate-300 leading-relaxed border border-white/5">
+                        En attente d'une analyse... Tape une question ou attend un signal Sniper.
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <input id="chat-input" type="text" placeholder="Demander une analyse SOL x12..." class="flex-1 bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-3 text-sm focus:border-cyan-500 outline-none transition-all">
+                    <button onclick="sendChatMessage()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 p-3 rounded-2xl transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="cap-card" class="glass p-6">
-      <div class="flex justify-between items-center mb-4">
-        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Portefeuille</span>
-        <span class="text-[10px] text-slate-500">Obj: $50.00</span>
-      </div>
-      <div id="user-cap" class="text-4xl font-black text-emerald-400 tracking-tighter">$20.57</div>
-      <div class="mt-4 space-y-2">
-        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
-          <div id="cap-bar" class="h-full bg-gradient-to-r from-emerald-500 to-cyan-400" style="width: 41%"></div>
+    <div id="pin-modal" class="fixed inset-0 bg-slate-950/98 z-[2000] hidden flex flex-col items-center justify-center p-6 backdrop-blur-xl">
+        <h2 class="text-slate-500 text-xs font-black tracking-[0.3em] uppercase mb-8">Accès Restreint</h2>
+        <div class="flex gap-4 mb-12">
+            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
         </div>
-        <div class="flex justify-between text-[10px] font-bold text-slate-600">
-          <span id="leverage-info">Levier conseillé: x12</span>
-          <span id="cap-pct">41% complété</span>
-        </div>
-      </div>
+        <div class="grid grid-cols-3 gap-4 w-full max-w-[280px]">
+            </div>
+        <button onclick="closePinModal()" class="mt-12 text-slate-600 text-sm font-bold uppercase tracking-widest hover:text-white">Annuler</button>
     </div>
 
-    <div class="glass p-5 space-y-4">
-      <div class="flex justify-between items-center">
-        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sniper signals</span>
-        <div class="text-[9px] text-cyan-500 font-bold animate-pulse">Scanning...</div>
-      </div>
-      <div id="signal-box" class="bg-cyan-500/5 border border-cyan-500/20 p-4 rounded-2xl">
-        <div class="flex justify-between items-start">
-          <div class="font-bold text-cyan-400">LONG SOL/USDT</div>
-          <div class="text-[10px] bg-cyan-500 text-black px-2 py-0.5 rounded font-black">94% CONF</div>
+    <div id="settings-panel" class="fixed inset-0 z-[3000] hidden flex items-end justify-center bg-black/60">
+        <div class="bottom-sheet glass w-full max-w-lg p-8 rounded-t-[40px] space-y-6">
+            <div class="w-12 h-1.5 bg-white/10 rounded-full mx-auto mb-4"></div>
+            <h3 class="text-xl font-black">Configuration Expert</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Clé API Gemini</label>
+                    <input id="set-api-key" type="password" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-2 outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Capital Actuel ($)</label>
+                    <input id="set-capital" type="number" step="0.01" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mt-2 outline-none focus:border-cyan-500">
+                </div>
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl">
+                    <span class="text-sm font-bold">Vibrations & Alertes</span>
+                    <input type="checkbox" id="set-vibrate" class="w-5 h-5 accent-cyan-500">
+                </div>
+            </div>
+            <button onclick="saveSettings()" class="w-full bg-cyan-500 text-slate-950 font-black py-5 rounded-2xl shadow-xl shadow-cyan-500/20 uppercase tracking-widest">Enregistrer</button>
         </div>
-        <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
-          Le moteur Gemini détecte une accumulation massive. RSI en zone de rebond. Cible : <span class="text-white font-bold">$184.20</span>.
-        </p>
-        <button onclick="triggerAlert('Ordre simulé envoyé !')" class="w-full mt-4 py-2 bg-cyan-500 text-black font-black text-xs btn-action uppercase">Exécuter Signal</button>
-      </div>
     </div>
 
-  </div>
+    <div id="trade-sheet" class="fixed inset-0 z-[2500] hidden flex items-end justify-center bg-black/60">
+        <div class="bottom-sheet glass w-full max-w-lg p-10 rounded-t-[40px] text-center space-y-6">
+            <div id="trade-type-label" class="text-[10px] font-black text-green-400 tracking-[0.4em] uppercase">Opportunité Long</div>
+            <div id="trade-pair-modal" class="text-4xl font-black neon-cyan">SOL/USDT</div>
+            <div class="flex justify-center gap-4">
+                <div class="bg-white/5 px-4 py-2 rounded-xl text-xs font-bold border border-white/10">LEVIER <span id="trade-lev">x12</span></div>
+                <div class="bg-white/5 px-4 py-2 rounded-xl text-xs font-bold border border-white/10">CONF <span id="trade-conf">94%</span></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 py-4">
+                <div class="bg-green-500/10 p-4 rounded-3xl border border-green-500/20">
+                    <div class="text-[9px] text-green-500 uppercase font-black mb-1">Take Profit</div>
+                    <div id="trade-tp" class="text-lg font-black text-white">$0.00</div>
+                </div>
+                <div class="bg-red-500/10 p-4 rounded-3xl border border-red-500/20">
+                    <div class="text-[9px] text-red-500 uppercase font-black mb-1">Stop Loss</div>
+                    <div id="trade-sl" class="text-lg font-black text-white">$0.00</div>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="closeTradeSheet()" class="flex-1 py-5 text-slate-500 font-bold uppercase tracking-widest">Refuser</button>
+                <button onclick="confirmTrade()" class="flex-1 py-5 bg-green-500 text-slate-950 font-black rounded-3xl uppercase tracking-widest shadow-xl shadow-green-500/20">Accepter</button>
+            </div>
+        </div>
+    </div>
 
-  <script>
-    let clicks = 0;
-    let isBlurred = false;
-    let currentCap = 20.57;
+    <script>
+        // --- CONFIG & STATE ---
+        const PIN_CODE = "1704";
+        let currentPin = "";
+        let clicks = 0;
+        let isDiscrete = false;
+        let capital = parseFloat(localStorage.getItem('yenom_capital') || "20.57");
+        let geminiKey = localStorage.getItem('yenom_gemini_key') || "";
+        let vibrateOn = localStorage.getItem('yenom_vibrate') !== "false";
+        let currentAsset = "SOL";
+        let ws = null;
 
-    // INITIALISATION & SYNC CLOUD
-    window.addEventListener('load', () => {
-      window.syncCloud((data) => {
-        if(data) {
-          currentCap = data.capital || 20.57;
-          document.getElementById('user-cap').innerText = `$${parseFloat(currentCap).toFixed(2)}`;
-          updateProgress();
+        const ASSETS = ["BTC", "ETH", "SOL", "PEPE", "WIF", "BONK"];
+
+        // --- APP ENGINE ---
+        function init() {
+            updateUI();
+            connectBinance();
+            initTicker();
+            genKeypad();
+            genOpportunities();
         }
-      });
-      initMarket();
-      triggerAlert("Système V2 synchronisé");
-    });
 
-    function updateProgress() {
-      const pct = Math.min((currentCap / 50) * 100, 100);
-      document.getElementById('cap-bar').style.width = pct + '%';
-      document.getElementById('cap-pct').innerText = Math.round(pct) + '% complété';
-    }
-
-    // MARKET FEED (Binance)
-    function initMarket() {
-      const ws = new WebSocket('wss://stream.binance.com:9443/ws/solusdt@ticker');
-      ws.onmessage = (e) => {
-        const d = JSON.parse(e.data);
-        const price = parseFloat(d.c).toFixed(2);
-        const change = parseFloat(d.P).toFixed(2);
-        document.getElementById('sol-price').innerText = isBlurred ? "****" : `$${price}`;
-        document.getElementById('sol-change').innerText = `${change > 0 ? '+' : ''}${change}%`;
-        document.getElementById('sol-change').className = change > 0 ? 'text-sm font-bold mt-2 text-green-400' : 'text-sm font-bold mt-2 text-red-400';
-        document.getElementById('sol-vol').innerText = (parseFloat(d.q) / 1000000).toFixed(1) + 'M';
-      };
-    }
-
-    // FONCTIONS UI
-    function toggleBlur() {
-      isBlurred = !isBlurred;
-      document.getElementById('price-card').classList.toggle('blurred');
-      document.getElementById('cap-card').classList.toggle('blurred');
-    }
-
-    function triggerAlert(txt) {
-      const box = document.getElementById('notif');
-      document.getElementById('notif-text').innerText = txt;
-      box.classList.remove('-translate-y-32');
-      setTimeout(() => box.classList.add('-translate-y-32'), 3000);
-      if(navigator.vibrate) navigator.vibrate(200);
-    }
-
-    function handleSecret() {
-      clicks++;
-      if(clicks >= 5) {
-        clicks = 0;
-        const pin = prompt("Code PIN ?");
-        if(pin === "1704") {
-          const newCap = prompt("Nouveau Capital ($) :");
-          if(newCap) {
-            window.saveToCloud('users/yenom_profile', { capital: parseFloat(newCap) });
-            triggerAlert("Cloud mis à jour !");
-          }
+        function updateUI() {
+            document.getElementById('capital-val').innerText = isDiscrete ? "****" : `$${capital.toFixed(2)}`;
+            const pct = Math.min((capital / 50) * 100, 100);
+            document.getElementById('goal-pct').innerText = `${Math.round(pct)}%`;
+            document.getElementById('goal-bar').style.width = `${pct}%`;
         }
-      }
-      setTimeout(() => clicks = 0, 2000);
-    }
-  </script>
+
+        function toggleDiscreteMode() {
+            isDiscrete = !isDiscrete;
+            document.getElementById('live-price').classList.toggle('blurred');
+            document.getElementById('capital-val').classList.toggle('blurred');
+            document.getElementById('eye-icon').innerText = isDiscrete ? "🔒" : "👁";
+            updateUI();
+        }
+
+        function handleTitleClick() {
+            clicks++;
+            setTimeout(() => clicks = 0, 3000);
+            if (clicks >= 5) {
+                clicks = 0;
+                openPinModal();
+            }
+        }
+
+        // --- MARKET DATA ---
+        function connectBinance() {
+            if (ws) ws.close();
+            const pair = (currentAsset + "USDT").toLowerCase();
+            ws = new WebSocket(`wss://stream.binance.com:9443/ws/${pair}@ticker`);
+            ws.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                const price = parseFloat(data.c);
+                const change = parseFloat(data.P);
+                document.getElementById('live-price').innerText = isDiscrete ? "****" : `$${price.toFixed(price < 1 ? 6 : 2)}`;
+                document.getElementById('price-change').innerText = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
+                document.getElementById('price-change').className = change >= 0 ? 'text-sm font-bold text-green-400' : 'text-sm font-bold text-red-400';
+            };
+        }
+
+        function changeAsset(symbol) {
+            currentAsset = symbol;
+            document.getElementById('pair-name').innerText = `${symbol} / USDT`;
+            connectBinance();
+        }
+
+        function initTicker() {
+            const track = document.getElementById('ticker-content');
+            const content = ASSETS.map(a => `<span class="px-8 font-black text-[10px] text-slate-500 uppercase">${a}/USDT <span class="text-cyan-400" id="tick-${a}">...</span></span>`).join('');
+            track.innerHTML = content + content; // Duplicate for infinite scroll
+        }
+
+        // --- PIN & SETTINGS ---
+        function openPinModal() {
+            currentPin = "";
+            updatePinDots();
+            document.getElementById('pin-modal').classList.remove('hidden');
+        }
+
+        function closePinModal() {
+            document.getElementById('pin-modal').classList.add('hidden');
+        }
+
+        function genKeypad() {
+            const grid = document.querySelector('#pin-modal .grid');
+            [1,2,3,4,5,6,7,8,9,'C',0,'⌫'].forEach(k => {
+                const btn = document.createElement('button');
+                btn.className = "pin-key h-16 glass flex items-center justify-center text-xl font-bold active:bg-cyan-500 active:text-slate-950 transition-all";
+                btn.innerText = k;
+                btn.onclick = () => handleKeyPress(k);
+                grid.appendChild(btn);
+            });
+        }
+
+        function handleKeyPress(k) {
+            if (k === 'C') currentPin = "";
+            else if (k === '⌫') currentPin = currentPin.slice(0, -1);
+            else if (currentPin.length < 4) currentPin += k;
+            
+            updatePinDots();
+            if (currentPin === PIN_CODE) {
+                setTimeout(() => {
+                    closePinModal();
+                    openSettings();
+                }, 200);
+            }
+        }
+
+        function updatePinDots() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((d, i) => d.classList.toggle('active', i < currentPin.length));
+        }
+
+        function openSettings() {
+            document.getElementById('set-api-key').value = geminiKey;
+            document.getElementById('set-capital').value = capital;
+            document.getElementById('set-vibrate').checked = vibrateOn;
+            document.getElementById('settings-panel').classList.remove('hidden');
+        }
+
+        function saveSettings() {
+            geminiKey = document.getElementById('set-api-key').value;
+            capital = parseFloat(document.getElementById('set-capital').value);
+            vibrateOn = document.getElementById('set-vibrate').checked;
+            
+            localStorage.setItem('yenom_gemini_key', geminiKey);
+            localStorage.setItem('yenom_capital', capital);
+            localStorage.setItem('yenom_vibrate', vibrateOn);
+            
+            updateUI();
+            document.getElementById('settings-panel').classList.add('hidden');
+        }
+
+        // --- OPPORTUNITIES ---
+        const MOCK_OPPS = [
+            { pair: 'SOL', type: 'LONG', lev: 'x12', conf: 94, reason: 'Breakout H1 confirmé + Convergence RSI.' },
+            { pair: 'BTC', type: 'SHORT', lev: 'x10', conf: 82, reason: 'Rejet résistance 72k. Liquidité externe.' },
+            { pair: 'PEPE', type: 'LONG', lev: 'x13', conf: 76, reason: 'Spike volume détecté. Whales accumulation.' }
+        ];
+
+        function genOpportunities() {
+            const grid = document.getElementById('opp-grid');
+            grid.innerHTML = MOCK_OPPS.map(o => `
+                <div class="opportunity-card p-6 glass border-l-4 ${o.type === 'LONG' ? 'border-l-green-500' : 'border-l-red-500'} cursor-pointer active:scale-95 transition-all" onclick='openTradeSheet(${JSON.stringify(o)})'>
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-black text-lg tracking-tight">${o.pair}/USDT</span>
+                        <span class="text-[10px] font-black uppercase ${o.type === 'LONG' ? 'text-green-500' : 'text-red-500'}">${o.type}</span>
+                    </div>
+                    <div class="flex gap-3 text-[10px] font-bold text-slate-500 mb-3">
+                        <span class="text-cyan-400">${o.lev}</span>
+                        <span>${o.conf}% CONFIANCE</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 leading-relaxed line-clamp-2 italic">${o.reason}</p>
+                </div>
+            `).join('');
+        }
+
+        function openTradeSheet(opp) {
+            document.getElementById('trade-pair-modal').innerText = `${opp.pair}/USDT`;
+            document.getElementById('trade-lev').innerText = opp.lev;
+            document.getElementById('trade-conf').innerText = `${opp.conf}%`;
+            document.getElementById('trade-type-label').innerText = `Opportunité ${opp.type}`;
+            document.getElementById('trade-type-label').className = `text-[10px] font-black tracking-[0.4em] uppercase ${opp.type === 'LONG' ? 'text-green-400' : 'text-red-400'}`;
+            
+            // Simulation TP/SL simple
+            document.getElementById('trade-tp').innerText = "CALCUL...";
+            document.getElementById('trade-sl').innerText = "CALCUL...";
+            
+            document.getElementById('trade-sheet').classList.remove('hidden');
+        }
+
+        function closeTradeSheet() {
+            document.getElementById('trade-sheet').classList.add('hidden');
+        }
+
+        function confirmTrade() {
+            triggerSniperSignal("POSITION OUVERTE");
+            closeTradeSheet();
+        }
+
+        // --- GEMINI & SIGNALS ---
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value;
+            if (!msg || !geminiKey) return;
+
+            addMsg('user', msg);
+            input.value = "";
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `Tu es une IA de trading pro. Capital: ${capital}$. Analyse courte. Si signal sniper: ajoute VIBRATE_SIGNAL. Message: ${msg}` }] }]
+                    })
+                });
+                const data = await response.json();
+                const text = data.candidates[0].content.parts[0].text;
+                addMsg('ai', text);
+
+                if (text.includes('VIBRATE_SIGNAL')) {
+                    triggerSniperSignal();
+                }
+            } catch (e) {
+                addMsg('ai', "Erreur : Vérifie ta clé API Gemini.");
+            }
+        }
+
+        function addMsg(role, text) {
+            const box = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = role === 'user' ? 'text-right' : 'text-left';
+            div.innerHTML = `<div class="inline-block ${role === 'user' ? 'bg-cyan-500 text-slate-950' : 'bg-white/5 text-slate-300'} rounded-2xl p-4 text-sm max-w-[85%]">${text}</div>`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function triggerSniperSignal(msg = "SNIPER SIGNAL DÉTECTÉ") {
+            const banner = document.getElementById('sniper-banner');
+            banner.classList.remove('hidden');
+            if (vibrateOn && navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+            setTimeout(() => banner.classList.add('hidden'), 5000);
+        }
+
+        init();
+    </script>
 </body>
 </html>
