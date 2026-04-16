@@ -1491,133 +1491,111 @@ function exportChat(){
   toast('📥 Chat exporté','ok');
 }
 
+// ... (garder le début avec les variables capital, apiKey, etc.)
+
 async function callGemini(userMsg, key = null) {
   const k = key || apiKey;
   if (!k) throw new Error('Pas de clé API');
 
-  // 1. On prépare l'historique proprement pour l'API v1beta
-  // Note: Gemini impose que les rôles alternent strictement entre 'user' et 'model'
-  const contents = chatHistory.map(m => ({
-    role: m.role === 'ai' ? 'model' : 'user', // L'API attend 'model', pas 'ai'
-    parts: [{ text: m.content }]
-  }));
-
-  // 2. On ajoute le message actuel avec le System Prompt
-  contents.push({
-    role: 'user',
-    parts: [{ text: buildSystemPrompt() + "\n\nMESSAGE UTILISATEUR : " + userMsg }]
-  });
-
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${k}`;
 
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: contents,
-      generationConfig: {
-        maxOutputTokens: 800,
-        temperature: 0.7,
-        topP: 0.95
-      }
-    })
+  // Nettoyage de l'historique pour s'assurer du format strict [user, model, user...]
+  let contents = [];
+  
+  // On ajoute le System Prompt en premier message 'user' pour donner le contexte
+  contents.push({
+    role: 'user',
+    parts: [{ text: buildSystemPrompt() + "\n\nAnalyse ce message : " + userMsg }]
   });
 
-  if (!resp.ok) {
-    const errData = await resp.json().catch(() => ({}));
-    console.error("Détails Erreur API:", errData);
-    throw new Error(errData?.error?.message || `Erreur HTTP ${resp.status}`);
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: contents,
+        generationConfig: {
+          maxOutputTokens: 1000,
+          temperature: 0.7,
+          topP: 0.95
+        }
+      })
+    });
+
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      // Si l'erreur est liée au modèle non trouvé, c'est souvent un problème de zone géographique ou de clé
+      if (resp.status === 404) throw new Error("Modèle introuvable. Vérifie ta zone géo ou ta clé.");
+      throw new Error(errData?.error?.message || `Erreur HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    // Sauvegarde simplifiée pour éviter les bugs au prochain tour
+    chatHistory.push({ role: 'user', content: userMsg });
+    chatHistory.push({ role: 'model', content: text });
+    if (chatHistory.length > 6) chatHistory = chatHistory.slice(-6);
+
+    return text;
+  } catch (e) {
+    console.error("Détails techniques:", e);
+    throw e;
   }
-
-  const data = await resp.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-  // 3. Sauvegarde dans l'historique local (on garde 'user' et 'model')
-  chatHistory.push({ role: 'user', content: userMsg });
-  chatHistory.push({ role: 'model', content: text });
-  if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
-
-  return text;
 }
 
 async function sendChat(){
-  const inp=document.getElementById('ci');
-  const msg=inp.value.trim();
-  if(!msg)return;
-  if(!apiKey){toast('🔑 Configure ta clé Gemini (5× tap sur le titre)','warn');return;}
-  inp.value='';
+  const inp = document.getElementById('ci');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  if(!apiKey){ toast('🔑 Configure ta clé Gemini (5× tap sur le titre)','warn'); return; }
+  
+  inp.value = '';
   addUserMsg(msg);
-  const sb=document.getElementById('sb');
-  sb.disabled=true;
-  document.getElementById('ai-st').textContent='● RÉFLEXION...';
-  document.getElementById('ai-st').style.color='var(--amber)';
-  const typing=addAIMsg('',true);
+  
+  const sb = document.getElementById('sb');
+  const status = document.getElementById('ai-st');
+  
+  sb.disabled = true;
+  status.textContent = '● RÉFLEXION...';
+  status.style.color = 'var(--amber)';
+  
+  const typing = addAIMsg('', true);
 
-
-
-
-
-
-
-
-
-   
-  try{
-    const reply=await callGemini(msg);
-    typing.remove();addAIMsg(reply);
-  }catch(e){
-    typing.remove();addAIMsg('❌ Erreur API : '+e.message);
-    toast('Erreur : '+e.message,'err');
-  }finally{
-    sb.disabled=false;
-    document.getElementById('ai-st').textContent='● PRÊT';
-    document.getElementById('ai-st').style.color='var(--green)';
+  try {
+    const reply = await callGemini(msg);
+    typing.remove();
+    addAIMsg(reply);
+  } catch(e) {
+    typing.remove();
+    addAIMsg('❌ Erreur : ' + e.message);
+    toast('Erreur API Gemini', 'err');
+  } finally {
+    sb.disabled = false;
+    status.textContent = '● PRÊT';
+    status.style.color = 'var(--green)';
   }
 }
-function quickMsg(msg){document.getElementById('ci').value=msg;sendChat();}
 
-async function doAiScan(){
-  if(!apiKey){toast('🔑 Clé requise','warn');return;}
-  const pCtx=Object.entries(prices).map(([s,d])=>`${s} $${fp(d.price)} (${d.change?.toFixed(2)}%)`).join(', ');
-  const prompt=`Scan rapide marché. Prix: ${pCtx}. Donne 3 observations clés ultra-concises (momentum, domination BTC, corrélations). Max 4 lignes.`;
-  document.getElementById('ci').value=prompt;await sendChat();
-}
-async function doAiOpps(){
-  if(!apiKey){toast('🔑 Clé requise','warn');return;}
-  const pCtx=Object.entries(prices).map(([s,d])=>`${s} $${fp(d.price)} (${d.change?.toFixed(2)}%)`).join(', ');
-  const prompt=`Prix live: ${pCtx}. Capital $${capital.toFixed(2)}. Génère 2 setups trade précis avec: actif, direction, levier (x8-x13), prix entrée, SL exact, TP exact, RR calculé. Priorité risk management.`;
-  document.getElementById('ci').value=prompt;await sendChat();
-}
+// ─── LE RESTE DE TES FONCTIONS (doAiScan, init, etc.) ──────────────
 
-// ─── FAKE FEAR & GREED (simulation) ──────────────────────────────
-function simulateFearGreed(){
-  const btc=prices.BTC;
-  if(!btc){updateFearGreed(50);return;}
-  const base=50;
-  const delta=btc.change*2;
-  const val=Math.max(5,Math.min(95,Math.round(base+delta)));
-  updateFearGreed(val);
-}
-
-// ─── INIT ────────────────────────────────────────────────────────
 function init(){
-  buildTicker();buildOpps();updateWallet();
+  buildTicker(); buildOpps(); updateWallet();
   connectWS();
-  updateFearGreed(52);
+  simulateFearGreed();
 
-  const vibTog=document.getElementById('vib-tog');if(vibTog)vibTog.checked=vibOn;
-  const sndTog=document.getElementById('snd-tog');if(sndTog)sndTog.checked=sndOn;
+  if(document.getElementById('vib-tog')) document.getElementById('vib-tog').checked = vibOn;
+  if(document.getElementById('snd-tog')) document.getElementById('snd-tog').checked = sndOn;
 
-  // Simulate F&G update every 30s
-  setInterval(simulateFearGreed,30000);
-
-  // Demo signal
-  setTimeout(()=>showSig('SOL/USDT — Breakout confirmé x13 | Conf. 91% 🔥'),5000);
-
-  // Refresh mini chart every 10s
-  setInterval(()=>{if(priceHistory[curPair])updateMiniChart();},10000);
+  setInterval(simulateFearGreed, 30000);
+  
+  // Petit message de bienvenue
+  setTimeout(() => {
+    addAIMsg("Système **Yenom V2** opérationnel. Prêt pour le scalp ? 🏹");
+  }, 1000);
 }
-document.addEventListener('DOMContentLoaded',init);
+
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
