@@ -5,13 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Smart Trading AI</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 :root {
   --bg: #0F172A;
-  --bg2: #1E293B;
-  --glass: rgba(255,255,255,0.05);
-  --glass-border: rgba(255,255,255,0.10);
   --cyan: #22D3EE;
   --green: #10B981;
   --red: #EF4444;
@@ -22,568 +18,362 @@
 body {
   background: var(--bg);
   color: #F1F5F9;
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: -apple-system, 'Inter', sans-serif;
   min-height: 100vh;
-  overflow-x: hidden;
-  background-image: 
-    radial-gradient(ellipse at 20% 20%, rgba(34,211,238,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(16,185,129,0.02) 0%, transparent 70%);
+  background-image:
+    radial-gradient(ellipse at 15% 15%, rgba(34,211,238,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 85%, rgba(139,92,246,0.07) 0%, transparent 55%);
 }
 .glass {
   background: rgba(255,255,255,0.05);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 24px;
+  border-radius: 20px;
 }
-.glass-sm {
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-}
-.neon-cyan { color: var(--cyan); text-shadow: 0 0 20px rgba(34,211,238,0.5); }
+.neon-cyan { color: var(--cyan); text-shadow: 0 0 20px rgba(34,211,238,0.4); }
 .neon-green { color: var(--green); text-shadow: 0 0 20px rgba(16,185,129,0.4); }
-.neon-red { color: var(--red); text-shadow: 0 0 20px rgba(239,68,68,0.4); }
-
 .live-dot {
   width: 7px; height: 7px;
   background: var(--green);
   border-radius: 50%;
   box-shadow: 0 0 8px var(--green);
-  animation: pulse-dot 2s ease-in-out infinite;
+  animation: pdot 2s infinite;
+  display: inline-block;
 }
-@keyframes pulse-dot {
-  0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:0.5; transform:scale(0.8); }
-}
+@keyframes pdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
 
-.main-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-.full-col { grid-column: 1 / -1; }
-.col-2 { grid-column: span 1; }
-@media(max-width:640px) {
-  .main-grid { grid-template-columns: 1fr; }
-  .col-2 { grid-column: span 1; }
-}
-
-.ticker-bar {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 10px 14px;
+.ticker-wrap {
+  display: flex; gap: 8px;
+  overflow-x: auto; padding: 12px 16px;
   scrollbar-width: none;
 }
-.ticker-bar::-webkit-scrollbar { display: none; }
-.ticker-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  min-width: 70px;
+.ticker-wrap::-webkit-scrollbar { display: none; }
+.tick-item {
+  flex-shrink: 0;
+  min-width: 75px;
   background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 12px;
-  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 9px 10px;
+  text-align: center;
   cursor: pointer;
   transition: all 0.2s;
-  flex-shrink: 0;
 }
-.ticker-item:hover { background: rgba(255,255,255,0.08); border-color: rgba(34,211,238,0.3); }
-.ticker-item.active { border-color: rgba(34,211,238,0.5); background: rgba(34,211,238,0.08); }
-
+.tick-item:hover { background: rgba(255,255,255,0.09); }
+.tick-item.active {
+  border-color: rgba(34,211,238,0.5);
+  background: rgba(34,211,238,0.08);
+}
 .opp-card {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 18px;
-  padding: 16px;
+  border-radius: 16px;
+  padding: 14px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  transition: all 0.25s;
   position: relative;
   overflow: hidden;
 }
-.opp-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 18px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.opp-card.long::before { background: radial-gradient(ellipse at top, rgba(16,185,129,0.1), transparent 60%); }
-.opp-card.short::before { background: radial-gradient(ellipse at top, rgba(239,68,68,0.1), transparent 60%); }
-.opp-card:hover { transform: translateY(-4px) scale(1.02); border-color: rgba(34,211,238,0.3); }
-.opp-card:hover::before { opacity: 1; }
+.opp-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,0.3); }
 .opp-card:active { transform: scale(0.97); }
+.conf-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+.conf-fill { height: 100%; border-radius: 2px; transition: width 1s; }
 
-.conf-bar {
-  height: 4px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 8px;
-}
-.conf-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-.chat-msg-user {
+.chat-user {
   align-self: flex-end;
   background: rgba(34,211,238,0.12);
   border: 1px solid rgba(34,211,238,0.2);
   border-radius: 16px 16px 4px 16px;
-  padding: 10px 14px;
-  max-width: 85%;
-  font-size: 13px;
-  line-height: 1.5;
+  padding: 10px 14px; max-width: 85%;
+  font-size: 13px; line-height: 1.5;
 }
-.chat-msg-ai {
+.chat-ai {
   align-self: flex-start;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 16px 16px 16px 4px;
-  padding: 10px 14px;
-  max-width: 90%;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #CBD5E1;
+  padding: 10px 14px; max-width: 90%;
+  font-size: 13px; line-height: 1.6; color: #CBD5E1;
 }
-.chat-input-wrap {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+.chat-ai strong { color: var(--cyan); }
+
+.input-row {
+  display: flex; gap: 8px; align-items: center;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
-  padding: 6px 6px 6px 14px;
+  border-radius: 14px; padding: 6px 6px 6px 14px;
 }
-.chat-input-wrap input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  color: #F1F5F9;
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
+.input-row input {
+  flex: 1; background: none; border: none; outline: none;
+  color: #F1F5F9; font-size: 13px;
 }
-.chat-input-wrap input::placeholder { color: #475569; }
+.input-row input::placeholder { color: #475569; }
 .send-btn {
   background: linear-gradient(135deg, var(--cyan), var(--purple));
-  border: none;
-  border-radius: 12px;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: white;
-  transition: all 0.2s;
-  flex-shrink: 0;
+  border: none; border-radius: 10px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; transition: all 0.2s; flex-shrink: 0;
 }
-.send-btn:hover { transform: scale(1.08); opacity: 0.9; }
+.send-btn:hover { transform: scale(1.08); }
 .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.btn-primary {
+.btn-ok {
   background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(139,92,246,0.2));
-  color: var(--cyan);
-  border: 1px solid rgba(34,211,238,0.35);
-  border-radius: 14px;
-  padding: 13px 24px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
-  transition: all 0.2s;
-  font-family: 'Inter', sans-serif;
-  letter-spacing: 0.5px;
+  color: var(--cyan); border: 1px solid rgba(34,211,238,0.35);
+  border-radius: 12px; padding: 12px 20px;
+  cursor: pointer; font-size: 14px; font-weight: 700;
+  transition: all 0.2s; width: 100%;
 }
-.btn-primary:hover { background: linear-gradient(135deg, rgba(34,211,238,0.3), rgba(139,92,246,0.3)); transform: scale(1.02); }
-.btn-danger {
-  background: rgba(239,68,68,0.12);
-  color: var(--red);
-  border: 1px solid rgba(239,68,68,0.3);
-  border-radius: 14px;
-  padding: 13px 24px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.2s;
-  font-family: 'Inter', sans-serif;
+.btn-ok:hover { background: rgba(34,211,238,0.25); }
+.btn-no {
+  background: rgba(239,68,68,0.1); color: var(--red);
+  border: 1px solid rgba(239,68,68,0.25); border-radius: 12px;
+  padding: 12px 20px; cursor: pointer; font-size: 14px; font-weight: 600;
+  transition: all 0.2s; width: 100%;
 }
-.btn-danger:hover { background: rgba(239,68,68,0.22); }
-
-.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-.toggle-switch input { opacity: 0; width: 0; height: 0; }
-.toggle-slider {
-  position: absolute; cursor: pointer; inset: 0;
-  background: rgba(255,255,255,0.1);
-  border-radius: 24px;
-  transition: 0.3s;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-.toggle-slider:before {
-  position: absolute; content: '';
-  height: 18px; width: 18px;
-  left: 2px; bottom: 2px;
-  background: #94A3B8;
-  border-radius: 50%;
-  transition: 0.3s;
-}
-input:checked + .toggle-slider { background: rgba(34,211,238,0.3); border-color: rgba(34,211,238,0.5); }
-input:checked + .toggle-slider:before { transform: translateX(20px); background: var(--cyan); }
-
-.signal-banner-wrap {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  transform: translateY(-100%);
-  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-}
-.signal-banner-wrap.show { transform: translateY(0); }
-.signal-banner {
-  background: linear-gradient(135deg, rgba(34,211,238,0.25), rgba(139,92,246,0.25));
-  backdrop-filter: blur(20px);
-  border-bottom: 2px solid rgba(34,211,238,0.4);
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.btn-no:hover { background: rgba(239,68,68,0.2); }
 
 .overlay {
   position: fixed; inset: 0; z-index: 500;
   background: rgba(0,0,0,0.65);
   backdrop-filter: blur(6px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  display: flex; align-items: flex-end; justify-content: center;
 }
-.bottom-sheet {
+.sheet {
   width: 100%; max-width: 520px;
-  animation: slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes slideUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.settings-panel {
   background: #1E293B;
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 28px 28px 0 0;
-  padding: 20px 20px 40px;
-  max-height: 90vh;
-  overflow-y: auto;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px 44px;
+  max-height: 88vh; overflow-y: auto;
+  animation: sup 0.3s cubic-bezier(0.34,1.56,0.64,1);
 }
-.settings-panel input[type="text"],
-.settings-panel input[type="password"],
-.settings-panel input[type="number"] {
-  width: 100%;
-  background: rgba(255,255,255,0.06);
+@keyframes sup { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
+
+.field-label { font-size: 11px; color: #475569; font-weight: 600; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+.field-input {
+  width: 100%; background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 12px;
-  padding: 10px 14px;
-  color: #F1F5F9;
-  font-size: 13px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
+  border-radius: 12px; padding: 10px 14px;
+  color: #F1F5F9; font-size: 13px; outline: none;
   transition: border-color 0.2s;
 }
-.settings-panel input:focus { border-color: rgba(34,211,238,0.4); }
-
-.trade-modal {
-  background: #1E293B;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 28px 28px 0 0;
-  padding: 24px 20px 40px;
-  max-height: 85vh;
-  overflow-y: auto;
-}
+.field-input:focus { border-color: rgba(34,211,238,0.4); }
 
 .pin-overlay {
   position: fixed; inset: 0; z-index: 600;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .pin-box {
-  background: #1E293B;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 28px;
-  padding: 32px 24px;
-  width: 100%;
-  max-width: 320px;
-  text-align: center;
+  background: #1E293B; border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px; padding: 28px 24px; width: 100%; max-width: 300px; text-align: center;
 }
-.pin-dots {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  margin: 20px 0;
+.pin-dots { display: flex; justify-content: center; gap: 14px; margin: 18px 0; }
+.pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); transition: all 0.2s; }
+.pin-dot.on { background: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 10px rgba(34,211,238,0.5); }
+.pin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+.pin-k {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 14px; color: #F1F5F9; font-size: 18px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
 }
-.pin-dot {
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.2);
-  transition: all 0.2s;
+.pin-k:hover { background: rgba(255,255,255,0.13); }
+.pin-k:active { transform: scale(0.93); background: rgba(34,211,238,0.2); }
+
+.signal-bar-wrap {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
 }
-.pin-dot.filled {
-  background: var(--cyan);
-  border-color: var(--cyan);
-  box-shadow: 0 0 10px rgba(34,211,238,0.5);
+.signal-bar-wrap.show { transform: translateY(0); }
+.signal-bar {
+  background: linear-gradient(135deg, rgba(34,211,238,0.25), rgba(139,92,246,0.25));
+  backdrop-filter: blur(20px);
+  border-bottom: 2px solid rgba(34,211,238,0.4);
+  padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
 }
-.pin-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-top: 10px;
+
+.toggle-sw { position: relative; display: inline-block; width: 44px; height: 24px; }
+.toggle-sw input { opacity: 0; width: 0; height: 0; }
+.toggle-sl {
+  position: absolute; cursor: pointer; inset: 0;
+  background: rgba(255,255,255,0.1); border-radius: 24px;
+  transition: 0.3s; border: 1px solid rgba(255,255,255,0.15);
 }
-.pin-key {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 14px;
-  padding: 16px;
-  color: #F1F5F9;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: 'Inter', sans-serif;
+.toggle-sl:before {
+  position: absolute; content: ''; height: 18px; width: 18px;
+  left: 2px; bottom: 2px; background: #94A3B8; border-radius: 50%; transition: 0.3s;
 }
-.pin-key:hover { background: rgba(255,255,255,0.13); transform: scale(1.05); }
-.pin-key:active { transform: scale(0.95); }
-.pin-key.del { color: var(--red); font-size: 14px; }
+input:checked + .toggle-sl { background: rgba(34,211,238,0.3); border-color: rgba(34,211,238,0.5); }
+input:checked + .toggle-sl:before { transform: translateX(20px); background: var(--cyan); }
 
 .typing-dot {
   display: inline-block; width: 6px; height: 6px;
-  background: var(--cyan); border-radius: 50%;
-  margin: 0 2px;
+  background: var(--cyan); border-radius: 50%; margin: 0 2px;
   animation: blink 1.2s ease-in-out infinite;
 }
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes blink { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+.typing-dot:nth-child(2){animation-delay:0.2s}
+.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes blink{0%,80%,100%{opacity:0.2}40%{opacity:1}}
 
-.blur-sensitive { transition: filter 0.3s; }
-.blur-active .blur-sensitive { filter: blur(12px); user-select: none; }
+.blur-s { transition: filter 0.3s; }
+.blur-on .blur-s { filter: blur(10px); user-select: none; }
 
-.stat-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px;
-  padding: 14px;
-  text-align: center;
-}
-
-.history-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 12px;
-  font-size: 12px;
-}
-
-/* Scrollbar custom */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+@media(max-width:640px){
+  .grid2{ grid-template-columns: 1fr !important; }
 }
-.shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.price-flash { animation: flash 0.3s ease; }
-@keyframes flash { 0%,100%{opacity:1} 50%{opacity:0.4} }
 </style>
 </head>
 <body>
 
 <!-- SIGNAL BANNER -->
-<div class="signal-banner-wrap" id="signal-banner">
-  <div class="signal-banner">
+<div class="signal-bar-wrap" id="sig-banner">
+  <div class="signal-bar">
     <div style="display:flex;align-items:center;gap:10px">
-      <span style="font-size:20px;animation:pulse-dot 1s infinite">⚡</span>
+      <span style="font-size:22px">⚡</span>
       <div>
         <div style="font-size:13px;font-weight:800;color:var(--cyan);letter-spacing:1px">SIGNAL SNIPER DÉTECTÉ</div>
-        <div id="signal-text" style="font-size:12px;color:#94A3B8;margin-top:1px">Opportunité haute confiance identifiée</div>
+        <div id="sig-text" style="font-size:12px;color:#94A3B8">Opportunité haute confiance identifiée</div>
       </div>
     </div>
-    <button onclick="closeBanner()" style="background:none;border:none;color:#475569;font-size:20px;cursor:pointer;padding:4px">✕</button>
+    <button onclick="closeBanner()" style="background:none;border:none;color:#64748B;font-size:20px;cursor:pointer">✕</button>
   </div>
 </div>
 
-<!-- MAIN -->
-<div style="max-width:980px;margin:0 auto;padding:16px" id="main-wrap">
+<div style="max-width:960px;margin:0 auto;padding:16px">
 
   <!-- HEADER -->
-  <div class="full-col" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
     <div>
-      <h1 id="app-title" style="font-size:20px;font-weight:900;letter-spacing:2px;color:#F1F5F9;cursor:pointer;user-select:none" onclick="handleTitleClick()">
+      <h1 id="app-title" onclick="onTitleClick()"
+        style="font-size:20px;font-weight:900;letter-spacing:2px;cursor:pointer;user-select:none">
         ⚡ SMART TRADING AI
       </h1>
       <div style="display:flex;align-items:center;gap:6px;margin-top:3px">
         <div class="live-dot"></div>
         <span style="font-size:10px;color:#475569;letter-spacing:1px">LIVE MARKET</span>
-        <span style="font-size:10px;color:#334155">·</span>
-        <span style="font-size:10px;color:#475569" id="last-update">Connexion...</span>
+        <span style="font-size:10px;color:#334155"> · </span>
+        <span id="ws-status" style="font-size:10px;color:#475569">Connexion...</span>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <button onclick="requestAiScan()" title="Scan IA" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:8px 12px;color:#8B5CF6;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s">🔍 Scan</button>
-      <button id="eye-btn" onclick="toggleBlur()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.10);border-radius:10px;padding:8px 12px;color:#94A3B8;cursor:pointer;font-size:16px;transition:all 0.2s" title="Mode discret">👁</button>
+    <div style="display:flex;gap:8px">
+      <button onclick="doAiScan()" title="Scan IA"
+        style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:8px 12px;color:#8B5CF6;cursor:pointer;font-size:13px;font-weight:600">🔍 Scan</button>
+      <button id="eye-btn" onclick="toggleBlur()"
+        style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:8px 12px;color:#94A3B8;cursor:pointer;font-size:16px">👁</button>
     </div>
   </div>
 
-  <!-- TICKER BAR -->
+  <!-- TICKER -->
   <div class="glass" style="margin-bottom:14px;padding:0;overflow:hidden">
-    <div class="ticker-bar" id="ticker-bar">
-      <div class="ticker-item active" id="tick-BTC" onclick="switchPair('BTC')">
-        <span style="font-size:11px;color:#94A3B8;font-weight:700">BTC</span>
-        <span id="t-btc" style="font-size:12px;color:#94A3B8">—</span>
-      </div>
-      <div class="ticker-item" id="tick-ETH" onclick="switchPair('ETH')">
-        <span style="font-size:11px;color:#94A3B8;font-weight:700">ETH</span>
-        <span id="t-eth" style="font-size:12px;color:#94A3B8">—</span>
-      </div>
-      <div class="ticker-item" id="tick-SOL" onclick="switchPair('SOL')">
-        <span style="font-size:11px;color:#94A3B8;font-weight:700">SOL</span>
-        <span id="t-sol" style="font-size:12px;color:#94A3B8">—</span>
-      </div>
-      <div class="ticker-item" id="tick-PEPE" onclick="switchPair('PEPE')">
-        <span style="font-size:11px;color:#94A3B8;font-weight:700">PEPE</span>
-        <span id="t-pepe" style="font-size:12px;color:#94A3B8">—</span>
-      </div>
-      <div class="ticker-item" id="tick-WIF" onclick="switchPair('WIF')">
-        <span style="font-size:11px;color:#94A3B8;font-weight:700">WIF</span>
-        <span id="t-wif" style="font-size:12px;color:#94A3B8">—</span>
-      </div>
-      <div class="ticker-item" id="tick-BONK" onclick="switchPair('BONK')">
-        <span style="font-size:11px;color:#94A3B8;font-weight:700">BONK</span>
-        <span id="t-bonk" style="font-size:12px;color:#94A3B8">—</span>
-      </div>
+    <div class="ticker-wrap" id="ticker-wrap">
+      <!-- généré par JS -->
     </div>
   </div>
 
-  <div class="main-grid">
+  <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
 
-    <!-- PRIX PRINCIPAL -->
-    <div class="glass col-2" style="padding:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="font-size:11px;color:#475569;font-weight:600;letter-spacing:1px">PRIX EN DIRECT</div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <span id="pair-badge" style="font-size:11px;font-weight:700;color:var(--cyan);background:rgba(34,211,238,0.1);padding:3px 10px;border-radius:20px;border:1px solid rgba(34,211,238,0.2)">SOL/USDT</span>
-        </div>
+    <!-- PRIX -->
+    <div class="glass" style="padding:20px">
+      <div style="font-size:10px;color:#475569;font-weight:700;letter-spacing:1px;margin-bottom:8px">PRIX EN DIRECT</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span id="pair-badge"
+          style="font-size:11px;font-weight:700;color:var(--cyan);background:rgba(34,211,238,0.1);padding:3px 10px;border-radius:20px;border:1px solid rgba(34,211,238,0.2)">
+          BTC/USDT
+        </span>
       </div>
-      <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
-        <div id="main-price" class="neon-cyan blur-sensitive" style="font-size:44px;font-weight:900;line-height:1">—</div>
-        <div style="padding-bottom:4px">
-          <div id="change-badge" style="font-size:14px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--green)">—</div>
-        </div>
-      </div>
+      <div id="main-price" class="neon-cyan blur-s"
+        style="font-size:42px;font-weight:900;line-height:1.1;margin:8px 0">—</div>
+      <div id="change-badge"
+        style="display:inline-block;font-size:14px;font-weight:700;padding:3px 12px;border-radius:20px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--green)">—</div>
       <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap">
-        <div><span style="font-size:10px;color:#475569">H24 Haut </span><span id="high-val" style="font-size:12px;color:var(--green);font-weight:600">—</span></div>
-        <div><span style="font-size:10px;color:#475569">H24 Bas </span><span id="low-val" style="font-size:12px;color:var(--red);font-weight:600">—</span></div>
-        <div><span style="font-size:10px;color:#475569">Volume </span><span id="vol-val" style="font-size:12px;color:#94A3B8;font-weight:600">—</span></div>
+        <div><span style="font-size:10px;color:#475569">Haut </span><span id="high-v" style="font-size:12px;color:var(--green);font-weight:600">—</span></div>
+        <div><span style="font-size:10px;color:#475569">Bas </span><span id="low-v" style="font-size:12px;color:var(--red);font-weight:600">—</span></div>
+        <div><span style="font-size:10px;color:#475569">Vol </span><span id="vol-v" style="font-size:12px;color:#94A3B8;font-weight:600">—</span></div>
       </div>
     </div>
 
-    <!-- PORTEFEUILLE -->
-    <div class="glass col-2" style="padding:20px">
-      <div style="font-size:11px;color:#475569;font-weight:600;letter-spacing:1px;margin-bottom:12px">💼 PORTEFEUILLE</div>
-      <div>
-        <div style="font-size:11px;color:#475569;margin-bottom:4px">Capital actuel</div>
-        <div class="neon-green blur-sensitive" style="font-size:40px;font-weight:900">$<span id="capital-num">20.57</span></div>
-        <div style="font-size:12px;color:#475569;margin-top:4px">Objectif :  $ <span id="goal-val">50.00</span></div>
-        <div style="margin-top:10px">
-          <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden">
-            <div id="goal-bar" style="height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:3px;transition:width 0.6s;width:41%"></div>
-          </div>
-          <div style="font-size:11px;color:#475569;margin-top:4px;display:flex;justify-content:space-between">
-            <span id="goal-pct">41.1% vers objectif</span>
-            <span id="pnl-today" style="color:var(--green)">+ $ 0.00</span>
-          </div>
+    <!-- WALLET -->
+    <div class="glass" style="padding:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:10px;color:#475569;font-weight:700;letter-spacing:1px">💼 PORTEFEUILLE</div>
+        <button onclick="openWalletEdit()"
+          style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:8px;padding:4px 10px;color:var(--cyan);font-size:11px;cursor:pointer;font-weight:600">
+          ✏️ Modifier
+        </button>
+      </div>
+      <div class="blur-s">
+        <div style="font-size:10px;color:#475569;margin-bottom:2px">Capital actuel</div>
+        <div class="neon-green" style="font-size:38px;font-weight:900">$<span id="cap-num">—</span></div>
+        <div style="font-size:12px;color:#475569;margin-top:4px">Objectif :  $ <span id="goal-num">—</span></div>
+      </div>
+      <div style="margin-top:10px">
+        <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden">
+          <div id="goal-bar" style="height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:3px;transition:width 0.6s;width:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:5px">
+          <span id="goal-pct" style="font-size:11px;color:#475569">0%</span>
+          <span id="pnl-val" style="font-size:11px;color:var(--green)">+ $ 0.00</span>
         </div>
       </div>
-      <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-        <div class="stat-card">
-          <div style="font-size:10px;color:#475569;margin-bottom:4px">Expo. x10</div>
-          <div style="font-size:16px;font-weight:700;color:#8B5CF6" class="blur-sensitive" id="exposure-val">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:#475569;margin-bottom:3px">Expo x10</div>
+          <div id="expo-v" class="blur-s" style="font-size:13px;font-weight:700;color:#8B5CF6">—</div>
         </div>
-        <div class="stat-card">
-          <div style="font-size:10px;color:#475569;margin-bottom:4px">Trades</div>
-          <div style="font-size:16px;font-weight:700;color:var(--cyan)" id="trade-count">0</div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:#475569;margin-bottom:3px">Trades</div>
+          <div id="trade-count" style="font-size:13px;font-weight:700;color:var(--cyan)">0</div>
         </div>
-        <div class="stat-card">
-          <div style="font-size:10px;color:#475569;margin-bottom:4px">Win Rate</div>
-          <div style="font-size:16px;font-weight:700;color:var(--green)" id="win-rate">—</div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:#475569;margin-bottom:3px">Win Rate</div>
+          <div id="win-rate" style="font-size:13px;font-weight:700;color:var(--green)">—</div>
         </div>
       </div>
     </div>
 
-    <!-- HUB OPPORTUNITES -->
-    <div class="glass full-col" style="padding:20px">
+    <!-- OPPORTUNITÉS -->
+    <div class="glass" style="grid-column:1/-1;padding:20px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <div>
-          <div style="font-size:11px;color:#475569;font-weight:600;letter-spacing:1px">🎯 HUB D'OPPORTUNITÉS</div>
+          <div style="font-size:10px;color:#475569;font-weight:700;letter-spacing:1px">🎯 HUB D'OPPORTUNITÉS</div>
           <div style="font-size:12px;color:#475569;margin-top:2px">Signaux IA — cliquez pour trader</div>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button onclick="loadStaticOpps()" style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:10px;padding:6px 14px;color:var(--cyan);font-size:12px;cursor:pointer;font-weight:600">↻ Refresh</button>
-          <button onclick="requestAiOpportunities()" style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:6px 14px;color:#8B5CF6;font-size:12px;cursor:pointer;font-weight:600">🤖 IA Live</button>
+        <div style="display:flex;gap:8px">
+          <button onclick="buildOpps()"
+            style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:10px;padding:6px 14px;color:var(--cyan);font-size:12px;cursor:pointer;font-weight:600">↻ Refresh</button>
+          <button onclick="doAiOpps()"
+            style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:6px 14px;color:#8B5CF6;font-size:12px;cursor:pointer;font-weight:600">🤖 IA Live</button>
         </div>
       </div>
-      <div id="opp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px">
-        <div style="text-align:center;padding:24px;color:#475569;font-size:13px;grid-column:1/-1" class="shimmer" id="opp-loading">Analyse en cours...</div>
-      </div>
+      <div id="opp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px"></div>
     </div>
 
-    <!-- HISTORIQUE -->
-    <div class="glass full-col" style="padding:20px">
+    <!-- CHAT -->
+    <div class="glass" style="grid-column:1/-1;padding:20px;display:flex;flex-direction:column;height:440px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div style="font-size:11px;color:#475569;font-weight:600;letter-spacing:1px">📊 HISTORIQUE DES TRADES</div>
-        <button onclick="clearHistory()" style="background:none;border:none;color:#475569;font-size:11px;cursor:pointer">Effacer</button>
+        <div style="font-size:10px;color:#475569;font-weight:700;letter-spacing:1px">💬 ASSISTANT GEMINI</div>
+        <button onclick="clearChat()" style="background:none;border:none;color:#475569;font-size:11px;cursor:pointer">🗑 Effacer</button>
       </div>
-      <div id="trade-history" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto">
-        <div style="text-align:center;padding:16px;color:#334155;font-size:13px">Aucun trade enregistré</div>
-      </div>
-    </div>
-
-    <!-- CHAT IA -->
-    <div class="glass full-col" style="padding:20px;display:flex;flex-direction:column;height:500px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="font-size:11px;color:#475569;font-weight:600;letter-spacing:1px">🤖 ASSISTANT IA — GEMINI</div>
-          <div style="width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green)"></div>
-        </div>
-        <button onclick="clearChat()" style="background:none;border:none;color:#475569;font-size:11px;cursor:pointer">Effacer</button>
-      </div>
-      <div id="chat-messages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px;margin-bottom:12px">
-        <div class="chat-msg-ai">
+      <div id="chat-msgs"
+        style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:4px;margin-bottom:12px">
+        <div class="chat-ai">
           <div style="font-size:10px;color:#475569;margin-bottom:4px">Gemini ✦</div>
-          Salut trader ! 🚀 Je suis ton assistant IA. Ta clé Gemini est configurée et prête. Utilise <strong>🔍 Scan</strong> pour une analyse complète ou pose-moi une question sur n'importe quelle crypto !
+          Salut trader ! 🚀 Je suis prêt. Clique sur <strong>🔍 Scan</strong> pour une analyse complète, ou pose-moi une question sur n'importe quelle crypto !
         </div>
       </div>
-      <div class="chat-input-wrap">
-        <input id="chat-input" type="text" placeholder="Analyse SOL en x12, setup optimal..." onkeydown="if(event.key==='Enter')sendChat()"/>
+      <div class="input-row">
+        <input id="chat-input" type="text" placeholder="Analyse SOL en x12, meilleur entry..." onkeydown="if(event.key==='Enter')sendChat()"/>
         <button class="send-btn" onclick="sendChat()" id="send-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/>
+          </svg>
         </button>
       </div>
     </div>
@@ -593,54 +383,82 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background:
 
 <!-- TRADE MODAL -->
 <div id="trade-overlay" class="overlay" style="display:none" onclick="if(event.target===this)closeTradeModal()">
-  <div class="trade-modal bottom-sheet">
-    <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 20px"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-      <div style="font-size:18px;font-weight:800;color:#F1F5F9" id="modal-title">—</div>
-      <div id="modal-dir-badge" style="font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px">—</div>
+  <div class="sheet">
+    <div style="width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div id="m-title" style="font-size:20px;font-weight:800">—</div>
+      <div id="m-dir" style="font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px">—</div>
+      <div id="m-lev" style="font-size:12px;font-weight:700;color:var(--cyan);background:rgba(34,211,238,0.1);padding:4px 10px;border-radius:20px;border:1px solid rgba(34,211,238,0.2)">—</div>
     </div>
-    <div style="font-size:13px;color:#64748B;margin-bottom:16px" id="modal-reason">—</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
-      <div style="background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:14px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:#475569;margin-bottom:4px">ENTRÉE</div>
-        <div id="modal-entry" style="font-size:15px;font-weight:700;color:var(--cyan)">—</div>
+    <div id="m-reason" style="font-size:13px;color:#64748B;margin-bottom:16px;line-height:1.5">—</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:9px;color:#475569;margin-bottom:3px">ENTRÉE</div>
+        <div id="m-entry" style="font-size:14px;font-weight:700;color:var(--cyan)">—</div>
       </div>
-      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:#475569;margin-bottom:4px">TAKE PROFIT</div>
-        <div id="modal-tp" style="font-size:15px;font-weight:700;color:var(--green)">—</div>
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:9px;color:#475569;margin-bottom:3px">TAKE PROFIT</div>
+        <div id="m-tp" style="font-size:14px;font-weight:700;color:var(--green)">—</div>
       </div>
-      <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:14px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:#475569;margin-bottom:4px">STOP LOSS</div>
-        <div id="modal-sl" style="font-size:15px;font-weight:700;color:var(--red)">—</div>
+      <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:9px;color:#475569;margin-bottom:3px">STOP LOSS</div>
+        <div id="m-sl" style="font-size:14px;font-weight:700;color:var(--red)">—</div>
       </div>
     </div>
-    <div style="background:rgba(255,255,255,0.04);border-radius:14px;padding:12px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div style="font-size:11px;color:#475569">Profit potentiel</div>
-        <div id="modal-profit" style="font-size:18px;font-weight:800;color:var(--green)">—</div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;margin-bottom:14px;display:flex;justify-content:space-around">
+      <div style="text-align:center">
+        <div style="font-size:10px;color:#475569">Profit potentiel</div>
+        <div id="m-profit" style="font-size:17px;font-weight:800;color:var(--green)">—</div>
       </div>
-      <div>
-        <div style="font-size:11px;color:#475569">Risque max</div>
-        <div id="modal-risk" style="font-size:18px;font-weight:800;color:var(--red)">—</div>
+      <div style="text-align:center">
+        <div style="font-size:10px;color:#475569">Risque max</div>
+        <div id="m-risk" style="font-size:17px;font-weight:800;color:var(--red)">—</div>
       </div>
-      <div>
-        <div style="font-size:11px;color:#475569">Confiance</div>
-        <div id="modal-conf" style="font-size:18px;font-weight:800;color:var(--amber)">—</div>
+      <div style="text-align:center">
+        <div style="font-size:10px;color:#475569">Confiance</div>
+        <div id="m-conf" style="font-size:17px;font-weight:800;color:var(--amber)">—</div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <button class="btn-danger" onclick="refuseTrade()" style="width:100%">✕ REFUSER</button>
-      <button class="btn-primary" onclick="acceptTrade()" style="width:100%">⚡ ACCEPTER</button>
+      <button class="btn-no" onclick="refuseTrade()">✕ REFUSER</button>
+      <button class="btn-ok" onclick="acceptTrade()">⚡ ACCEPTER</button>
     </div>
   </div>
 </div>
 
-<!-- PIN OVERLAY -->
+<!-- WALLET EDIT -->
+<div id="wallet-overlay" class="overlay" style="display:none" onclick="if(event.target===this)closeWallet()">
+  <div class="sheet">
+    <div style="width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:20px">💼 Modifier le Portefeuille</div>
+    <div style="margin-bottom:14px">
+      <label class="field-label">CAPITAL ACTUEL ( $ )</label>
+      <input class="field-input" type="number" id="w-cap" placeholder="20.57" step="0.01"/>
+    </div>
+    <div style="margin-bottom:14px">
+      <label class="field-label">OBJECTIF ( $ )</label>
+      <input class="field-input" type="number" id="w-goal" placeholder="50.00" step="0.01"/>
+    </div>
+    <div style="margin-bottom:20px">
+      <label class="field-label">AJOUTER / SOUSTRAIRE ( $ ) — optionnel</label>
+      <div style="display:flex;gap:8px">
+        <input class="field-input" type="number" id="w-add" placeholder="ex: 5.00"/>
+        <button onclick="addToCapital(1)"
+          style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:10px 14px;color:var(--green);cursor:pointer;font-weight:700;white-space:nowrap">➕</button>
+        <button onclick="addToCapital(-1)"
+          style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:12px;padding:10px 14px;color:var(--red);cursor:pointer;font-weight:700;white-space:nowrap">➖</button>
+      </div>
+    </div>
+    <button onclick="saveWallet()" class="btn-ok">✅ Enregistrer</button>
+  </div>
+</div>
+
+<!-- PIN -->
 <div id="pin-overlay" class="pin-overlay" style="display:none">
   <div class="pin-box">
-    <div style="font-size:24px;margin-bottom:8px">🔐</div>
-    <div style="font-size:16px;font-weight:700;color:#F1F5F9">Accès sécurisé</div>
-    <div style="font-size:13px;color:#475569;margin-top:4px">Entrez votre PIN</div>
+    <div style="font-size:28px">🔐</div>
+    <div style="font-size:16px;font-weight:700;margin-top:8px">Accès sécurisé</div>
+    <div style="font-size:12px;color:#475569;margin-top:4px">Entrez votre PIN</div>
     <div class="pin-dots">
       <div class="pin-dot" id="pd0"></div>
       <div class="pin-dot" id="pd1"></div>
@@ -648,142 +466,102 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background:
       <div class="pin-dot" id="pd3"></div>
     </div>
     <div class="pin-grid">
-      <button class="pin-key" onclick="pinKey('1')">1</button>
-      <button class="pin-key" onclick="pinKey('2')">2</button>
-      <button class="pin-key" onclick="pinKey('3')">3</button>
-      <button class="pin-key" onclick="pinKey('4')">4</button>
-      <button class="pin-key" onclick="pinKey('5')">5</button>
-      <button class="pin-key" onclick="pinKey('6')">6</button>
-      <button class="pin-key" onclick="pinKey('7')">7</button>
-      <button class="pin-key" onclick="pinKey('8')">8</button>
-      <button class="pin-key" onclick="pinKey('9')">9</button>
-      <button class="pin-key del" onclick="pinKey('C')">C</button>
-      <button class="pin-key" onclick="pinKey('0')">0</button>
-      <button class="pin-key del" onclick="pinKey('DEL')">⌫</button>
+      <button class="pin-k" onclick="pk('1')">1</button>
+      <button class="pin-k" onclick="pk('2')">2</button>
+      <button class="pin-k" onclick="pk('3')">3</button>
+      <button class="pin-k" onclick="pk('4')">4</button>
+      <button class="pin-k" onclick="pk('5')">5</button>
+      <button class="pin-k" onclick="pk('6')">6</button>
+      <button class="pin-k" onclick="pk('7')">7</button>
+      <button class="pin-k" onclick="pk('8')">8</button>
+      <button class="pin-k" onclick="pk('9')">9</button>
+      <button class="pin-k" onclick="pk('C')" style="color:#F59E0B">C</button>
+      <button class="pin-k" onclick="pk('0')">0</button>
+      <button class="pin-k" onclick="pk('DEL')" style="color:var(--red)">⌫</button>
     </div>
-    <div id="pin-error" style="text-align:center;color:var(--red);font-size:13px;min-height:18px;margin-top:8px"></div>
+    <div id="pin-err" style="color:var(--red);font-size:12px;min-height:18px;margin-top:10px"></div>
   </div>
 </div>
 
 <!-- SETTINGS -->
 <div id="settings-overlay" class="overlay" style="display:none" onclick="if(event.target===this)closeSettings()">
-  <div class="settings-panel bottom-sheet">
-    <div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 20px"></div>
-    <div style="font-size:18px;font-weight:800;margin-bottom:20px;color:#F1F5F9">⚙️ Paramètres</div>
+  <div class="sheet">
+    <div style="width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:20px">⚙️ Paramètres</div>
 
-    <div style="margin-bottom:18px">
-      <label style="font-size:12px;color:#475569;display:block;margin-bottom:6px;font-weight:600;letter-spacing:0.5px">🔑 CLÉ API GEMINI</label>
-      <input type="password" id="api-key-input" placeholder="AIzaSy..."/>
+    <div style="margin-bottom:16px">
+      <label class="field-label">🔑 CLÉ API GEMINI</label>
+      <input class="field-input" type="password" id="api-input" placeholder="AIzaSy..."/>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button onclick="saveApiKey()" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:8px 16px;color:#8B5CF6;font-size:13px;cursor:pointer;font-weight:600">💾 Enregistrer</button>
-        <button onclick="testApiKey()" style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:10px;padding:8px 16px;color:var(--cyan);font-size:13px;cursor:pointer;font-weight:600">🧪 Tester</button>
+        <button onclick="saveKey()"
+          style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:8px 16px;color:#8B5CF6;font-size:12px;cursor:pointer;font-weight:600">💾 Sauvegarder</button>
+        <button onclick="testKey()"
+          style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:10px;padding:8px 16px;color:var(--cyan);font-size:12px;cursor:pointer;font-weight:600">🧪 Tester</button>
       </div>
     </div>
 
-    <div style="margin-bottom:18px">
-      <label style="font-size:12px;color:#475569;display:block;margin-bottom:6px;font-weight:600;letter-spacing:0.5px">💰 CAPITAL (USD)</label>
-      <input type="number" id="capital-input" placeholder="20.57" step="0.01" min="0"/>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button onclick="saveCapital()" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:8px 16px;color:var(--green);font-size:13px;cursor:pointer;font-weight:600">✅ Définir</button>
-        <button onclick="addToCapital()" style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:10px;padding:8px 16px;color:var(--cyan);font-size:13px;cursor:pointer;font-weight:600">➕ Ajouter</button>
-      </div>
-    </div>
-
-    <div style="margin-bottom:18px">
-      <label style="font-size:12px;color:#475569;display:block;margin-bottom:6px;font-weight:600;letter-spacing:0.5px">🎯 OBJECTIF (USD)</label>
-      <input type="number" id="goal-input" placeholder="50.00" step="0.01" min="0"/>
-      <button onclick="saveGoal()" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:8px 16px;color:var(--amber);font-size:13px;cursor:pointer;font-weight:600;margin-top:8px">🎯 Définir objectif</button>
-    </div>
-
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:14px;background:rgba(255,255,255,0.04);border-radius:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(255,255,255,0.04);border-radius:14px;margin-bottom:14px">
       <div>
-        <div style="font-size:14px;color:#F1F5F9;font-weight:600">Vibrations & Alertes</div>
-        <div style="font-size:12px;color:#475569">Signal sur opportunité détectée</div>
+        <div style="font-size:14px;font-weight:600">Vibrations</div>
+        <div style="font-size:12px;color:#475569">Alerte sur signal</div>
       </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="vibrate-toggle" checked onchange="vibrateEnabled=this.checked;localStorage.setItem('vibrate',this.checked)">
-        <span class="toggle-slider"></span>
+      <label class="toggle-sw">
+        <input type="checkbox" id="vib-toggle" onchange="vibrateEnabled=this.checked;localStorage.setItem('vibrate',this.checked)">
+        <span class="toggle-sl"></span>
       </label>
     </div>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:14px;background:rgba(255,255,255,0.04);border-radius:14px">
-      <div>
-        <div style="font-size:14px;color:#F1F5F9;font-weight:600">Auto-scan IA</div>
-        <div style="font-size:12px;color:#475569">Analyse automatique toutes les 5 min</div>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="autoscan-toggle" onchange="toggleAutoScan(this.checked)">
-        <span class="toggle-slider"></span>
-      </label>
+    <div style="padding:12px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:12px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--red);font-weight:700">🔐 PIN : 1704</div>
+      <div style="font-size:12px;color:#475569;margin-top:2px">5× clics sur le titre = accès paramètres</div>
     </div>
 
-    <div style="padding:12px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:12px;margin-bottom:18px">
-      <div style="font-size:12px;color:#EF4444;font-weight:700;margin-bottom:4px">🔐 PIN D'ACCÈS</div>
-      <div style="font-size:12px;color:#475569">Code : 1704 — Cliquez 5× sur le titre pour ouvrir</div>
-    </div>
-
-    <button onclick="closeSettings()" class="btn-primary" style="width:100%">✓ Fermer</button>
+    <button onclick="closeSettings()" class="btn-ok">✓ Fermer</button>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-// CONFIG & STATE
-// ═══════════════════════════════════════════
-const CORRECT_PIN = '1704';
-const DEFAULT_KEY = 'AIzaSyBoEfNqxB1fwDA-NCODNx6Gk1cVEc7Qi-4';
+// ══════════════════════════════════════
+// ÉTAT GLOBAL
+// ══════════════════════════════════════
+const PIN = '1704';
+const GEMINI_KEY_DEFAULT = 'AIzaSyBoEfNqxB1fwDA-NCODNx6Gk1cVEc7Qi-4';
 const PAIRS = ['BTC','ETH','SOL','PEPE','WIF','BONK'];
 
-let pinBuffer = '';
-let titleClickCount = 0;
-let titleClickTimer = null;
-let blurActive = false;
-let currentPair = 'SOL';
-let capital = parseFloat(localStorage.getItem('capital') || '20.57');
-let capitalGoal = parseFloat(localStorage.getItem('capitalGoal') || '50.00');
-let geminiKey = localStorage.getItem('geminiKey') || DEFAULT_KEY;
+let capital     = parseFloat(localStorage.getItem('capital')  || '20.57');
+let capitalGoal = parseFloat(localStorage.getItem('goal')     || '50.00');
+let capitalBase = parseFloat(localStorage.getItem('capBase')  || capital.toString());
+let geminiKey   = localStorage.getItem('geminiKey') || GEMINI_KEY_DEFAULT;
 let vibrateEnabled = localStorage.getItem('vibrate') !== 'false';
-let autoScanEnabled = localStorage.getItem('autoscan') === 'true';
-let priceData = {};
-let currentTradeOpp = null;
-let tradeHistory = JSON.parse(localStorage.getItem('tradeHistory') || '[]');
+let currentPair = 'BTC';
+let priceData   = {};
+let currentOpp  = null;
+let tradeHistory = JSON.parse(localStorage.getItem('trades') || '[]');
 let ws = null;
-let autoScanInterval = null;
-let capitalAtOpen = capital;
+let titleClicks = 0;
+let titleTimer  = null;
+let blurActive  = false;
+let pinBuf = '';
 
 const STATIC_OPPS = [
-  { asset:'SOL', lever:13, conf:91, reason:'Breakout canal haussier + volume spike + RSI 58. Setup parfait pour un long agressif.', dir:'LONG' },
-  { asset:'BTC', lever:10, conf:84, reason:'Support 200EMA testé 3×. Accumulation visible sur l\'order flow. Rebond imminent.', dir:'LONG' },
-  { asset:'ETH', lever:12, conf:78, reason:'Divergence haussière MACD + niveau liquidité clé. Momentum positif.', dir:'LONG' },
-  { asset:'WIF', lever:10, conf:72, reason:'Momentum meme coins en hausse. Corrélation BTC. Risk/reward 1:3.5.', dir:'LONG' },
-  { asset:'PEPE', lever:10, conf:68, reason:'Volume x4 en 4h. Cassure résistance. Attention volatilité élevée.', dir:'LONG' },
-  { asset:'SOL', lever:12, conf:80, reason:'Double top H4. Rejet résistance. Short scalp court terme SL serré.', dir:'SHORT' },
+  { asset:'SOL',  lever:13, conf:91, reason:'Breakout canal haussier + volume spike + RSI 58. Long agressif.', dir:'LONG' },
+  { asset:'BTC',  lever:10, conf:84, reason:'Support 200EMA testé 3×. Accumulation order flow visible.', dir:'LONG' },
+  { asset:'ETH',  lever:12, conf:78, reason:'Divergence haussière MACD + liquidité clé 3200 $ . Momentum.', dir:'LONG' },
+  { asset:'WIF',  lever:10, conf:72, reason:'Meme coins momentum. Corrélation BTC haussière. RR 1:3.5.', dir:'LONG' },
+  { asset:'PEPE', lever:10, conf:68, reason:'Volume x4 en 4h. Cassure résistance. Volatilité élevée.', dir:'LONG' },
+  { asset:'SOL',  lever:12, conf:80, reason:'Double top H4. Rejet résistance 185$. Short scalp SL serré.', dir:'SHORT' },
 ];
 
-const SYSTEM_PROMPT = `RÔLE : Tu es l'intelligence centrale d'une application de trading nommée "Smart AI". Tu es un analyste stratégique, professionnel et agressif.
-
-CAPACITÉS : Tu as le contrôle total sur l'analyse. Tu peux suggérer de gros leviers (x10, x12, x13+) si le setup est exceptionnel. Gère le capital dynamiquement sans limite fixe. Prends systématiquement en compte le contexte politique et économique mondial pour justifier tes choix.
-
-FORMAT DE RÉPONSE :
-- Sois concis, percutant, professionnel
-- Utilise des emojis stratégiquement
-- Donne toujours : Direction (LONG/SHORT), Levier, Entrée, TP, SL, Confiance %
-- Si tu détectes un signal exceptionnel (confiance > 85%), inclus le mot exact "VIBRATE_SIGNAL" dans ta réponse
-- Analyse toujours le contexte macro + technique
-
-CAPITAL ACTUEL : $${capital}
-CRYPTO ACTIVE : ${currentPair}/USDT`;
-
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 // UTILS
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
 function fmt(p) {
-  if (!p || isNaN(p)) return '—';
+  if (p === null || p === undefined || isNaN(p)) return '—';
   const n = parseFloat(p);
-  if (n > 10000) return n.toFixed(1);
-  if (n > 100) return n.toFixed(2);
-  if (n > 1) return n.toFixed(4);
-  if (n > 0.0001) return n.toFixed(6);
+  if (n >= 10000)  return n.toFixed(1);
+  if (n >= 100)    return n.toFixed(2);
+  if (n >= 1)      return n.toFixed(3);
+  if (n >= 0.0001) return n.toFixed(6);
   return n.toFixed(8);
 }
 function fmtVol(n) {
@@ -792,173 +570,361 @@ function fmtVol(n) {
   if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
   return n.toFixed(0);
 }
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function showToast(msg, type='success') {
+function toast(msg, type='ok') {
+  const col = {ok:['rgba(16,185,129,0.15)','rgba(16,185,129,0.4)','var(--green)'],
+                err:['rgba(239,68,68,0.15)','rgba(239,68,68,0.4)','var(--red)'],
+                info:['rgba(34,211,238,0.15)','rgba(34,211,238,0.4)','var(--cyan)']}[type]||[];
   const t = document.createElement('div');
   t.innerHTML = msg;
-  const colors = {
-    success: ['rgba(16,185,129,0.15)','rgba(16,185,129,0.35)','var(--green)'],
-    error:   ['rgba(239,68,68,0.15)','rgba(239,68,68,0.35)','var(--red)'],
-    info:    ['rgba(34,211,238,0.15)','rgba(34,211,238,0.35)','var(--cyan)'],
-    warn:    ['rgba(245,158,11,0.15)','rgba(245,158,11,0.35)','var(--amber)'],
-  };
-  const [bg,br,col] = colors[type] || colors.info;
-  t.style.cssText = `position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(20px);background:${bg};border:1px solid ${br};border-radius:14px;padding:12px 22px;color:${col};font-size:13px;font-weight:600;z-index:9999;backdrop-filter:blur(16px);transition:all 0.3s;opacity:0;white-space:nowrap;max-width:90vw;text-align:center;`;
+  t.style.cssText=`position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(16px);
+    background:${col[0]};border:1px solid ${col[1]};border-radius:12px;padding:11px 22px;
+    color:${col[2]};font-size:13px;font-weight:600;z-index:9999;backdrop-filter:blur(16px);
+    opacity:0;transition:all 0.3s;white-space:nowrap;max-width:90vw;text-align:center;`;
   document.body.appendChild(t);
   requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(10px)'; setTimeout(()=>t.remove(),300); },2800);
+  setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 2600);
 }
 
-// ═══════════════════════════════════════════
-// WEBSOCKET BINANCE
-// ═══════════════════════════════════════════
+// ══════════════════════════════════════
+// WEBSOCKET BINANCE — MULTI STREAM
+// ══════════════════════════════════════
 function connectWS() {
-  if (ws) { try { ws.close(); } catch(e){} }
-  const streams = PAIRS.map(p=>`${p.toLowerCase()}usdt@ticker`).join('/');
-  ws = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams}`);
+  if (ws) { try { ws.close(); } catch(e){} ws = null; }
+
+  const streams = PAIRS.map(p => p.toLowerCase()+'usdt@ticker').join('/');
+  const url = 'wss://stream.binance.com:9443/stream?streams=' + streams;
+
+  ws = new WebSocket(url);
+
   ws.onopen = () => {
-    document.getElementById('last-update').textContent = 'Connecté ✓';
+    document.getElementById('ws-status').textContent = 'Connecté ✓';
+    document.getElementById('ws-status').style.color = 'var(--green)';
   };
+
   ws.onmessage = (e) => {
     try {
-      const d = JSON.parse(e.data);
-      if (!d.data) return;
-      const s = d.data;
-      const sym = s.s.replace('USDT','');
-      const price = parseFloat(s.c);
-      const change = parseFloat(s.P);
-      priceData[sym] = { price, change, high:parseFloat(s.h), low:parseFloat(s.l), vol:parseFloat(s.q) };
-      updateTickerItem(sym, price, change);
-      if (sym === currentPair) updateMainPrice();
+      const msg = JSON.parse(e.data);
+      const d = msg.data;
+      if (!d || !d.s) return;
+
+      const sym = d.s.replace('USDT','');
+      const price  = parseFloat(d.c);
+      const change = parseFloat(d.P);
+      const high   = parseFloat(d.h);
+      const low    = parseFloat(d.l);
+      const vol    = parseFloat(d.q);
+
+      priceData[sym] = { price, change, high, low, vol };
+
+      // Mise à jour ticker item
+      const el = document.getElementById('ti-'+sym);
+      if (el) {
+        const col = change >= 0 ? 'var(--green)' : 'var(--red)';
+        const arr = change >= 0 ? '▲' : '▼';
+        el.innerHTML =
+          `<span style="font-size:11px;color:#94A3B8;font-weight:700">${sym}</span>
+           <span style="font-size:11px;color:${col};font-weight:600">${fmt(price)}</span>
+           <span style="font-size:9px;color:${col}">${arr}${Math.abs(change).toFixed(2)}%</span>`;
+      }
+
+      if (sym === currentPair) updateMainPrice(sym);
+
       const now = new Date();
-      document.getElementById('last-update').textContent =
-        now.getHours().toString().padStart(2,'0')+':'+
-        now.getMinutes().toString().padStart(2,'0')+':'+
-        now.getSeconds().toString().padStart(2,'0');
-    } catch(err){}
+      document.getElementById('ws-status').textContent =
+        now.toTimeString().slice(0,8);
+    } catch(err) { console.warn('WS parse error', err); }
   };
+
   ws.onclose = () => {
-    document.getElementById('last-update').textContent = 'Reconnexion...';
-    setTimeout(connectWS, 3000);
+    document.getElementById('ws-status').textContent = 'Reconnexion...';
+    document.getElementById('ws-status').style.color = 'var(--amber)';
+    setTimeout(connectWS, 3500);
   };
+
   ws.onerror = () => { try { ws.close(); } catch(e){} };
 }
 
-function updateTickerItem(sym, price, change) {
-  const el = document.getElementById('t-'+sym.toLowerCase());
-  if (!el) return;
-  const col = change >= 0 ? 'var(--green)' : 'var(--red)';
-  const arrow = change >= 0 ? '▲' : '▼';
-  el.innerHTML = `<span style="color:${col};font-weight:700">${fmt(price)}</span><br><span style="color:${col};font-size:9px">${arrow}${Math.abs(change).toFixed(2)}%</span>`;
+function updateMainPrice(sym) {
+  const d = priceData[sym];
+  if (!d) return;
+  document.getElementById('main-price').textContent = ' $ ' + fmt(d.price);
+  document.getElementById('main-price').style.color = d.change >= 0 ? 'var(--cyan)' : 'var(--red)';
+
+  const badge = document.getElementById('change-badge');
+  const sign = d.change >= 0 ? '+' : '';
+  badge.textContent = sign + d.change.toFixed(2) + '%';
+  badge.style.color = d.change >= 0 ? 'var(--green)' : 'var(--red)';
+  badge.style.background = d.change >= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
+  badge.style.borderColor = d.change >= 0 ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)';
+
+  document.getElementById('high-v').textContent = ' $ ' + fmt(d.high);
+  document.getElementById('low-v').textContent  = ' $ ' + fmt(d.low);
+  document.getElementById('vol-v').textContent  = fmtVol(d.vol);
 }
 
-function updateMainPrice() {
-  const d = priceData[currentPair];
-  if (!d) return;
-  const priceEl = document.getElementById('main-price');
-  priceEl.textContent = ' $ '+fmt(d.price);
-  priceEl.classList.remove('price-flash');
-  void priceEl.offsetWidth;
-  priceEl.classList.add('price-flash');
-  const chg = d.change;
-  const badge = document.getElementById('change-badge');
-  badge.textContent = (chg>=0?'+':'')+chg.toFixed(2)+'%';
-  badge.style.color = chg >= 0 ? 'var(--green)' : 'var(--red)';
-  badge.style.background = chg >= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
-  badge.style.borderColor = chg >= 0 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)';
-  document.getElementById('high-val').textContent = ' $ '+fmt(d.high);
-  document.getElementById('low-val').textContent = ' $ '+fmt(d.low);
-  document.getElementById('vol-val').textContent = fmtVol(d.vol);
+// ══════════════════════════════════════
+// TICKER BAR — INIT
+// ══════════════════════════════════════
+function buildTicker() {
+  const wrap = document.getElementById('ticker-wrap');
+  wrap.innerHTML = '';
+  PAIRS.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'tick-item' + (p === currentPair ? ' active' : '');
+    div.id = 'tick-'+p;
+    div.onclick = () => switchPair(p);
+    div.innerHTML =
+      `<div id="ti- $ {p}" style="display:flex;flex-direction:column;align-items:center;gap:2px">
+        <span style="font-size:11px;color:#94A3B8;font-weight:700">${p}</span>
+        <span style="font-size:11px;color:#475569">...</span>
+       </div>`;
+    wrap.appendChild(div);
+  });
 }
 
 function switchPair(pair) {
   currentPair = pair;
-  document.getElementById('pair-badge').textContent = pair+'/USDT';
-  document.querySelectorAll('.ticker-item').forEach(el => el.classList.remove('active'));
-  const tick = document.getElementById('tick-'+pair);
-  if (tick) tick.classList.add('active');
-  updateMainPrice();
-  showToast('📊 Switchée sur '+pair+'/USDT','info');
+  document.getElementById('pair-badge').textContent = pair + '/USDT';
+  document.querySelectorAll('.tick-item').forEach(el => el.classList.remove('active'));
+  const t = document.getElementById('tick-'+pair);
+  if (t) t.classList.add('active');
+  if (priceData[pair]) updateMainPrice(pair);
+  else {
+    document.getElementById('main-price').textContent = '—';
+    document.getElementById('change-badge').textContent = '—';
+  }
+  toast('📊 ' + pair + '/USDT sélectionné', 'info');
 }
 
-// ═══════════════════════════════════════════
-// CAPITAL
-// ═══════════════════════════════════════════
-function updateCapitalDisplay() {
-  document.getElementById('capital-num').textContent = capital.toFixed(2);
-  document.getElementById('exposure-val').textContent = ' $ '+(capital*10).toFixed(2);
-  const pct = Math.min((capital/capitalGoal)*100,100);
-  document.getElementById('goal-bar').style.width = pct+'%';
-  document.getElementById('goal-pct').textContent = pct.toFixed(1)+'% vers objectif';
-  document.getElementById('goal-val').textContent = capitalGoal.toFixed(2);
-  const pnl = capital - capitalAtOpen;
-  const pnlEl = document.getElementById('pnl-today');
-  pnlEl.textContent = (pnl>=0?'+':'')+'$'+pnl.toFixed(2);
+// ══════════════════════════════════════
+// WALLET
+// ══════════════════════════════════════
+function updateWalletDisplay() {
+  document.getElementById('cap-num').textContent  = capital.toFixed(2);
+  document.getElementById('goal-num').textContent = capitalGoal.toFixed(2);
+  document.getElementById('expo-v').textContent   = ' $ ' + (capital * 10).toFixed(2);
+
+  const pct = capitalGoal > 0 ? Math.min((capital / capitalGoal) * 100, 100) : 0;
+  document.getElementById('goal-bar').style.width = pct + '%';
+  document.getElementById('goal-pct').textContent = pct.toFixed(1) + '%';
+
+  const pnl = capital - capitalBase;
+  const pnlEl = document.getElementById('pnl-val');
+  pnlEl.textContent = (pnl >= 0 ? '+' : '') + ' $ ' + pnl.toFixed(2);
   pnlEl.style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
-  updateStats();
-}
 
-function updateStats() {
-  const wins = tradeHistory.filter(t=>t.result==='win').length;
+  const wins  = tradeHistory.filter(t => t.r === 'win').length;
   const total = tradeHistory.length;
   document.getElementById('trade-count').textContent = total;
-  document.getElementById('win-rate').textContent = total>0 ? Math.round((wins/total)*100)+'%' : '—';
+  document.getElementById('win-rate').textContent = total > 0 ? Math.round((wins/total)*100)+'%' : '—';
 }
 
-// ═══════════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════════
-function saveApiKey() {
-  const v = document.getElementById('api-key-input').value.trim();
-  if (!v) { showToast('Clé vide','error'); return; }
-  geminiKey = v;
-  localStorage.setItem('geminiKey',v);
-  showToast('✅ Clé API enregistrée');
+function openWalletEdit() {
+  document.getElementById('w-cap').value  = capital;
+  document.getElementById('w-goal').value = capitalGoal;
+  document.getElementById('w-add').value  = '';
+  document.getElementById('wallet-overlay').style.display = 'flex';
+}
+function closeWallet() {
+  document.getElementById('wallet-overlay').style.display = 'none';
+}
+function saveWallet() {
+  const c = parseFloat(document.getElementById('w-cap').value);
+  const g = parseFloat(document.getElementById('w-goal').value);
+  if (!isNaN(c) && c >= 0) {
+    capital = c;
+    capitalBase = c;
+    localStorage.setItem('capital', c);
+    localStorage.setItem('capBase', c);
+  }
+  if (!isNaN(g) && g > 0) {
+    capitalGoal = g;
+    localStorage.setItem('goal', g);
+  }
+  updateWalletDisplay();
+  closeWallet();
+  toast('✅ Portefeuille mis à jour');
+}
+function addToCapital(sign) {
+  const v = parseFloat(document.getElementById('w-add').value);
+  if (isNaN(v) || v <= 0) { toast('Entrez un montant valide', 'err'); return; }
+  capital = Math.max(0, capital + sign * v);
+  localStorage.setItem('capital', capital);
+  document.getElementById('w-cap').value = capital.toFixed(2);
+  document.getElementById('w-add').value = '';
+  updateWalletDisplay();
+  toast((sign > 0 ? '➕ +' : '➖ -') + ' $ ' + v.toFixed(2), sign > 0 ? 'ok' : 'info');
 }
 
-async function testApiKey() {
-  showToast('🧪 Test en cours...','info');
+// ══════════════════════════════════════
+// OPPORTUNITÉS
+// ══════════════════════════════════════
+function buildOpps(list) {
+  const grid = document.getElementById('opp-grid');
+  grid.innerHTML = '';
+  const opps = list || STATIC_OPPS;
+  opps.forEach(o => {
+    const confColor = o.conf >= 85 ? 'var(--green)' : o.conf >= 75 ? 'var(--cyan)' : 'var(--amber)';
+    const dirColor  = o.dir === 'LONG' ? 'var(--green)' : 'var(--red)';
+    const dirBg     = o.dir === 'LONG' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)';
+    const dirBorder = o.dir === 'LONG' ? 'rgba(16,185,129,0.3)'  : 'rgba(239,68,68,0.3)';
+    const card = document.createElement('div');
+    card.className = 'opp-card';
+    card.onclick = () => openTradeModal(o);
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:17px;font-weight:800"> $ {esc(o.asset)}</span>
+        <span style="background:${dirBg};border:1px solid ${dirBorder};border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;color:${dirColor}">${o.dir}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+        <span style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);border-radius:6px;padding:2px 8px;font-size:12px;color:var(--cyan);font-weight:700">x${o.lever}</span>
+        <span style="font-size:20px;font-weight:800;color:${confColor}">${o.conf}%</span>
+        <span style="font-size:10px;color:#475569">conf.</span>
+      </div>
+      <div class="conf-bar"><div class="conf-fill" style="width:${o.conf}%;background:${confColor}"></div></div>
+      <div style="font-size:11px;color:#64748B;margin-top:8px;line-height:1.4">${esc(o.reason)}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════
+// TRADE MODAL
+// ══════════════════════════════════════
+function openTradeModal(opp) {
+  currentOpp = opp;
+  const price = priceData[opp.asset]?.price || 0;
+
+  document.getElementById('m-title').textContent = opp.asset + '/USDT';
+  document.getElementById('m-reason').textContent = opp.reason;
+
+  const dirEl = document.getElementById('m-dir');
+  dirEl.textContent = opp.dir;
+  dirEl.style.color = opp.dir === 'LONG' ? 'var(--green)' : 'var(--red)';
+  dirEl.style.background = opp.dir === 'LONG' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.12)';
+  dirEl.style.border = opp.dir === 'LONG' ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(239,68,68,0.3)';
+  dirEl.style.borderRadius = '20px'; dirEl.style.padding = '4px 12px';
+
+  document.getElementById('m-lev').textContent = 'x' + opp.lever;
+
+  let entry, tp, sl;
+  if (price > 0) {
+    entry = price;
+    if (opp.dir === 'LONG') {
+      tp = price * (1 + 0.04);
+      sl = price * (1 - 0.015);
+    } else {
+      tp = price * (1 - 0.04);
+      sl = price * (1 + 0.015);
+    }
+  }
+
+  document.getElementById('m-entry').textContent = price > 0 ? ' $ '+fmt(entry) : 'Marché';
+  document.getElementById('m-tp').textContent    = price > 0 ? ' $ '+fmt(tp)    : '+4%';
+  document.getElementById('m-sl').textContent    = price > 0 ? ' $ '+fmt(sl)    : '-1.5%';
+
+  const potProfit = capital * opp.lever * 0.04;
+  const maxRisk   = capital * opp.lever * 0.015;
+  document.getElementById('m-profit').textContent = '+ $ ' + potProfit.toFixed(2);
+  document.getElementById('m-risk').textContent   = '-$' + maxRisk.toFixed(2);
+  document.getElementById('m-conf').textContent   = opp.conf + '%';
+
+  document.getElementById('trade-overlay').style.display = 'flex';
+}
+function closeTradeModal() {
+  document.getElementById('trade-overlay').style.display = 'none';
+}
+function acceptTrade() {
+  if (!currentOpp) return;
+  tradeHistory.push({ asset: currentOpp.asset, dir: currentOpp.dir, lever: currentOpp.lever, ts: Date.now(), r: 'open' });
+  localStorage.setItem('trades', JSON.stringify(tradeHistory));
+  updateWalletDisplay();
+  closeTradeModal();
+  addAiMsg('⚡ Position ouverte sur **' + currentOpp.asset + '** x' + currentOpp.lever + ' (' + currentOpp.dir + '). SL à -1.5%, TP à +4%. Surveille le marché ! Risk management first 🎯');
+  if (vibrateEnabled && navigator.vibrate) navigator.vibrate([200,100,200]);
+}
+function refuseTrade() {
+  closeTradeModal();
+  toast('Trade refusé', 'info');
+}
+
+// ══════════════════════════════════════
+// SIGNAL BANNER
+// ══════════════════════════════════════
+function showSignal(msg) {
+  document.getElementById('sig-text').textContent = msg || 'Opportunité haute confiance identifiée';
+  document.getElementById('sig-banner').classList.add('show');
+  if (vibrateEnabled && navigator.vibrate) navigator.vibrate([300,100,300,100,300]);
+  setTimeout(closeBanner, 9000);
+}
+function closeBanner() {
+  document.getElementById('sig-banner').classList.remove('show');
+}
+
+// ══════════════════════════════════════
+// GEMINI API — VERSION CORRIGÉE
+// ══════════════════════════════════════
+const SYSTEM_PROMPT = `Tu es l'IA centrale d'une app de trading crypto "Smart AI". Analyste stratégique, direct, agressif.
+
+RÈGLES :
+- Sois concis et percutant (max 200 mots)
+- Propose toujours : Direction LONG/SHORT, Levier, Entrée, TP, SL, Confiance %
+- Tu PEUX suggérer des leviers x10 à x15 si setup exceptionnel
+- Prends en compte le contexte macro mondial
+- Utilise des emojis pour structurer
+- Si signal confiance > 85%, inclus le texte exact : VIBRATE_SIGNAL
+- Réponds TOUJOURS en français`;
+
+async function callGemini(userMsg) {
+  if (!geminiKey) {
+    toast('⚠️ Clé API manquante — configure dans paramètres (5× clic titre)', 'err');
+    return null;
+  }
+
+  const body = {
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: SYSTEM_PROMPT + '\n\n---\nCapital trader:  $ ' + capital.toFixed(2) + '\nCrypto active: ' + currentPair + '/USDT\nPrix actuel: ' + (priceData[currentPair]?.price ? ' $ '+fmt(priceData[currentPair].price) : 'N/A') + '\n\nQuestion: ' + userMsg }]
+      }
+    ],
+    generationConfig: {
+      temperature: 0.9,
+      maxOutputTokens: 512
+    }
+  };
+
   try {
-    const r = await callGemini('Réponds juste "OK GEMINI"');
-    if (r) showToast('✅ Clé API fonctionnelle !','success');
-    else showToast('❌ Échec du test','error');
-  } catch { showToast('❌ Erreur API','error'); }
+    const res = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=' + geminiKey,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!res.ok) {
+      const errData = await res.json().catch(()=>({}));
+      const errMsg = errData?.error?.message || 'Erreur HTTP ' + res.status;
+      toast('❌ Gemini: ' + errMsg, 'err');
+      return null;
+    }
+
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) { toast('❌ Réponse vide de Gemini', 'err'); return null; }
+    return text;
+
+  } catch (err) {
+    toast('❌ Erreur réseau: ' + err.message, 'err');
+    return null;
+  }
 }
 
-function saveCapital() {
-  const v = parseFloat(document.getElementById('capital-input').value);
-  if (isNaN(v) || v < 0) { showToast('Valeur invalide','error'); return; }
-  capital = v;
-  localStorage.setItem('capital',v);
-  updateCapitalDisplay();
-  showToast('✅ Capital :  $ '+v.toFixed(2));
-  closeSettings();
-}
+// ══════════════════════════════════════
+// CHAT
+// ══════════════
 
-function addToCapital() {
-  const v = parseFloat(document.getElementById('capital-input').value);
-  if (isNaN(v)) { showToast('Valeur invalide','error'); return; }
-  capital += v;
-  localStorage.setItem('capital',capital);
-  document.getElementById('capital-input').value = capital.toFixed(2);
-  updateCapitalDisplay();
-  showToast('➕ + $ '+v.toFixed(2)+' ajouté');
-}
-
-function saveGoal() {
-  const v = parseFloat(document.getElementById('goal-input').value);
-  if (isNaN(v) || v <= 0) { showToast('Objectif invalide','error'); return; }
-  capitalGoal = v;
-  localStorage.setItem('capitalGoal',v);
-  updateCapitalDisplay();
-  showToast('🎯 Objectif : $'+v.toFixed(2));
-}
-
-function toggleAutoScan(enabled) {
-  autoScanEnabled = enabled;
-  localStorage.setItem('autoscan', enabled);
-  if (enabled) {
-    autoScanInterval = setInterval(requestAiScan, 5*60*1000);
-    showToast('🤖 Auto-scan activé (5 min)','info');
-  
