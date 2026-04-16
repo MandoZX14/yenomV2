@@ -95,7 +95,7 @@ body{
 }
 .tbar::-webkit-scrollbar{display:none}
 .titem{
-  flex-shrink:0;min-width:82px;
+  flex-shrink:0;min-width:82px;w
   background:rgba(0,255,212,.03);
   border:1px solid rgba(0,255,212,.07);
   border-radius:10px;padding:8px 10px;
@@ -1381,10 +1381,12 @@ function quickMsg(msg){ document.getElementById('ci').value=msg; sendChat(); }
 function toggleBlur(){ blurOn=!blurOn; document.body.classList.toggle('blured',blurOn); document.getElementById('eye-btn').textContent=blurOn?'🙈 Visible':'👁 Discret'; }
 
 // Le cœur de l'API (Version Stable V1)
+// Le cœur de l'API (Compatibilité Maximale)
 async function callGemini(userMsg) {
-  if (!apiKey) throw new Error('Clé API manquante (doit commencer par AIzaSy)');
+  if (!apiKey) throw new Error('Clé API manquante');
 
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  // ⚠️ LE FIX EST ICI : On utilise "gemini-pro" qui marche sur TOUS les comptes
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
   const promptText = buildSystemPrompt() + "\n\nDemande de l'utilisateur : " + userMsg;
 
   const payload = {
