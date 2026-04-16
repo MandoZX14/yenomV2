@@ -6,270 +6,274 @@
 <title>⚡ SNIPER TRADE V4</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
 <style>
-/* ═══════════════════════════════════════════════════
-   DESIGN SYSTEM — CYBER TERMINAL
-═══════════════════════════════════════════════════ */
 :root{
-  --bg:       #060B14;
-  --bg1:      #0A1220;
-  --bg2:      #0E1A2E;
-  --bg3:      #142038;
-  --cyan:     #00FFD4;
-  --cyan2:    #00C9A7;
-  --green:    #00FF88;
-  --green2:   #00C968;
-  --red:      #FF3D6E;
-  --red2:     #CC1F4A;
-  --amber:    #FFB800;
-  --purple:   #9D6EFF;
-  --pink:     #FF4DCA;
-  --txt:      #D4E2F4;
-  --txt2:     #6B8AAD;
-  --txt3:     #2A3F5A;
-  --border:   rgba(0,255,212,.08);
-  --glow-c:   rgba(0,255,212,.15);
-  --glow-g:   rgba(0,255,136,.12);
+  --bg:#060B14;--bg1:#0A1220;--bg2:#0E1A2E;--bg3:#142038;
+  --cyan:#00FFD4;--cyan2:#00C9A7;--green:#00FF88;--green2:#00C968;
+  --red:#FF3D6E;--red2:#CC1F4A;--amber:#FFB800;--purple:#9D6EFF;
+  --pink:#FF4DCA;--txt:#D4E2F4;--txt2:#6B8AAD;--txt3:#2A3F5A;
+  --border:rgba(0,255,212,.08);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow-x:hidden}
-
 body{
-  background:var(--bg);
-  color:var(--txt);
+  background:var(--bg);color:var(--txt);
   font-family:'Outfit',sans-serif;
-  font-size:14px;
-  /* Animated cyber grid background */
   background-image:
-    linear-gradient(rgba(0,255,212,.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,212,.025) 1px,transparent 1px),
-    radial-gradient(ellipse 80% 60% at 20% 20%,rgba(0,255,212,.06) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 80%,rgba(157,110,255,.07) 0%,transparent 60%),
-    radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,255,136,.03) 0%,transparent 70%);
-  background-size:40px 40px,40px 40px,100% 100%,100% 100%,100% 100%;
+    radial-gradient(ellipse at 10% 10%,rgba(0,255,212,.06) 0%,transparent 50%),
+    radial-gradient(ellipse at 90% 90%,rgba(157,110,255,.06) 0%,transparent 50%);
 }
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:2px;height:2px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--cyan2);border-radius:2px;opacity:.3}
-
-/* ── GLASS CARDS ── */
+/* GLASS */
 .glass{
-  background:rgba(10,18,32,.8);
-  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-  border:1px solid var(--border);
-  border-radius:16px;
-  position:relative;
-  overflow:hidden;
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--border);border-radius:18px;
 }
-.glass::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(0,255,212,.3),transparent);
-  pointer-events:none;
-}
-.card-c{box-shadow:0 0 40px rgba(0,255,212,.05),0 4px 24px rgba(0,0,0,.4)}
-.card-g{box-shadow:0 0 40px rgba(0,255,136,.05),0 4px 24px rgba(0,0,0,.4)}
-.card-p{box-shadow:0 0 40px rgba(157,110,255,.05),0 4px 24px rgba(0,0,0,.4)}
-.card-r{box-shadow:0 0 40px rgba(255,61,110,.05),0 4px 24px rgba(0,0,0,.4)}
+/* NEON */
+.nc{color:var(--cyan);text-shadow:0 0 20px rgba(0,255,212,.4)}
+.ng{color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.35)}
+.nr{color:var(--red);text-shadow:0 0 15px rgba(255,61,110,.35)}
+.na{color:var(--amber);text-shadow:0 0 15px rgba(255,184,0,.35)}
+.np{color:var(--purple);text-shadow:0 0 20px rgba(157,110,255,.4)}
 
-/* ── NEON TEXT ── */
-.nc{color:var(--cyan);text-shadow:0 0 20px rgba(0,255,212,.5),0 0 40px rgba(0,255,212,.2)}
-.ng{color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.5),0 0 40px rgba(0,255,136,.2)}
-.nr{color:var(--red);text-shadow:0 0 20px rgba(255,61,110,.5)}
-.np{color:var(--purple);text-shadow:0 0 20px rgba(157,110,255,.5)}
-.na{color:var(--amber);text-shadow:0 0 15px rgba(255,184,0,.4)}
-
-/* ── LIVE DOT ── */
+/* LIVE DOT */
 .ldot{
-  display:inline-block;width:6px;height:6px;
-  background:var(--green);border-radius:50%;
-  box-shadow:0 0 8px var(--green),0 0 16px rgba(0,255,136,.5);
-  animation:pulse 2s ease-in-out infinite;
+  width:7px;height:7px;background:var(--green);border-radius:50%;
+  box-shadow:0 0 10px var(--green);display:inline-block;
+  animation:ld 2s ease-in-out infinite;
 }
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+@keyframes ld{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 
-/* ── TICKER BAR ── */
-.tbar{
-  display:flex;gap:6px;overflow-x:auto;
-  padding:10px 14px;scrollbar-width:none;
-}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,255,212,.2);border-radius:10px}
+
+/* TICKER */
+.tbar{display:flex;gap:8px;overflow-x:auto;padding:10px 14px;scrollbar-width:none}
 .tbar::-webkit-scrollbar{display:none}
 .titem{
-  flex-shrink:0;min-width:82px;w
-  background:rgba(0,255,212,.03);
-  border:1px solid rgba(0,255,212,.07);
-  border-radius:10px;padding:8px 10px;
-  text-align:center;cursor:pointer;
-  transition:all .18s;
-  display:flex;flex-direction:column;align-items:center;gap:1px;
+  flex-shrink:0;min-width:82px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;padding:9px 11px;cursor:pointer;
+  transition:all .2s;text-align:center;
 }
-.titem:hover{background:rgba(0,255,212,.07);transform:translateY(-2px);border-color:rgba(0,255,212,.2)}
-.titem.on{
-  border-color:rgba(0,255,212,.4);
-  background:rgba(0,255,212,.08);
-  box-shadow:0 0 20px rgba(0,255,212,.1),inset 0 0 10px rgba(0,255,212,.05);
+.titem.on,.titem:hover{
+  background:rgba(0,255,212,.08);border-color:rgba(0,255,212,.3);
+  box-shadow:0 0 20px rgba(0,255,212,.1);
+}
+.tsym{font-size:11px;font-weight:700;font-family:'Space Mono',monospace;color:var(--cyan)}
+.tprice{font-size:11px;font-weight:600;color:var(--txt);margin-top:2px}
+.tch{font-size:10px;font-weight:700;margin-top:2px}
+.tch.up{color:var(--green)}.tch.dn{color:var(--red)}
+
+/* HEADER */
+.hdr{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,11,20,.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--cyan);cursor:pointer}
+.logo span{color:var(--txt2);font-size:11px;display:block;margin-top:2px;font-family:'Outfit',sans-serif}
+
+/* WALLET CARD */
+.wcard{
+  background:linear-gradient(135deg,rgba(0,255,212,.07) 0%,rgba(157,110,255,.05) 100%);
+  border:1px solid rgba(0,255,212,.12);border-radius:18px;padding:18px;
+  position:relative;overflow:hidden;
+}
+.wcard::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:100px;height:100px;
+  background:radial-gradient(circle,rgba(0,255,212,.1) 0%,transparent 70%);
+  pointer-events:none;
 }
 
-/* ── OPP CARDS ── */
-.ocard{
-  background:rgba(10,18,32,.9);
-  border:1px solid rgba(0,255,212,.07);
-  border-radius:14px;padding:14px;cursor:pointer;
-  transition:all .2s;position:relative;overflow:hidden;
+/* PRICE DISPLAY */
+.main-price{
+  font-size:32px;font-weight:900;
+  font-family:'Space Mono',monospace;
+  color:var(--cyan);
+  text-shadow:0 0 30px rgba(0,255,212,.5);
+  letter-spacing:-1px;
 }
-.ocard::after{
-  content:'';position:absolute;top:0;left:-100%;width:100%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
-  transition:left .5s;
-}
-.ocard:hover{transform:translateY(-3px);border-color:rgba(0,255,212,.25);
-  box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 20px rgba(0,255,212,.06)}
-.ocard:hover::after{left:100%}
-.ocard:active{transform:scale(.97)}
 
-/* ── CHAT MSGS ── */
-.cmsg-user{
-  align-self:flex-end;
-  background:linear-gradient(135deg,rgba(0,255,212,.12),rgba(157,110,255,.08));
-  border:1px solid rgba(0,255,212,.18);
-  border-radius:16px 16px 3px 16px;
-  padding:10px 14px;max-width:82%;font-size:13px;line-height:1.5;
+/* SECTION LABEL */
+.slabel{
+  font-size:10px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--txt2);
+  font-family:'Space Mono',monospace;
 }
+
+/* BUTTONS */
+.btn-p{
+  background:linear-gradient(135deg,var(--cyan),var(--cyan2));
+  color:#060B14;font-weight:700;border:none;border-radius:12px;
+  padding:12px 20px;cursor:pointer;font-size:13px;width:100%;
+  transition:all .2s;font-family:'Outfit',sans-serif;
+}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(0,255,212,.3)}
+.btn-p:active{transform:translateY(0)}
+.btn-d{
+  background:rgba(255,255,255,.04);color:var(--txt);
+  border:1px solid rgba(255,255,255,.1);border-radius:12px;
+  padding:12px 20px;cursor:pointer;font-size:13px;width:100%;
+  transition:all .2s;font-family:'Outfit',sans-serif;
+}
+.btn-sm{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;padding:6px 10px;cursor:pointer;font-size:11px;
+  color:var(--txt);transition:all .15s;font-family:'Outfit',sans-serif;
+}
+.btn-sm:hover{background:rgba(255,255,255,.1)}
+.btn-c{border-color:rgba(0,255,212,.25);color:var(--cyan)}
+.btn-g{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.25);color:var(--green)}
+.btn-r{background:rgba(255,61,110,.08);border-color:rgba(255,61,110,.25);color:var(--red)}
+.btn-a{background:rgba(255,184,0,.08);border-color:rgba(255,184,0,.25);color:var(--amber)}
+.btn-pu{background:rgba(157,110,255,.08);border-color:rgba(157,110,255,.25);color:var(--purple)}
+
+/* STAT ROW */
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.stat-row:last-child{border-bottom:none}
+.stat-lbl{font-size:11px;color:var(--txt2)}
+.stat-val{font-size:12px;font-weight:700;font-family:'Space Mono',monospace}
+
+/* OPPS */
+.opp-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:14px;
+  transition:all .2s;cursor:pointer;
+}
+.opp-card:hover{border-color:rgba(0,255,212,.2);background:rgba(0,255,212,.04)}
+.opp-card.hot{border-color:rgba(255,184,0,.2);background:rgba(255,184,0,.03)}
+
+/* CHAT */
 .cmsg-ai{
-  align-self:flex-start;
-  background:rgba(14,26,46,.9);
-  border:1px solid rgba(0,255,212,.08);
-  border-radius:16px 16px 16px 3px;
-  padding:10px 14px;max-width:90%;font-size:13px;line-height:1.6;color:#A8C0DC;
+  background:rgba(0,255,212,.04);
+  border:1px solid rgba(0,255,212,.1);
+  border-radius:14px 14px 14px 4px;
+  padding:12px 14px;font-size:13px;line-height:1.6;
+  max-width:92%;
 }
-.cmsg-ai b,.cmsg-ai strong{color:var(--cyan)}
-.cmsg-ai code{
-  background:rgba(0,255,212,.08);color:var(--cyan);
-  padding:1px 6px;border-radius:4px;font-family:'Space Mono',monospace;font-size:11px;
+.cmsg-user{
+  background:rgba(157,110,255,.1);
+  border:1px solid rgba(157,110,255,.2);
+  border-radius:14px 14px 4px 14px;
+  padding:10px 14px;font-size:13px;
+  max-width:85%;align-self:flex-end;margin-left:auto;
 }
-
-/* ── INPUT ── */
 .cinput{
   display:flex;gap:8px;align-items:center;
-  background:rgba(0,255,212,.03);
-  border:1px solid rgba(0,255,212,.1);
-  border-radius:12px;padding:6px 6px 6px 14px;transition:all .2s;
-}
-.cinput:focus-within{border-color:rgba(0,255,212,.35);box-shadow:0 0 20px rgba(0,255,212,.05)}
-.cinput input{flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:13px;font-family:'Outfit',sans-serif}
-.cinput input::placeholder{color:var(--txt3)}
-
-/* ── SEND BTN ── */
-.sbtn{
-  background:linear-gradient(135deg,var(--cyan),var(--purple));
-  border:none;border-radius:9px;width:36px;height:36px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:#000;flex-shrink:0;font-weight:900;
-  transition:all .2s;box-shadow:0 0 20px rgba(0,255,212,.3);
-}
-.sbtn:hover{transform:scale(1.1);box-shadow:0 0 30px rgba(0,255,212,.5)}
-.sbtn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
-
-/* ── BUTTONS ── */
-.btn-p{
-  background:linear-gradient(135deg,rgba(0,255,212,.15),rgba(157,110,255,.12));
-  color:var(--cyan);border:1px solid rgba(0,255,212,.25);
-  border-radius:10px;padding:11px 18px;cursor:pointer;
-  font-size:13px;font-weight:700;transition:all .2s;width:100%;
-  font-family:'Outfit',sans-serif;letter-spacing:.5px;
-}
-.btn-p:hover{background:linear-gradient(135deg,rgba(0,255,212,.25),rgba(157,110,255,.2));
-  box-shadow:0 0 20px rgba(0,255,212,.15)}
-.btn-d{
-  background:rgba(255,61,110,.08);color:var(--red);
-  border:1px solid rgba(255,61,110,.2);border-radius:10px;
-  padding:11px 18px;cursor:pointer;font-size:13px;font-weight:700;
-  transition:all .2s;width:100%;font-family:'Outfit',sans-serif;
-}
-.btn-d:hover{background:rgba(255,61,110,.16);box-shadow:0 0 20px rgba(255,61,110,.1)}
-
-.btn-sm{
   background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:8px;padding:6px 12px;cursor:pointer;
-  font-size:11px;font-weight:600;color:var(--txt2);
-  transition:all .18s;font-family:'Outfit',sans-serif;letter-spacing:.3px;white-space:nowrap;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:8px 8px 8px 14px;
+  transition:border-color .2s;
 }
-.btn-sm:hover{background:rgba(255,255,255,.08);color:var(--txt)}
-.btn-c{background:rgba(0,255,212,.07);border-color:rgba(0,255,212,.2);color:var(--cyan)}
-.btn-c:hover{background:rgba(0,255,212,.14)}
-.btn-g{background:rgba(0,255,136,.07);border-color:rgba(0,255,136,.2);color:var(--green)}
-.btn-g:hover{background:rgba(0,255,136,.14)}
-.btn-r{background:rgba(255,61,110,.07);border-color:rgba(255,61,110,.2);color:var(--red)}
-.btn-r:hover{background:rgba(255,61,110,.14)}
-.btn-pu{background:rgba(157,110,255,.07);border-color:rgba(157,110,255,.2);color:var(--purple)}
-.btn-pu:hover{background:rgba(157,110,255,.14)}
-.btn-a{background:rgba(255,184,0,.07);border-color:rgba(255,184,0,.2);color:var(--amber)}
-.btn-a:hover{background:rgba(255,184,0,.14)}
+.cinput:focus-within{border-color:rgba(0,255,212,.3);box-shadow:0 0 20px rgba(0,255,212,.05)}
+.cinput input{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--txt);font-size:13px;font-family:'Outfit',sans-serif;
+}
+.cinput input::placeholder{color:var(--txt3)}
+.sbtn{
+  background:linear-gradient(135deg,var(--cyan),var(--cyan2));
+  border:none;border-radius:10px;width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#060B14;flex-shrink:0;
+  transition:all .2s;
+}
+.sbtn:hover{transform:scale(1.08);box-shadow:0 4px 15px rgba(0,255,212,.3)}
+.sbtn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-/* ── OVERLAYS ── */
+/* TYPING DOTS */
+.tdot{
+  display:inline-block;width:6px;height:6px;background:var(--cyan);
+  border-radius:50%;margin:0 2px;
+  animation:td 1.2s ease-in-out infinite;
+}
+.tdot:nth-child(2){animation-delay:.2s}
+.tdot:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* TRADE MODAL */
 .ov{
-  position:fixed;inset:0;z-index:500;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(12px);
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(10px);
   display:flex;align-items:flex-end;justify-content:center;
 }
 .sheet{
-  width:100%;max-width:560px;
-  background:#0A1628;
+  background:var(--bg1);
   border:1px solid rgba(0,255,212,.12);
-  border-top:2px solid rgba(0,255,212,.25);
-  border-radius:20px 20px 0 0;
-  padding:20px 20px 44px;
+  border-radius:24px 24px 0 0;
+  padding:24px 20px 32px;
+  width:100%;max-width:480px;
+  animation:su .3s cubic-bezier(.34,1.4,.64,1);
   max-height:92vh;overflow-y:auto;
-  animation:slideup .3s cubic-bezier(.34,1.4,.64,1);
 }
-@keyframes slideup{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
-.handle{
-  width:36px;height:3px;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  border-radius:2px;margin:0 auto 20px;opacity:.4;
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.handle{width:36px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 18px}
+
+/* JOURNAL */
+.jrow{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;padding:11px 13px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:12px;
 }
 
-/* ── FORM FIELDS ── */
-.flabel{font-size:10px;color:var(--txt2);font-weight:700;letter-spacing:1px;display:block;margin-bottom:5px;text-transform:uppercase;font-family:'Space Mono',monospace}
-.finput{
-  width:100%;background:rgba(0,255,212,.04);
-  border:1px solid rgba(0,255,212,.1);border-radius:10px;
-  padding:10px 13px;color:var(--txt);font-size:13px;outline:none;
-  transition:all .2s;font-family:'Outfit',sans-serif;
-}
-.finput:focus{border-color:rgba(0,255,212,.4);box-shadow:0 0 16px rgba(0,255,212,.05)}
-.finput::placeholder{color:var(--txt3)}
+/* RING */
+.ring-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.06);stroke-width:6}
+.ring-fill{fill:none;stroke-width:6;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .6s ease}
 
-/* ── PIN ── */
+/* TOAST */
+.toast{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);
+  background:rgba(10,18,32,.95);border:1px solid rgba(0,255,212,.2);
+  border-radius:12px;padding:10px 18px;font-size:12px;font-weight:600;
+  z-index:999;transition:all .3s;opacity:0;pointer-events:none;
+  white-space:nowrap;max-width:90vw;
+  backdrop-filter:blur(20px);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:rgba(0,255,136,.3);color:var(--green)}
+.toast.err{border-color:rgba(255,61,110,.3);color:var(--red)}
+.toast.warn{border-color:rgba(255,184,0,.3);color:var(--amber)}
+.toast.info{border-color:rgba(0,255,212,.3);color:var(--cyan)}
+
+/* SIGNAL BANNER */
+.sig-banner{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  background:linear-gradient(135deg,rgba(255,184,0,.95),rgba(255,61,110,.95));
+  padding:14px 20px;text-align:center;font-weight:700;font-size:13px;
+  color:#000;display:flex;align-items:center;justify-content:space-between;
+  transform:translateY(-100%);transition:transform .4s cubic-bezier(.34,1.4,.64,1);
+}
+.sig-banner.show{transform:translateY(0)}
+
+/* PIN */
 .pin-ov{
   position:fixed;inset:0;z-index:600;
-  background:rgba(0,0,0,.9);backdrop-filter:blur(20px);
+  background:rgba(0,0,0,.92);backdrop-filter:blur(20px);
   display:flex;align-items:center;justify-content:center;padding:20px;
 }
 .pin-box{
-  background:#0A1628;
-  border:1px solid rgba(0,255,212,.15);
-  border-radius:20px;padding:28px 22px;
-  width:100%;max-width:290px;text-align:center;
+  background:#0A1628;border:1px solid rgba(0,255,212,.15);
+  border-radius:22px;padding:28px 22px;
+  width:100%;max-width:280px;text-align:center;
   animation:scalein .25s cubic-bezier(.34,1.4,.64,1);
   box-shadow:0 0 60px rgba(0,255,212,.1);
 }
 @keyframes scalein{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
 .pdots{display:flex;justify-content:center;gap:14px;margin:16px 0}
-.pdot{
-  width:12px;height:12px;border-radius:50%;
-  border:2px solid rgba(0,255,212,.2);
-  transition:all .15s;
-}
-.pdot.on{
-  background:var(--cyan);border-color:var(--cyan);
-  box-shadow:0 0 12px rgba(0,255,212,.8),0 0 24px rgba(0,255,212,.3);
-}
+.pdot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(0,255,212,.2);transition:all .15s}
+.pdot.on{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 12px rgba(0,255,212,.8)}
 .pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
 .pkey{
-  background:rgba(0,255,212,.04);
-  border:1px solid rgba(0,255,212,.1);
+  background:rgba(0,255,212,.04);border:1px solid rgba(0,255,212,.1);
   border-radius:10px;padding:14px;color:var(--txt);
   font-size:18px;font-weight:700;cursor:pointer;transition:all .12s;
   font-family:'Space Mono',monospace;
@@ -277,412 +281,292 @@ body{
 .pkey:hover{background:rgba(0,255,212,.1);border-color:rgba(0,255,212,.3)}
 .pkey:active{transform:scale(.88);background:rgba(0,255,212,.2)}
 
-/* ── SIGNAL BANNER ── */
-.sigbar{
-  position:fixed;top:0;left:0;right:0;z-index:1000;
-  transform:translateY(-100%);transition:transform .4s cubic-bezier(.34,1.4,.64,1);
+/* FORM */
+.flabel{font-size:11px;color:var(--txt2);font-weight:700;letter-spacing:1px;display:block;margin-bottom:6px}
+.finput{
+  width:100%;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:11px 14px;color:var(--txt);font-size:14px;outline:none;
+  font-family:'Outfit',sans-serif;transition:border-color .2s;
 }
-.sigbar.show{transform:translateY(0)}
-.sigbar-inner{
-  background:linear-gradient(135deg,rgba(0,255,212,.18),rgba(157,110,255,.15));
-  backdrop-filter:blur(30px);
-  border-bottom:1px solid rgba(0,255,212,.35);
-  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+.finput:focus{border-color:rgba(0,255,212,.3)}
+
+/* BLUR MODE */
+.blured .blur-hide{filter:blur(8px);pointer-events:none;user-select:none}
+
+/* BOTTOM NAV */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(6,11,20,.95);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex;padding:8px 4px 20px;
+  max-width:480px;margin:0 auto;
 }
-
-/* ── TOGGLE ── */
-.tog{position:relative;display:inline-block;width:42px;height:24px}
-.tog input{opacity:0;width:0;height:0}
-.togsl{
-  position:absolute;cursor:pointer;inset:0;
-  background:rgba(255,255,255,.07);border-radius:24px;transition:.25s;
-  border:1px solid rgba(255,255,255,.12);
+@media(min-width:480px){.bnav{left:50%;right:auto;transform:translateX(-50%);width:480px;border-radius:20px 20px 0 0}}
+.bnav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 4px;cursor:pointer;border:none;background:none;
+  color:var(--txt2);transition:color .2s;font-size:9px;font-weight:700;
+  letter-spacing:.5px;font-family:'Outfit',sans-serif;
 }
-.togsl::before{
-  position:absolute;content:'';height:18px;width:18px;
-  left:2px;bottom:2px;background:var(--txt3);border-radius:50%;transition:.25s;
-}
-input:checked+.togsl{background:rgba(0,255,212,.25);border-color:rgba(0,255,212,.5)}
-input:checked+.togsl::before{transform:translateX(18px);background:var(--cyan);box-shadow:0 0 8px rgba(0,255,212,.8)}
+.bnav-btn.on{color:var(--cyan)}
+.bnav-btn svg{transition:transform .2s}
+.bnav-btn:hover svg{transform:translateY(-2px)}
+.bnav-btn.on svg{filter:drop-shadow(0 0 6px rgba(0,255,212,.6))}
 
-/* ── TYPING DOTS ── */
-.tdot{
-  display:inline-block;width:5px;height:5px;
-  background:var(--cyan);border-radius:50%;margin:0 2px;
-  animation:tblink 1.2s ease-in-out infinite;
-}
-.tdot:nth-child(2){animation-delay:.2s}
-.tdot:nth-child(3){animation-delay:.4s}
-@keyframes tblink{0%,80%,100%{opacity:.15;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+/* SECTIONS */
+.section{display:none;animation:fi .25s ease}
+.section.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* ── BLUR MODE ── */
-.blurtgt{transition:filter .3s}
-.blured .blurtgt{filter:blur(14px);user-select:none;pointer-events:none}
-
-/* ── CONF BAR ── */
-.cbar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:8px}
-.cfill{height:100%;border-radius:2px;transition:width 1.4s cubic-bezier(.25,.8,.25,1)}
-
-/* ── STAT MINI ── */
-.sitem{
-  background:rgba(0,255,212,.03);
-  border:1px solid rgba(0,255,212,.07);
-  border-radius:10px;padding:10px;text-align:center;
+/* MKT OVERVIEW */
+.mkt-chip{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;padding:8px 10px;text-align:center;
 }
 
-/* ── SECTION LABEL ── */
-.slabel{
-  font-size:9px;color:var(--txt2);font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;
-  font-family:'Space Mono',monospace;
+/* LEVERAGE SLIDER */
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:4px;
+  background:rgba(255,255,255,.1);border-radius:2px;outline:none;
 }
-
-/* ── DIVIDER ── */
-.div-line{height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,212,.15),transparent);margin:16px 0}
-
-/* ── PROGRESS RING ── */
-.ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center}
-.ring{transform:rotate(-90deg)}
-.ring-bg{fill:none;stroke:rgba(255,255,255,.06);stroke-width:5}
-.ring-fill{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.25,.8,.25,1)}
-
-/* ── TOAST ── */
-.tst{
-  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
-  backdrop-filter:blur(24px);border-radius:12px;padding:10px 20px;
-  font-size:13px;font-weight:600;z-index:9999;opacity:0;
-  transition:all .25s;white-space:nowrap;max-width:88vw;text-align:center;
-  font-family:'Outfit',sans-serif;pointer-events:none;
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;
+  background:var(--cyan);border-radius:50%;cursor:pointer;
+  box-shadow:0 0 10px rgba(0,255,212,.5);
 }
-
-/* ── JOURNAL ENTRY ── */
-.jentry{
-  background:rgba(0,255,212,.03);border:1px solid rgba(0,255,212,.07);
-  border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;
-}
-.jtag{
-  font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;
-  font-family:'Space Mono',monospace;letter-spacing:.5px;
-}
-
-/* ── RESPONSIVE ── */
-@media(max-width:640px){.g2{grid-template-columns:1fr!important}}
-@media(max-width:400px){.opp-grid{grid-template-columns:1fr!important}}
-
-/* ── MONO PRICE ── */
-.mono{font-family:'Space Mono',monospace}
-
-/* ── ANIMATED BORDERS ── */
-@keyframes borderAnim{
-  0%{border-color:rgba(0,255,212,.07)}
-  50%{border-color:rgba(0,255,212,.2)}
-  100%{border-color:rgba(0,255,212,.07)}
-}
-
-/* ── HEAT BADGE ── */
-.heat{
-  display:inline-flex;align-items:center;gap:4px;
-  background:rgba(255,184,0,.08);border:1px solid rgba(255,184,0,.2);
-  border-radius:6px;padding:2px 8px;font-size:10px;color:var(--amber);font-weight:700;
-}
-
-/* ── NOTIFICATION DOT ── */
-.notif-dot{
-  position:absolute;top:-3px;right:-3px;
-  width:7px;height:7px;background:var(--red);border-radius:50%;
-  box-shadow:0 0 6px var(--red);animation:pulse 2s infinite;
-}
-
-/* ─ LOCK ANIM ─ */
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.shake{animation:shake .35s ease}
-
-/* ─ NUMBER TICKER ANIM ─ */
-@keyframes numFlash{0%,100%{opacity:1}50%{opacity:.4}}
-.flash{animation:numFlash .3s ease}
 </style>
 </head>
 <body>
 
-<div class="sigbar" id="sig-banner">
-  <div class="sigbar-inner">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="font-size:22px">⚡</div>
-      <div>
-        <div style="font-size:11px;font-weight:800;color:var(--cyan);letter-spacing:2.5px;font-family:'Space Mono',monospace">SIGNAL SNIPER</div>
-        <div id="sig-txt" style="font-size:12px;color:var(--txt2);margin-top:1px">Opportunité haute confiance détectée</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <span id="sig-timer" style="font-size:11px;color:var(--txt2);font-family:'Space Mono',monospace">10s</span>
-      <button onclick="closeSig()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 9px;color:var(--txt2);cursor:pointer;font-size:12px;font-family:'Outfit',sans-serif">✕</button>
-    </div>
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- SIGNAL BANNER -->
+<div id="sig-banner" class="sig-banner">
+  <span>⚡ SIGNAL FORT DÉTECTÉ</span>
+  <span id="sig-txt" style="flex:1;margin:0 12px;text-align:left"></span>
+  <button onclick="closeSig()" style="background:none;border:none;color:#000;font-size:18px;cursor:pointer">×</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo" onclick="titleClick()">
+    ⚡ SNIPER<span>TRADE V4 · <span class="ldot"></span> LIVE</span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="btn-sm" id="eye-btn" onclick="toggleBlur()">👁 Discret</button>
+    <button class="btn-sm btn-c" onclick="openWallet()">💼 Wallet</button>
   </div>
 </div>
 
-<div style="max-width:1020px;margin:0 auto;padding:14px 12px 90px">
+<!-- TICKER -->
+<div class="tbar" id="ticker"></div>
 
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
-    <div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <h1 id="app-title" onclick="titleClick()"
-          style="font-size:20px;font-weight:900;letter-spacing:3px;cursor:pointer;user-select:none;
-          font-family:'Space Mono',monospace;
-          background:linear-gradient(135deg,var(--cyan),var(--purple));
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent">
-          SNIPER TRADE v4
-        </h1>
-        <div style="font-size:9px;font-weight:700;color:var(--cyan);background:rgba(0,255,212,.1);border:1px solid rgba(0,255,212,.2);border-radius:5px;padding:2px 6px;font-family:'Space Mono',monospace;letter-spacing:1px">v4</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:7px;margin-top:3px">
-        <div class="ldot"></div>
-        <span style="font-size:9px;color:var(--txt3);letter-spacing:1.5px;font-family:'Space Mono',monospace">BINANCE LIVE</span>
-        <span style="color:var(--txt3);font-size:9px">·</span>
-        <span id="ws-st" style="font-size:9px;color:var(--txt2);font-family:'Space Mono',monospace">INIT...</span>
-      </div>
-    </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-      <button onclick="openJournal()" class="btn-sm btn-pu" style="position:relative">📓 Journal<span id="jnotif" class="notif-dot" style="display:none"></span></button>
-      <button onclick="doAiScan()" class="btn-sm btn-pu">🔍 Scan IA</button>
-      <button onclick="doAiOpps()" class="btn-sm btn-c">🎯 Signaux</button>
-      <button onclick="toggleBlur()" id="eye-btn" class="btn-sm">👁 Discret</button>
-      <div style="width:1px;height:20px;background:rgba(255,255,255,.08)"></div>
-      <div id="sent-badge" style="font-size:10px;padding:5px 10px;border-radius:8px;font-weight:700;font-family:'Space Mono',monospace;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);color:var(--green)">BULL 🐂</div>
-    </div>
-  </div>
+<!-- MAIN CONTENT -->
+<div style="max-width:480px;margin:0 auto;padding:0 12px 100px">
 
-  <div class="glass" style="margin-bottom:12px;padding:0;overflow:hidden">
-    <div class="tbar" id="tbar"></div>
-  </div>
+<!-- ═══ SECTION DASHBOARD ═══ -->
+<div id="sec-dash" class="section on">
 
-  <div class="g2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-
-    <div class="glass card-c" style="padding:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div class="slabel">📡 Prix live</div>
-        <div id="pair-badge" style="font-size:10px;font-weight:800;color:var(--cyan);background:rgba(0,255,212,.08);padding:3px 10px;border-radius:20px;border:1px solid rgba(0,255,212,.18);font-family:'Space Mono',monospace">BTC/USDT</div>
-      </div>
-
-      <div id="main-price" class="nc blurtgt mono"
-        style="font-size:38px;font-weight:700;line-height:1;margin-bottom:8px;letter-spacing:-1px">—</div>
-
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        <div id="chg-badge" style="font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);color:var(--green);font-family:'Space Mono',monospace">—</div>
-        <div style="display:flex;gap:10px">
-          <span style="font-size:10px;color:var(--txt2)">H:<span id="hi-v" class="nc" style="margin-left:3px;font-size:10px;text-shadow:none">—</span></span>
-          <span style="font-size:10px;color:var(--txt2)">L:<span id="lo-v" class="nr" style="margin-left:3px;font-size:10px;text-shadow:none">—</span></span>
-          <span style="font-size:10px;color:var(--txt2)">V:<span id="vo-v" style="margin-left:3px;font-size:10px;color:var(--txt)">—</span></span>
-        </div>
-      </div>
-
-      <div id="mini-chart" style="height:36px;display:flex;align-items:flex-end;gap:2px;overflow:hidden">
-        </div>
-    </div>
-
-    <div class="glass card-g" style="padding:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div class="slabel">💼 Portefeuille</div>
-        <button onclick="openWallet()" class="btn-sm btn-g" style="font-size:10px;padding:4px 10px">✏️ Edit</button>
-      </div>
-      <div class="blurtgt">
-        <div class="ng mono" style="font-size:36px;font-weight:700;line-height:1">$<span id="cap-v">20.57</span></div>
+  <!-- WALLET CARD -->
+  <div class="wcard" style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <div>
+        <div class="slabel" style="margin-bottom:6px">💼 Capital</div>
+        <div class="main-price blur-hide" id="cap-disp"> $ 0.00</div>
         <div style="font-size:11px;color:var(--txt2);margin-top:4px">
-          Objectif: <span id="goal-v" style="color:var(--txt)">$50.00</span>
-          &nbsp;·&nbsp;
-          Expo: <span id="expo-v" class="blurtgt" style="color:var(--purple)">—</span>
+          Objectif : <span class="blur-hide" id="goal-disp" style="color:var(--amber);font-weight:700"> $ 0.00</span>
         </div>
       </div>
-
-      <div style="margin-top:10px">
-        <div style="height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden">
-          <div id="goal-bar" style="height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:2px;transition:width .9s;width:0%"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:5px">
-          <span id="goal-pct" style="font-size:10px;color:var(--txt2);font-family:'Space Mono',monospace">0.0%</span>
-          <span id="pnl-v" style="font-size:10px;color:var(--green);font-family:'Space Mono',monospace">+$0.00</span>
-        </div>
+      <div style="text-align:right">
+        <div class="slabel" style="margin-bottom:6px">PROGRESSION</div>
+        <div id="prog-pct" style="font-size:22px;font-weight:900;font-family:'Space Mono',monospace;color:var(--green)">0%</div>
+        <div id="prog-miss" style="font-size:10px;color:var(--txt2);margin-top:2px">manque $0</div>
       </div>
+    </div>
+    <!-- PROGRESS BAR -->
+    <div style="background:rgba(255,255,255,.06);border-radius:10px;height:6px;overflow:hidden">
+      <div id="prog-bar" style="height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:10px;transition:width .6s ease;width:0%"></div>
+    </div>
+  </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px">
-        <div class="sitem">
-          <div style="font-size:8px;color:var(--txt2);margin-bottom:2px;letter-spacing:.5px">TRADES</div>
-          <div id="tc-v" style="font-size:14px;font-weight:700;color:var(--cyan);font-family:'Space Mono',monospace">0</div>
-        </div>
-        <div class="sitem">
-          <div style="font-size:8px;color:var(--txt2);margin-bottom:2px;letter-spacing:.5px">WIN %</div>
-          <div id="wr-v" style="font-size:14px;font-weight:700;color:var(--green);font-family:'Space Mono',monospace">—</div>
-        </div>
-        <div class="sitem">
-          <div style="font-size:8px;color:var(--txt2);margin-bottom:2px;letter-spacing:.5px">STREAK</div>
-          <div id="streak-v" style="font-size:14px;font-weight:700;color:var(--amber);font-family:'Space Mono',monospace">—</div>
-        </div>
+  <!-- PRICE DISPLAY -->
+  <div class="glass" style="padding:16px;margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div>
+        <div class="slabel">Prix live</div>
+        <div id="cur-pair" style="font-size:13px;font-weight:700;color:var(--cyan);margin-top:2px;font-family:'Space Mono',monospace">BTC/USDT</div>
+      </div>
+      <div style="text-align:right">
+        <div id="main-price" style="font-size:26px;font-weight:900;font-family:'Space Mono',monospace;color:var(--cyan);text-shadow:0 0 20px rgba(0,255,212,.4)">—</div>
+        <div id="main-ch" style="font-size:12px;font-weight:700;margin-top:2px">—</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
+      <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center">
+        <div class="slabel" style="margin-bottom:3px">24h HIGH</div>
+        <div id="main-high" style="font-size:11px;font-weight:700;color:var(--green);font-family:'Space Mono',monospace">—</div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center">
+        <div class="slabel" style="margin-bottom:3px">24h LOW</div>
+        <div id="main-low" style="font-size:11px;font-weight:700;color:var(--red);font-family:'Space Mono',monospace">—</div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:8px;text-align:center">
+        <div class="slabel" style="margin-bottom:3px">VOLUME</div>
+        <div id="main-vol" style="font-size:11px;font-weight:700;color:var(--amber);font-family:'Space Mono',monospace">—</div>
       </div>
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:auto 1fr;gap:12px;margin-bottom:12px;align-items:stretch">
-
-    <div class="glass" style="padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:120px">
-      <div class="slabel" style="margin-bottom:8px">FEAR & GREED</div>
-      <div class="ring-wrap" style="margin-bottom:6px">
-        <svg width="72" height="72" class="ring">
-          <circle class="ring-bg" cx="36" cy="36" r="30"/>
-          <circle class="ring-fill" id="fg-ring" cx="36" cy="36" r="30" stroke="var(--amber)"
-            stroke-dasharray="188.5" stroke-dashoffset="94"/>
+  <!-- MARKET STATS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <!-- SENTIMENT -->
+    <div class="glass" style="padding:14px;text-align:center">
+      <div class="slabel" style="margin-bottom:8px">Sentiment</div>
+      <div id="sent-badge" style="font-size:13px;font-weight:700;padding:6px 12px;border-radius:10px;border:1px solid;display:inline-block">—</div>
+    </div>
+    <!-- FEAR & GREED -->
+    <div class="glass" style="padding:14px;display:flex;flex-direction:column;align-items:center">
+      <div class="slabel" style="margin-bottom:8px">Fear & Greed</div>
+      <div class="ring-wrap">
+        <svg width="64" height="64" class="ring">
+          <circle class="ring-bg" cx="32" cy="32" r="26"/>
+          <circle class="ring-fill" id="fg-ring" cx="32" cy="32" r="26" stroke="var(--amber)" stroke-dasharray="163" stroke-dashoffset="81"/>
         </svg>
         <div style="position:absolute;text-align:center">
-          <div id="fg-val" style="font-size:18px;font-weight:900;color:var(--amber);font-family:'Space Mono',monospace">50</div>
+          <div id="fg-val" style="font-size:16px;font-weight:900;color:var(--amber);font-family:'Space Mono',monospace">50</div>
         </div>
       </div>
-      <div id="fg-label" style="font-size:10px;font-weight:700;color:var(--amber);letter-spacing:1px">NEUTRAL</div>
-    </div>
-
-    <div class="glass" style="padding:14px">
-      <div class="slabel" style="margin-bottom:10px">📊 Overview marché</div>
-      <div id="mkt-overview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px">
-        </div>
+      <div id="fg-label" style="font-size:10px;font-weight:700;color:var(--amber);margin-top:4px;letter-spacing:1px">NEUTRAL</div>
     </div>
   </div>
 
-  <div class="glass" style="padding:20px;margin-bottom:12px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+  <!-- MKT OVERVIEW -->
+  <div class="glass" style="padding:14px;margin-bottom:12px">
+    <div class="slabel" style="margin-bottom:10px">📊 Overview marché</div>
+    <div id="mkt-overview" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"></div>
+  </div>
+
+</div>
+
+<!-- ═══ SECTION SIGNAUX ═══ -->
+<div id="sec-sig" class="section">
+  <div style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div>
-        <div class="slabel">🎯 Hub d'opportunités</div>
-        <div style="font-size:11px;color:var(--txt2);margin-top:3px">Signaux temps réel — tap pour ouvrir</div>
+        <div class="slabel">🎯 Opportunités</div>
+        <div style="font-size:11px;color:var(--txt2);margin-top:2px">Setups détectés</div>
       </div>
       <div style="display:flex;gap:6px">
-        <div style="display:flex;gap:4px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:3px">
-          <button onclick="filterOpps('ALL')" id="f-all" class="btn-sm" style="padding:4px 8px;font-size:10px;border-radius:5px;background:rgba(0,255,212,.1);border-color:rgba(0,255,212,.2);color:var(--cyan)">Tous</button>
-          <button onclick="filterOpps('LONG')" id="f-long" class="btn-sm" style="padding:4px 8px;font-size:10px;border-radius:5px">LONG</button>
-          <button onclick="filterOpps('SHORT')" id="f-short" class="btn-sm" style="padding:4px 8px;font-size:10px;border-radius:5px">SHORT</button>
-        </div>
-        <button onclick="buildOpps()" class="btn-sm">↻</button>
-        <button onclick="doAiOpps()" class="btn-sm btn-pu">🤖 IA</button>
+        <button onclick="doAiOpps()" class="btn-sm btn-c" style="font-size:10px">🤖 IA Scan</button>
+        <button onclick="buildOpps()" class="btn-sm" style="font-size:10px">🔄</button>
       </div>
     </div>
-    <div id="opp-grid" class="opp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px"></div>
+    <div id="opps-list" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
+</div>
 
-  <div class="glass" style="padding:20px;display:flex;flex-direction:column;height:480px;margin-bottom:12px">
+<!-- ═══ SECTION IA CHAT ═══ -->
+<div id="sec-ai" class="section">
+  <div class="glass" style="padding:16px;display:flex;flex-direction:column;height:72vh">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <div>
         <div class="slabel">💬 Assistant Gemini</div>
         <div id="ai-st" style="font-size:10px;color:var(--green);margin-top:2px;font-family:'Space Mono',monospace">● PRÊT</div>
       </div>
       <div style="display:flex;gap:5px;flex-wrap:wrap">
-        <button onclick="quickMsg('Analyse technique '+curPair+' maintenant')" class="btn-sm btn-c" style="font-size:10px">📊 TA</button>
-        <button onclick="quickMsg('Setup trade pour $'+capital.toFixed(2)+' capital')" class="btn-sm btn-pu" style="font-size:10px">💡 Setup</button>
-        <button onclick="quickMsg('Risk management sur ma position actuelle')" class="btn-sm btn-a" style="font-size:10px">⚖️ Risk</button>
-        <button onclick="clearChat()" class="btn-sm" style="font-size:10px;color:var(--txt2)">🗑</button>
-        <button onclick="exportChat()" class="btn-sm" style="font-size:10px">💾</button>
+        <button onclick="quickMsg('Analyse technique '+curPair+' maintenant, RSI, MACD, niveaux clés')" class="btn-sm btn-c" style="font-size:10px">📊 TA</button>
+        <button onclick="quickMsg('Setup trade optimal pour $'+capital.toFixed(2)+' capital sur '+curPair)" class="btn-sm btn-pu" style="font-size:10px">💡 Setup</button>
+        <button onclick="quickMsg('Stratégie risk management pour mon capital de  $ '+capital.toFixed(2))" class="btn-sm btn-a" style="font-size:10px">⚖️ Risk</button>
+        <button onclick="clearChat()" class="btn-sm btn-r" style="font-size:10px">🗑</button>
       </div>
     </div>
-    <div id="chat" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:3px;margin-bottom:10px;scroll-behavior:smooth">
-      <div class="cmsg-ai">
-        <div style="font-size:9px;color:var(--txt2);margin-bottom:4px;font-weight:700;letter-spacing:1px;font-family:'Space Mono',monospace">GEMINI ✦</div>
-        Salut trader ! 🚀 Je suis connecté à Gemini. Demande-moi une <b>analyse technique</b>, un <b>setup de trade</b> ou une <b>stratégie de risk management</b>.<br>Capital : <b>$<span id="ai-cap">20.57</span></b> | Objectif : <b>$<span id="ai-goal">50</span></b>
-      </div>
-    </div>
+    <div id="chat" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px;margin-bottom:10px"></div>
     <div class="cinput">
-      <input id="ci" type="text" placeholder="Analyse SOL, signal BTC x12, risk management..." onkeydown="if(event.key==='Enter'&&!event.shiftKey)sendChat()"/>
+      <input id="ci" type="text" placeholder="Analyse SOL x12, signal BTC, risk management..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"/>
       <button class="sbtn" onclick="sendChat()" id="sb">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/></svg>
       </button>
     </div>
   </div>
+</div>
 
-  <div class="glass" style="padding:20px" id="journal-section">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<!-- ═══ SECTION JOURNAL ═══ -->
+<div id="sec-jrn" class="section">
+  <div class="glass" style="padding:16px;margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div class="slabel">📓 Journal de trades</div>
       <div style="display:flex;gap:6px">
         <button onclick="showCloseModal()" class="btn-sm btn-g" style="font-size:10px">✓ Clôturer</button>
         <button onclick="clearJournal()" class="btn-sm btn-r" style="font-size:10px">🗑 Vider</button>
       </div>
     </div>
-    <div id="journal-list" style="display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto">
-      <div style="text-align:center;color:var(--txt2);font-size:12px;padding:20px">Aucun trade enregistré</div>
-    </div>
-  </div>
-
-</div>
-
-<div id="tm-ov" class="ov" style="display:none" onclick="if(event.target===this)closeTrade()">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <div id="tm-asset" style="font-size:20px;font-weight:900;font-family:'Space Mono',monospace">—</div>
-      <div id="tm-dir">—</div>
-      <div id="tm-lev" style="font-size:11px;font-weight:700;color:var(--cyan);background:rgba(0,255,212,.08);padding:3px 10px;border-radius:20px;border:1px solid rgba(0,255,212,.18);font-family:'Space Mono',monospace">—</div>
-      <div id="tm-conf-b" style="margin-left:auto;font-size:10px;font-weight:700;color:var(--amber);background:rgba(255,184,0,.08);padding:3px 10px;border-radius:20px;border:1px solid rgba(255,184,0,.2)">—</div>
-    </div>
-    <div id="tm-reason" style="font-size:12px;color:var(--txt2);margin-bottom:14px;line-height:1.6;padding:10px;background:rgba(0,255,212,.03);border-radius:10px;border:1px solid rgba(0,255,212,.06)">—</div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
-      <div style="background:rgba(0,255,212,.06);border:1px solid rgba(0,255,212,.15);border-radius:12px;padding:12px;text-align:center">
-        <div style="font-size:8px;color:var(--txt2);margin-bottom:4px;font-weight:700;letter-spacing:1px;font-family:'Space Mono',monospace">ENTRÉE</div>
-        <div id="tm-entry" class="nc mono" style="font-size:13px;font-weight:700;text-shadow:none">—</div>
+    <!-- STATS -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px">
+      <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:10px;text-align:center">
+        <div class="slabel" style="margin-bottom:4px">Trades</div>
+        <div id="st-total" style="font-size:16px;font-weight:900;color:var(--cyan);font-family:'Space Mono',monospace">0</div>
       </div>
-      <div style="background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.15);border-radius:12px;padding:12px;text-align:center">
-        <div style="font-size:8px;color:var(--txt2);margin-bottom:4px;font-weight:700;letter-spacing:1px;font-family:'Space Mono',monospace">TAKE PROFIT</div>
-        <div id="tm-tp" class="ng mono" style="font-size:13px;font-weight:700;text-shadow:none">—</div>
+      <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:10px;text-align:center">
+        <div class="slabel" style="margin-bottom:4px">Wins</div>
+        <div id="st-wins" style="font-size:16px;font-weight:900;color:var(--green);font-family:'Space Mono',monospace">0</div>
       </div>
-      <div style="background:rgba(255,61,110,.06);border:1px solid rgba(255,61,110,.15);border-radius:12px;padding:12px;text-align:center">
-        <div style="font-size:8px;color:var(--txt2);margin-bottom:4px;font-weight:700;letter-spacing:1px;font-family:'Space Mono',monospace">STOP LOSS</div>
-        <div id="tm-sl" class="nr mono" style="font-size:13px;font-weight:700;text-shadow:none">—</div>
+      <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:10px;text-align:center">
+        <div class="slabel" style="margin-bottom:4px">WR</div>
+        <div id="st-wr" style="font-size:16px;font-weight:900;color:var(--amber);font-family:'Space Mono',monospace">0%</div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:10px;text-align:center">
+        <div class="slabel" style="margin-bottom:4px">PnL</div>
+        <div id="st-pnl" style="font-size:16px;font-weight:900;font-family:'Space Mono',monospace"> $ 0</div>
       </div>
     </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
-      <div class="sitem">
-        <div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Profit pot.</div>
-        <div id="tm-profit" style="font-size:15px;font-weight:800;color:var(--green);font-family:'Space Mono',monospace">—</div>
-      </div>
-      <div class="sitem">
-        <div style="font-size:9px;color:var(--txt2);margin-bottom:3px">Risque max</div>
-        <div id="tm-risk" style="font-size:15px;font-weight:800;color:var(--red);font-family:'Space Mono',monospace">—</div>
-      </div>
-      <div class="sitem">
-        <div style="font-size:9px;color:var(--txt2);margin-bottom:3px">R:R Ratio</div>
-        <div id="tm-rr" style="font-size:15px;font-weight:800;color:var(--amber);font-family:'Space Mono',monospace">—</div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:14px">
-      <label class="flabel">Ajuster le levier</label>
-      <div style="display:flex;gap:6px;align-items:center">
-        <input type="range" id="lev-slider" min="1" max="20" value="10"
-          style="flex:1;accent-color:var(--cyan)" oninput="updateLevSlider(this.value)"/>
-        <span id="lev-display" style="font-size:14px;font-weight:800;color:var(--cyan);width:36px;text-align:right;font-family:'Space Mono',monospace">x10</span>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <button class="btn-d" onclick="refuseTrade()">✕ REFUSER</button>
-      <button class="btn-p" onclick="acceptTrade()">⚡ OUVRIR</button>
-    </div>
+    <div id="journal-list" style="display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow-y:auto"></div>
   </div>
 </div>
 
+</div><!-- end main -->
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="bnav-btn on" id="nav-dash" onclick="goTo('dash')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    HOME
+  </button>
+  <button class="bnav-btn" id="nav-sig" onclick="goTo('sig')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    SIGNAUX
+  </button>
+  <button class="bnav-btn" id="nav-ai" onclick="goTo('ai')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    IA CHAT
+  </button>
+  <button class="bnav-btn" id="nav-jrn" onclick="goTo('jrn')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    JOURNAL
+  </button>
+</div>
+
+<!-- WALLET OVERLAY -->
 <div id="wl-ov" class="ov" style="display:none" onclick="if(event.target===this)closeWallet()">
   <div class="sheet">
     <div class="handle"></div>
-    <div style="font-size:17px;font-weight:900;margin-bottom:18px;font-family:'Space Mono',monospace;color:var(--cyan)">💼 Portefeuille</div>
+    <div style="font-size:16px;font-weight:900;margin-bottom:18px;font-family:'Space Mono',monospace;color:var(--cyan)">💼 Mon Portefeuille</div>
     <div style="margin-bottom:12px">
-      <label class="flabel">Capital actuel ($)</label>
-      <input class="finput" type="number" id="w-cap" step="0.01" placeholder="20.57"/>
+      <label class="flabel">Capital actuel ( $ )</label>
+      <input class="finput" type="number" id="w-cap" step="0.01" min="0" placeholder="Ex: 23.95"/>
     </div>
     <div style="margin-bottom:12px">
-      <label class="flabel">Objectif ($)</label>
-      <input class="finput" type="number" id="w-goal" step="0.01" placeholder="50.00"/>
+      <label class="flabel">Objectif ( $ )</label>
+      <input class="finput" type="number" id="w-goal" step="0.01" min="0" placeholder="Ex: 100.00"/>
     </div>
     <div style="margin-bottom:16px">
       <label class="flabel">Ajustement rapide</label>
+      <input class="finput" type="number" id="w-add" step="0.01" min="0" placeholder="Montant à ajouter/retirer" style="margin-bottom:8px"/>
       <div style="display:flex;gap:6px">
-        <input class="finput" type="number" id="w-add" step="0.01" placeholder="Montant" style="flex:1"/>
-      </div>
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <button onclick="adjCap(1)" class="btn-sm btn-g" style="flex:1;text-align:center;padding:8px">➕ Dépôt</button>
-        <button onclick="adjCap(-1)" class="btn-sm btn-r" style="flex:1;text-align:center;padding:8px">➖ Retrait</button>
+        <button onclick="adjCap(1)" class="btn-sm btn-g" style="flex:1;padding:9px;text-align:center">➕ Dépôt</button>
+        <button onclick="adjCap(-1)" class="btn-sm btn-r" style="flex:1;padding:9px;text-align:center">➖ Retrait</button>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -692,105 +576,146 @@ input:checked+.togsl::before{transform:translateX(18px);background:var(--cyan);b
   </div>
 </div>
 
+<!-- TRADE MODAL -->
+<div id="tm-ov" class="ov" style="display:none" onclick="if(event.target===this)closeTrade()">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div>
+        <div id="tm-title" style="font-size:18px;font-weight:900;font-family:'Space Mono',monospace;color:var(--cyan)">SOL LONG</div>
+        <div id="tm-reason" style="font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.4;max-width:240px"></div>
+      </div>
+      <div id="tm-conf-badge" style="background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);border-radius:10px;padding:8px 12px;text-align:center">
+        <div style="font-size:18px;font-weight:900;color:var(--green);font-family:'Space Mono',monospace" id="tm-conf">—</div>
+        <div style="font-size:9px;color:var(--txt2);letter-spacing:1px">CONF</div>
+      </div>
+    </div>
+
+    <!-- STATS GRID -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <div style="background:rgba(255,255,255,.03);border-radius:12px;padding:12px">
+        <div class="slabel" style="margin-bottom:4px">Entrée</div>
+        <div id="tm-entry" style="font-size:14px;font-weight:900;color:var(--cyan);font-family:'Space Mono',monospace">—</div>
+      </div>
+      <div style="background:rgba(255,255,255,.03);border-radius:12px;padding:12px">
+        <div class="slabel" style="margin-bottom:4px">Levier</div>
+        <div id="tm-lev" style="font-size:14px;font-weight:900;color:var(--purple);font-family:'Space Mono',monospace">—</div>
+      </div>
+      <div style="background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.1);border-radius:12px;padding:12px">
+        <div class="slabel" style="margin-bottom:4px">TP 🎯</div>
+        <div id="tm-tp" style="font-size:13px;font-weight:900;color:var(--green);font-family:'Space Mono',monospace">—</div>
+      </div>
+      <div style="background:rgba(255,61,110,.05);border:1px solid rgba(255,61,110,.1);border-radius:12px;padding:12px">
+        <div class="slabel" style="margin-bottom:4px">SL 🛡</div>
+        <div id="tm-sl" style="font-size:13px;font-weight:900;color:var(--red);font-family:'Space Mono',monospace">—</div>
+      </div>
+    </div>
+
+    <!-- PNL -->
+    <div style="background:rgba(255,255,255,.03);border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div class="slabel" style="margin-bottom:4px">Profit potentiel</div>
+          <div id="tm-profit" style="font-size:18px;font-weight:900;color:var(--green);font-family:'Space Mono',monospace">—</div>
+        </div>
+        <div style="text-align:right">
+          <div class="slabel" style="margin-bottom:4px">Risque max</div>
+          <div id="tm-risk" style="font-size:18px;font-weight:900;color:var(--red);font-family:'Space Mono',monospace">—</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="slabel">Risk/Reward</div>
+        <div id="tm-rr" style="font-size:13px;font-weight:900;color:var(--amber);font-family:'Space Mono',monospace">—</div>
+      </div>
+    </div>
+
+    <!-- LEVERAGE SLIDER -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div class="slabel">Ajuster levier</div>
+        <div id="lev-display" style="font-size:14px;font-weight:900;color:var(--cyan);font-family:'Space Mono',monospace">x10</div>
+      </div>
+      <input type="range" id="lev-slider" min="1" max="20" value="10" oninput="updateLevSlider(this.value)"/>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button onclick="refuseTrade()" class="btn-d">✗ Refuser</button>
+      <button onclick="acceptTrade()" class="btn-p">⚡ Prendre trade</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLOSE TRADE MODAL -->
 <div id="close-ov" class="ov" style="display:none" onclick="if(event.target===this)closeCloseModal()">
   <div class="sheet">
     <div class="handle"></div>
-    <div style="font-size:17px;font-weight:900;margin-bottom:18px;font-family:'Space Mono',monospace;color:var(--cyan)">✓ Clôturer un trade</div>
-    <div id="open-trades-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;max-height:300px;overflow-y:auto"></div>
-    <button class="btn-d" onclick="closeCloseModal()">Annuler</button>
+    <div style="font-size:16px;font-weight:900;margin-bottom:16px;font-family:'Space Mono',monospace;color:var(--cyan)">Clôturer une position</div>
+    <div id="open-trades-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
+    <button onclick="closeCloseModal()" class="btn-d">Fermer</button>
   </div>
 </div>
 
-<div id="jr-ov" class="ov" style="display:none" onclick="if(event.target===this)closeJournal()">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div style="font-size:17px;font-weight:900;margin-bottom:18px;font-family:'Space Mono',monospace;color:var(--cyan)">📓 Journal complet</div>
-    <div id="jr-full" style="display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow-y:auto;margin-bottom:16px"></div>
-    <button class="btn-p" onclick="closeJournal()">✓ Fermer</button>
-  </div>
-</div>
-
+<!-- PIN OVERLAY -->
 <div id="pin-ov" class="pin-ov" style="display:none">
   <div class="pin-box">
-    <div style="font-size:24px;margin-bottom:6px">🔐</div>
-    <div style="font-size:15px;font-weight:800;font-family:'Space Mono',monospace">Accès admin</div>
-    <div style="font-size:11px;color:var(--txt2);margin-top:3px">PIN 4 chiffres</div>
+    <div style="font-size:12px;font-weight:700;letter-spacing:2px;color:var(--txt2);margin-bottom:4px">ACCÈS SÉCURISÉ</div>
+    <div style="font-size:22px;font-weight:900;color:var(--cyan);font-family:'Space Mono',monospace">⚡ SNIPER</div>
     <div class="pdots">
-      <div class="pdot" id="pd0"></div>
-      <div class="pdot" id="pd1"></div>
-      <div class="pdot" id="pd2"></div>
-      <div class="pdot" id="pd3"></div>
+      <div class="pdot" id="pd0"></div><div class="pdot" id="pd1"></div>
+      <div class="pdot" id="pd2"></div><div class="pdot" id="pd3"></div>
     </div>
+    <div id="pin-err" style="font-size:11px;color:var(--red);height:16px;margin-bottom:8px"></div>
     <div class="pgrid">
-      <button class="pkey" onclick="pk('1')">1</button>
-      <button class="pkey" onclick="pk('2')">2</button>
-      <button class="pkey" onclick="pk('3')">3</button>
-      <button class="pkey" onclick="pk('4')">4</button>
-      <button class="pkey" onclick="pk('5')">5</button>
-      <button class="pkey" onclick="pk('6')">6</button>
-      <button class="pkey" onclick="pk('7')">7</button>
-      <button class="pkey" onclick="pk('8')">8</button>
-      <button class="pkey" onclick="pk('9')">9</button>
-      <button class="pkey" onclick="pk('C')" style="color:var(--amber);font-size:13px">CLR</button>
+      <button class="pkey" onclick="pk('1')">1</button><button class="pkey" onclick="pk('2')">2</button><button class="pkey" onclick="pk('3')">3</button>
+      <button class="pkey" onclick="pk('4')">4</button><button class="pkey" onclick="pk('5')">5</button><button class="pkey" onclick="pk('6')">6</button>
+      <button class="pkey" onclick="pk('7')">7</button><button class="pkey" onclick="pk('8')">8</button><button class="pkey" onclick="pk('9')">9</button>
+      <button class="pkey" onclick="pk('C')" style="color:var(--amber)">C</button>
       <button class="pkey" onclick="pk('0')">0</button>
       <button class="pkey" onclick="pk('D')" style="color:var(--red)">⌫</button>
     </div>
-    <div id="pin-err" style="color:var(--red);font-size:11px;min-height:18px;margin-top:8px;font-family:'Space Mono',monospace"></div>
-    <button onclick="closePIN()" style="background:none;border:none;color:var(--txt2);font-size:11px;cursor:pointer;margin-top:6px">Annuler</button>
+    <button onclick="closePIN()" style="margin-top:14px;background:none;border:none;color:var(--txt2);font-size:12px;cursor:pointer">Annuler</button>
   </div>
 </div>
 
+<!-- SETTINGS OVERLAY -->
 <div id="st-ov" class="ov" style="display:none" onclick="if(event.target===this)closeST()">
   <div class="sheet">
     <div class="handle"></div>
-    <div style="font-size:17px;font-weight:900;margin-bottom:20px;font-family:'Space Mono',monospace;color:var(--cyan)">⚙️ Paramètres</div>
+    <div style="font-size:16px;font-weight:900;margin-bottom:18px;font-family:'Space Mono',monospace;color:var(--cyan)">⚙️ Paramètres</div>
 
     <div style="margin-bottom:14px">
       <label class="flabel">🔑 Clé API Gemini</label>
       <input class="finput" type="password" id="api-in" placeholder="AIzaSy..."/>
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <button onclick="saveKey()" class="btn-sm btn-pu" style="flex:1;text-align:center;padding:8px">💾 Sauvegarder</button>
-        <button onclick="testKey()" class="btn-sm btn-c" style="flex:1;text-align:center;padding:8px">🧪 Tester</button>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button onclick="saveKey()" class="btn-p" style="flex:1">✓ Sauvegarder</button>
+        <button onclick="testKey()" class="btn-sm btn-c" style="padding:11px 14px">🧪 Test</button>
       </div>
     </div>
 
-    <div style="margin-bottom:14px">
-      <label class="flabel">🎯 Levier par défaut</label>
-      <div style="display:flex;gap:6px;align-items:center">
-        <input type="range" id="def-lev" min="1" max="20" value="10"
-          style="flex:1;accent-color:var(--cyan)" oninput="document.getElementById('def-lev-v').textContent='x'+this.value"/>
-        <span id="def-lev-v" style="font-size:13px;font-weight:800;color:var(--cyan);width:32px;font-family:'Space Mono',monospace">x10</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:rgba(255,255,255,.03);border-radius:12px;margin-bottom:10px">
+      <div>
+        <div style="font-size:13px;font-weight:700">🔔 Vibration signaux</div>
+        <div style="font-size:11px;color:var(--txt2)">Vibrer sur signal fort</div>
       </div>
+      <label style="position:relative;display:inline-block;width:44px;height:24px">
+        <input type="checkbox" id="vib-tog" onchange="vibOn=this.checked;ls('vibOn',vibOn)" style="opacity:0;width:0;height:0">
+        <span onclick="document.getElementById('vib-tog').click()" style="position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,.1);border-radius:24px;transition:.3s"></span>
+      </label>
     </div>
 
-    <div style="background:rgba(0,255,212,.03);border:1px solid rgba(0,255,212,.08);border-radius:12px;padding:12px;margin-bottom:12px">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="font-size:13px;font-weight:600">Vibrations</div>
-          <div style="font-size:11px;color:var(--txt2);margin-top:1px">Sur signal détecté</div>
-        </div>
-        <label class="tog">
-          <input type="checkbox" id="vib-tog" onchange="vibOn=this.checked;ls('vibrate',this.checked)">
-          <span class="togsl"></span>
-        </label>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:rgba(255,255,255,.03);border-radius:12px;margin-bottom:16px">
+      <div>
+        <div style="font-size:13px;font-weight:700">🔊 Sons</div>
+        <div style="font-size:11px;color:var(--txt2)">Bips et alertes audio</div>
       </div>
+      <label style="position:relative;display:inline-block;width:44px;height:24px">
+        <input type="checkbox" id="snd-tog" onchange="sndOn=this.checked;ls('sndOn',sndOn)" style="opacity:0;width:0;height:0">
+        <span onclick="document.getElementById('snd-tog').click()" style="position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,.1);border-radius:24px;transition:.3s"></span>
+      </label>
     </div>
 
-    <div style="background:rgba(0,255,212,.03);border:1px solid rgba(0,255,212,.08);border-radius:12px;padding:12px;margin-bottom:12px">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="font-size:13px;font-weight:600">Sons d'alerte</div>
-          <div style="font-size:11px;color:var(--txt2);margin-top:1px">Bip sur signal</div>
-        </div>
-        <label class="tog">
-          <input type="checkbox" id="snd-tog" onchange="sndOn=this.checked;ls('sound',this.checked)">
-          <span class="togsl"></span>
-        </label>
-      </div>
-    </div>
-
-    <div style="background:rgba(157,110,255,.05);border:1px solid rgba(157,110,255,.12);border-radius:12px;padding:12px;margin-bottom:16px">
-      <div style="font-size:11px;color:var(--purple);font-weight:700;margin-bottom:3px">💡 Accès paramètres</div>
+    <div style="background:rgba(157,110,255,.06);border:1px solid rgba(157,110,255,.15);border-radius:12px;padding:12px;margin-bottom:14px">
+      <div style="font-size:11px;color:var(--purple);font-weight:700;margin-bottom:4px">💡 Accès paramètres</div>
       <div style="font-size:11px;color:var(--txt2);line-height:1.5">5× tap rapide sur le titre → PIN <b style="color:var(--cyan);font-family:'Space Mono',monospace">1704</b></div>
     </div>
 
@@ -799,696 +724,168 @@ input:checked+.togsl::before{transform:translateX(18px);background:var(--cyan);b
 </div>
 
 <script>
-// ─── CONSTANTS ───────────────────────────────────────────────────
-const PIN_CODE   = '1704';
-const GEMINI_KEY = 'AIzaSyBoEfNqxB1fwDA-NCODNx6Gk1cVEc7Qi-4'; // Ta clé par défaut
-const PAIRS      = ['BTC','ETH','SOL','PEPE','WIF','BONK'];
+// ═══════════════════════════════════════════════
+//  SNIPER TRADE V4 — CLEAN & FIXED
+// ═══════════════════════════════════════════════
 
-// ─── STATE ───────────────────────────────────────────────────────
-let capital      = parseFloat(localStorage.getItem('cap')      ?? '20.57');
-let capitalBase  = parseFloat(localStorage.getItem('capBase')  ?? capital);
-let capitalGoal  = parseFloat(localStorage.getItem('goal')     ?? '50');
-let apiKey       = localStorage.getItem('gemKey')              || GEMINI_KEY;
-let vibOn        = localStorage.getItem('vibrate')             !== 'false';
-let sndOn        = localStorage.getItem('sound')               !== 'false';
+// ─── CONFIG ─────────────────────────────────────
+const PIN_CODE = '1704';
+const PAIRS    = ['BTC','ETH','SOL','PEPE','WIF','BONK'];
+
+// ─── STATE ──────────────────────────────────────
+let capital      = parseFloat(localStorage.getItem('capital'))  || 0;
+let goal         = parseFloat(localStorage.getItem('goal'))     || 100;
+let apiKey       = localStorage.getItem('gemKey')               || '';
+let vibOn        = localStorage.getItem('vibOn')  !== 'false';
+let sndOn        = localStorage.getItem('sndOn')  !== 'false';
+let blurOn       = false;
 let curPair      = 'BTC';
 let prices       = {};
+let tradeHistory = JSON.parse(localStorage.getItem('trades')||'[]');
 let curOpp       = null;
-let tradeHistory = JSON.parse(localStorage.getItem('trades')   ?? '[]');
-let ws           = null;
-let tcnt = 0, ttmr = null;
-let blurOn       = false;
-let pinBuf       = '';
-let sigTimer     = null;
-let oppFilter    = 'ALL';
-let priceHistory = {}; 
+let selectedLever= 10;
+let tcnt=0, ttmr=null;
+let pinBuf='';
+let ws=null, wsRetry=0;
 
-const ls = (k,v) => localStorage.setItem(k,v);
+const ls = (k,v) => localStorage.setItem(k,String(v));
 
-// ─── FORMAT ──────────────────────────────────────────────────────
+// ─── TOAST ──────────────────────────────────────
+let tTimer=null;
+function toast(msg,type='info'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast show '+(type==='ok'?'ok':type==='err'?'err':type==='warn'?'warn':'info');
+  clearTimeout(tTimer);
+  tTimer=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// ─── FORMAT ─────────────────────────────────────
 function fp(n){
-  n = parseFloat(n);
-  if(isNaN(n)) return '—';
-  if(n>=10000) return n.toFixed(0);
-  if(n>=100)   return n.toFixed(2);
-  if(n>=1)     return n.toFixed(3);
-  if(n>=.0001) return n.toFixed(5);
-  return n.toFixed(7);
+  n=parseFloat(n);
+  if(isNaN(n))return'—';
+  if(n>=10000)return n.toFixed(0);
+  if(n>=100)  return n.toFixed(2);
+  if(n>=1)    return n.toFixed(3);
+  if(n>=.0001)return n.toFixed(6);
+  return n.toFixed(8);
 }
 function fv(n){
-  if(n>=1e9) return (n/1e9).toFixed(1)+'B';
-  if(n>=1e6) return (n/1e6).toFixed(1)+'M';
-  if(n>=1e3) return (n/1e3).toFixed(0)+'K';
+  n=parseFloat(n);
+  if(isNaN(n))return'—';
+  if(n>=1e9)return(n/1e9).toFixed(1)+'B';
+  if(n>=1e6)return(n/1e6).toFixed(1)+'M';
+  if(n>=1e3)return(n/1e3).toFixed(0)+'K';
   return n.toFixed(0);
 }
-const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const fdt = ts => new Date(ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const fdt=ts=>new Date(ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-// ─── SOUND ───────────────────────────────────────────────────────
-function beep(freq=800,dur=80,vol=0.12){
-  if(!sndOn) return;
+// ─── SOUND ──────────────────────────────────────
+function beep(f=800,d=80,v=.1){
+  if(!sndOn)return;
   try{
-    const ctx = new(window.AudioContext||window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);gain.connect(ctx.destination);
-    osc.frequency.value=freq;osc.type='sine';
-    gain.gain.setValueAtTime(vol,ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+dur/1000);
-    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+dur/1000);
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.frequency.value=f;o.type='sine';
+    g.gain.setValueAtTime(v,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+d/1000);
+    o.start();o.stop(ctx.currentTime+d/1000);
   }catch(e){}
 }
-function beepSignal(){ beep(880,60);setTimeout(()=>beep(1100,80),80);setTimeout(()=>beep(1320,120),180); }
+function beepSig(){beep(880,60);setTimeout(()=>beep(1100,80),80);setTimeout(()=>beep(1320,120),180);}
 
-// ─── TOAST ───────────────────────────────────────────────────────
-function toast(msg,type='ok'){
-  const cols={
-    ok:  ['rgba(0,255,136,.12)','rgba(0,255,136,.35)','var(--green)'],
-    err: ['rgba(255,61,110,.12)','rgba(255,61,110,.35)','var(--red)'],
-    info:['rgba(0,255,212,.12)','rgba(0,255,212,.35)','var(--cyan)'],
-    warn:['rgba(255,184,0,.12)','rgba(255,184,0,.35)','var(--amber)'],
-  };
-  const c=cols[type]||cols.ok;
-  const t=document.createElement('div');
-  t.className='tst';
-  t.innerHTML=msg;
-  Object.assign(t.style,{background:c[0],border:`1px solid ${c[1]}`,color:c[2]});
-  document.body.appendChild(t);
-  requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)'});
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';setTimeout(()=>t.remove(),300)},2600);
+// ─── NAVIGATION ─────────────────────────────────
+function goTo(sec){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sec-'+sec).classList.add('on');
+  document.getElementById('nav-'+sec).classList.add('on');
 }
 
-// ─── WEBSOCKET ───────────────────────────────────────────────────
-function connectWS(){
-  if(ws){try{ws.close()}catch(e){}ws=null;}
-  const streams=PAIRS.map(p=>p.toLowerCase()+'usdt@ticker').join('/');
-  ws=new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
-  ws.onopen=()=>setWsSt('LIVE ●','var(--green)');
-  ws.onmessage=e=>{
-    try{
-      const d=JSON.parse(e.data).data;
-      if(!d?.s)return;
-      const sym=d.s.replace('USDT','');
-      const price=parseFloat(d.c),change=parseFloat(d.P),high=parseFloat(d.h),low=parseFloat(d.l),vol=parseFloat(d.q);
-      if(isNaN(price)||price<=0)return;
-      prices[sym]={price,change,high,low,vol};
-      
-      if(!priceHistory[sym])priceHistory[sym]=[];
-      priceHistory[sym].push(price);
-      if(priceHistory[sym].length>30)priceHistory[sym].shift();
-      
-      updateTickerItem(sym);
-      if(sym===curPair){updateMainPrice();updateMiniChart();}
-      setWsSt(new Date().toTimeString().slice(0,8),'var(--txt2)');
-      updateMarketOverview();
-      updateSentiment();
-    }catch(err){}
-  };
-  ws.onclose=()=>{setWsSt('RECONNECT...','var(--amber)');setTimeout(connectWS,4000);};
-  ws.onerror=()=>{try{ws.close()}catch(e){}};
-}
-function setWsSt(t,c){const el=document.getElementById('ws-st');if(el){el.textContent=t;el.style.color=c;}}
-
-// ─── TICKER ──────────────────────────────────────────────────────
-function buildTicker(){
-  const wrap=document.getElementById('tbar');
-  wrap.innerHTML='';
-  PAIRS.forEach(p=>{
-    const div=document.createElement('div');
-    div.className='titem'+(p===curPair?' on':'');
-    div.id='tick-'+p;
-    div.onclick=()=>switchPair(p);
-    div.innerHTML=`<div id="ti-${p}" style="display:flex;flex-direction:column;align-items:center;gap:1px">
-      <span style="font-size:10px;color:var(--txt2);font-weight:700;font-family:'Space Mono',monospace">${p}</span>
-      <span style="font-size:9px;color:var(--txt3)">—</span>
-      <span style="font-size:8px;color:var(--txt3)">—</span>
-    </div>`;
-    wrap.appendChild(div);
-  });
-}
-function updateTickerItem(sym){
-  const el=document.getElementById('ti-'+sym);
-  if(!el)return;
-  const d=prices[sym];
-  const col=d.change>=0?'var(--green)':'var(--red)';
-  const arr=d.change>=0?'▲':'▼';
-  el.innerHTML=`
-    <span style="font-size:10px;color:var(--txt2);font-weight:700;font-family:'Space Mono',monospace">${sym}</span>
-    <span style="font-size:9px;color:${col};font-weight:600;font-family:'Space Mono',monospace">${fp(d.price)}</span>
-    <span style="font-size:8px;color:${col}">${arr}${Math.abs(d.change).toFixed(2)}%</span>`;
-}
-function switchPair(p){
-  curPair=p;
-  document.getElementById('pair-badge').textContent=p+'/USDT';
-  document.querySelectorAll('.titem').forEach(el=>el.classList.remove('on'));
-  const ti=document.getElementById('tick-'+p);if(ti)ti.classList.add('on');
-  if(prices[p])updateMainPrice();
-  else document.getElementById('main-price').textContent='—';
-  document.getElementById('ai-cap').textContent=capital.toFixed(2);
-  updateMiniChart();
-}
-
-// ─── MAIN PRICE ───────────────────────────────────────────────────
-function updateMainPrice(){
-  const d=prices[curPair];if(!d)return;
-  const el=document.getElementById('main-price');
-  const newTxt='$'+fp(d.price);
-  if(el.textContent!==newTxt){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),300);}
-  el.textContent=newTxt;
-  el.style.color=d.change>=0?'var(--cyan)':'var(--red)';
-
-  const b=document.getElementById('chg-badge');
-  const sign=d.change>=0?'+':'';
-  b.textContent=sign+d.change.toFixed(2)+'%';
-  b.style.color=d.change>=0?'var(--green)':'var(--red)';
-  b.style.background=d.change>=0?'rgba(0,255,136,.1)':'rgba(255,61,110,.1)';
-  b.style.borderColor=d.change>=0?'rgba(0,255,136,.2)':'rgba(255,61,110,.2)';
-
-  document.getElementById('hi-v').textContent='$'+fp(d.high);
-  document.getElementById('lo-v').textContent='$'+fp(d.low);
-  document.getElementById('vo-v').textContent=fv(d.vol);
-}
-
-// ─── MINI CHART ───────────────────────────────────────────────────
-function updateMiniChart(){
-  const hist=priceHistory[curPair];
-  const wrap=document.getElementById('mini-chart');
-  if(!hist||hist.length<2){wrap.innerHTML='';return;}
-  const mn=Math.min(...hist),mx=Math.max(...hist),range=mx-mn||1;
-  wrap.innerHTML=hist.map((v,i)=>{
-    const h=Math.max(3,Math.round(((v-mn)/range)*34));
-    const isUp=i===0||v>=hist[i-1];
-    const col=isUp?'var(--green)':'var(--red)';
-    return `<div style="width:6px;height:${h}px;background:${col};border-radius:1px;opacity:.7;flex-shrink:0"></div>`;
-  }).join('');
-}
-
-// ─── MARKET OVERVIEW ─────────────────────────────────────────────
-function updateMarketOverview(){
-  const wrap=document.getElementById('mkt-overview');
-  if(!wrap)return;
-  wrap.innerHTML=PAIRS.map(p=>{
-    const d=prices[p];if(!d)return '';
-    const col=d.change>=0?'var(--green)':'var(--red)';
-    return `<div class="sitem" onclick="switchPair('${p}')" style="cursor:pointer;padding:8px">
-      <div style="font-size:9px;color:var(--txt2);font-weight:700;font-family:'Space Mono',monospace">${p}</div>
-      <div style="font-size:11px;font-weight:700;color:${col};font-family:'Space Mono',monospace;margin-top:2px">${d.change>=0?'+':''}${d.change.toFixed(2)}%</div>
-    </div>`;
-  }).join('');
-}
-
-// ─── SENTIMENT ───────────────────────────────────────────────────
-function updateSentiment(){
-  const bullCount=PAIRS.filter(p=>prices[p]?.change>0).length;
-  const score=Math.round((bullCount/PAIRS.length)*100);
-  const sb=document.getElementById('sent-badge');
-  if(score>=60){sb.textContent='BULL 🐂';sb.style.color='var(--green)';sb.style.background='rgba(0,255,136,.08)';sb.style.borderColor='rgba(0,255,136,.2)';}
-  else if(score<=40){sb.textContent='BEAR 🐻';sb.style.color='var(--red)';sb.style.background='rgba(255,61,110,.08)';sb.style.borderColor='rgba(255,61,110,.2)';}
-  else{sb.textContent='NEUTRE ⚖️';sb.style.color='var(--amber)';sb.style.background='rgba(255,184,0,.08)';sb.style.borderColor='rgba(255,184,0,.2)';}
-}
-
-// ─── FEAR & GREED ─────────────────────────────────────────────────
-function updateFearGreed(val){
-  const ring=document.getElementById('fg-ring');
-  const valEl=document.getElementById('fg-val');
-  const labelEl=document.getElementById('fg-label');
-  const circ=2*Math.PI*30;
-  const offset=circ-(val/100)*circ;
-  ring.style.strokeDashoffset=offset;
-  valEl.textContent=val;
-  let col,label;
-  if(val<=20){col='var(--red)';label='EXTREME FEAR';}
-  else if(val<=40){col='var(--amber)';label='FEAR';}
-  else if(val<=60){col='var(--txt)';label='NEUTRAL';}
-  else if(val<=80){col='var(--green)';label='GREED';}
-  else{col='var(--cyan)';label='EXTREME GREED';}
-  ring.style.stroke=col;
-  valEl.style.color=col;
-  labelEl.style.color=col;
-  labelEl.textContent=label;
-}
-
-// ─── WALLET ──────────────────────────────────────────────────────
+// ─── WALLET ─────────────────────────────────────
 function updateWallet(){
-  document.getElementById('cap-v').textContent=capital.toFixed(2);
-  document.getElementById('goal-v').textContent='$'+capitalGoal.toFixed(2);
-  document.getElementById('expo-v').textContent='$'+(capital*10).toFixed(2);
-  document.getElementById('ai-cap').textContent=capital.toFixed(2);
-  document.getElementById('ai-goal').textContent=capitalGoal.toFixed(2);
-
-  const pct=capitalGoal>0?Math.min((capital/capitalGoal)*100,100):0;
-  document.getElementById('goal-bar').style.width=pct+'%';
-  document.getElementById('goal-pct').textContent=pct.toFixed(1)+'%';
-
-  const pnl=capital-capitalBase;
-  const pe=document.getElementById('pnl-v');
-  pe.textContent=(pnl>=0?'+':'')+'$'+pnl.toFixed(2);
-  pe.style.color=pnl>=0?'var(--green)':'var(--red)';
-
-  const wins=tradeHistory.filter(t=>t.r==='win').length;
-  const total=tradeHistory.length;
-  document.getElementById('tc-v').textContent=total;
-  document.getElementById('wr-v').textContent=total>0?Math.round((wins/total)*100)+'%':'—';
-
-  // Streak
-  let streak=0;
-  for(let i=tradeHistory.length-1;i>=0;i--){
-    const r=tradeHistory[i].r;
-    if(r==='win'||r==='loss'){
-      if(streak===0)streak=r==='win'?1:-1;
-      else if(r==='win'&&streak>0)streak++;
-      else if(r==='loss'&&streak<0)streak--;
-      else break;
-    }
-  }
-  const sv=document.getElementById('streak-v');
-  sv.textContent=streak===0?'—':(streak>0?'🔥+'+streak:'❄️'+streak);
-  sv.style.color=streak>0?'var(--amber)':streak<0?'var(--red)':'var(--txt2)';
-
-  renderJournal();
+  document.getElementById('cap-disp').textContent  =' $ '+capital.toFixed(2);
+  document.getElementById('goal-disp').textContent =' $ '+goal.toFixed(2);
+  const pct = goal>0 ? Math.min(100,(capital/goal)*100) : 0;
+  const miss = Math.max(0,goal-capital);
+  document.getElementById('prog-pct').textContent  = pct.toFixed(0)+'%';
+  document.getElementById('prog-miss').textContent = 'manque  $ '+miss.toFixed(2);
+  document.getElementById('prog-bar').style.width  = pct+'%';
+  // update ai cap display
+  const el=document.getElementById('ai-cap');
+  if(el)el.textContent=capital.toFixed(2);
+  updateJournalStats();
 }
 function openWallet(){
-  document.getElementById('w-cap').value=capital;
-  document.getElementById('w-goal').value=capitalGoal;
-  document.getElementById('w-add').value='';
+  document.getElementById('w-cap').value  = capital||'';
+  document.getElementById('w-goal').value = goal||'';
+  document.getElementById('w-add').value  = '';
   document.getElementById('wl-ov').style.display='flex';
 }
 function closeWallet(){document.getElementById('wl-ov').style.display='none';}
 function saveWallet(){
   const c=parseFloat(document.getElementById('w-cap').value);
   const g=parseFloat(document.getElementById('w-goal').value);
-  if(!isNaN(c)&&c>=0){capital=c;capitalBase=c;ls('cap',c);ls('capBase',c);}
-  if(!isNaN(g)&&g>0){capitalGoal=g;ls('goal',g);}
-  updateWallet();closeWallet();toast('✅ Portefeuille mis à jour');
-}
-function adjCap(sign){
-  const v=parseFloat(document.getElementById('w-add').value);
-  if(isNaN(v)||v<=0){toast('Montant invalide','err');return;}
-  capital=Math.max(0,capital+sign*v);
-  ls('cap',capital);
+  if(isNaN(c)||c<0){toast('Capital invalide','err');return;}
+  if(isNaN(g)||g<0){toast('Objectif invalide','err');return;}
+  capital=c; goal=g;
+  ls('capital',capital); ls('goal',goal);
   updateWallet();
   closeWallet();
+  toast('✅ Wallet mis à jour !','ok');
+  beep(600,80);
+}
+function adjCap(dir){
+  const add=parseFloat(document.getElementById('w-add').value);
+  if(isNaN(add)||add<=0){toast('Montant invalide','err');return;}
+  const c=parseFloat(document.getElementById('w-cap').value)||capital;
+  document.getElementById('w-cap').value=Math.max(0,c+dir*add).toFixed(2);
 }
 
-// ─── OPPS ────────────────────────────────────────────────────────
-const STATIC_OPPS=[
-  {asset:'SOL',dir:'LONG',lever:13,conf:91,reason:'Breakout canal haussier + volume spike + RSI 58. Setup propre.',heat:'🔥🔥'},
-  {asset:'BTC',dir:'LONG',lever:10,conf:84,reason:'Support 200EMA retesté 3×. Accumulation visible côté achat.',heat:'🔥'},
-  {asset:'ETH',dir:'LONG',lever:12,conf:78,reason:'Div. haussière MACD + liquidité clé. Momentum en construction.',heat:'🔥'},
-  {asset:'WIF',dir:'LONG',lever:10,conf:72,reason:'Corr. BTC haussière. Meme momentum fort. RR 1:3.5.'},
-  {asset:'SOL',dir:'SHORT',lever:12,conf:80,reason:'Double top H4. Rejet résistance. Short scalp SL serré.',heat:'🔥'},
-  {asset:'PEPE',dir:'LONG',lever:10,conf:66,reason:'Vol x4 en 4h. Cassure résistance. Volatilité haute.'},
-];
-let currentOpps=STATIC_OPPS;
-
-function filterOpps(f){
-  oppFilter=f;
-  ['ALL','LONG','SHORT'].forEach(x=>{
-    const btn=document.getElementById('f-'+x.toLowerCase());
-    if(btn){
-      btn.style.background=x===f?'rgba(0,255,212,.1)':'';
-      btn.style.borderColor=x===f?'rgba(0,255,212,.2)':'rgba(255,255,255,.08)';
-      btn.style.color=x===f?'var(--cyan)':'var(--txt2)';
-    }
-  });
-  renderOpps();
-}
-function buildOpps(list){
-  currentOpps=list||STATIC_OPPS;
-  renderOpps();
-}
-function renderOpps(){
-  const grid=document.getElementById('opp-grid');
-  grid.innerHTML='';
-  const filtered=oppFilter==='ALL'?currentOpps:currentOpps.filter(o=>o.dir===oppFilter);
-  if(!filtered.length){grid.innerHTML='<div style="color:var(--txt2);font-size:12px;padding:12px">Aucun signal pour ce filtre.</div>';return;}
-  filtered.forEach(o=>{
-    const isL=o.dir==='LONG';
-    const cc=o.conf>=88?'var(--green)':o.conf>=75?'var(--cyan)':'var(--amber)';
-    const dc=isL?'var(--green)':'var(--red)';
-    const db=isL?'rgba(0,255,136,.1)':'rgba(255,61,110,.1)';
-    const dbo=isL?'rgba(0,255,136,.25)':'rgba(255,61,110,.25)';
-    const card=document.createElement('div');
-    card.className='ocard';
-    card.onclick=()=>openTrade(o);
-    const priceStr=prices[o.asset]?('$'+fp(prices[o.asset].price)):'—';
-    card.innerHTML=`
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:16px;font-weight:900;font-family:'Space Mono',monospace">${esc(o.asset)}</span>
-        <span style="background:${db};border:1px solid ${dbo};border-radius:6px;padding:2px 8px;font-size:10px;font-weight:800;color:${dc};font-family:'Space Mono',monospace">${o.dir}</span>
-      </div>
-      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:2px">
-        <span style="font-size:22px;font-weight:900;color:${cc};font-family:'Space Mono',monospace">${o.conf}%</span>
-        <span style="font-size:9px;color:var(--txt2)">conf</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--cyan);font-weight:700;font-family:'Space Mono',monospace">x${o.lever}</span>
-      </div>
-      <div class="cbar"><div class="cfill" style="width:${o.conf}%;background:${cc}"></div></div>
-      <div style="font-size:10px;color:var(--txt2);margin-top:8px;line-height:1.5">${esc(o.reason)}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-        <span style="font-size:10px;color:var(--txt3);font-family:'Space Mono',monospace">${priceStr}</span>
-        ${o.heat?`<span style="font-size:11px">${o.heat}</span>`:''}
-        <span style="font-size:9px;color:var(--txt3)">Tap →</span>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
+// ─── TICKER ─────────────────────────────────────
+function buildTicker(){
+  const bar=document.getElementById('ticker');
+  bar.innerHTML=PAIRS.map(p=>`
+    <div class="titem $ {p===curPair?' on':''}" id="tick-${p}" onclick="selectPair('${p}')">
+      <div class="tsym">${p}</div>
+      <div class="tprice" id="tp-${p}">—</div>
+      <div class="tch" id="tc-${p}">—</div>
+    </div>`).join('');
 }
 
-// ─── TRADE MODAL ─────────────────────────────────────────────────
-let selectedLever=10;
-function openTrade(o){
-  curOpp=o;
-  const d=prices[o.asset];
-  const price=d?.price||0;
-  const isL=o.dir==='LONG';
-
-  document.getElementById('tm-asset').textContent=o.asset+'/USDT';
-  document.getElementById('tm-reason').textContent=o.reason;
-
-  const dd=document.getElementById('tm-dir');
-  dd.textContent=o.dir;
-  dd.style.cssText=`font-size:11px;font-weight:800;padding:3px 12px;border-radius:20px;
-    color:${isL?'var(--green)':'var(--red)'};
-    background:${isL?'rgba(0,255,136,.1)':'rgba(255,61,110,.1)'};
-    border:1px solid ${isL?'rgba(0,255,136,.25)':'rgba(255,61,110,.25)'};
-    font-family:'Space Mono',monospace`;
-
-  selectedLever=o.lever;
-  document.getElementById('lev-slider').value=o.lever;
-  document.getElementById('lev-display').textContent='x'+o.lever;
-  document.getElementById('tm-lev').textContent='x'+o.lever;
-  document.getElementById('tm-conf-b').textContent=o.conf+'% conf.';
-
-  if(price>0){
-    const tp=isL?price*1.04:price*0.96;
-    const sl2=isL?price*0.985:price*1.015;
-    document.getElementById('tm-entry').textContent='$'+fp(price);
-    document.getElementById('tm-tp').textContent='$'+fp(tp);
-    document.getElementById('tm-sl').textContent='$'+fp(sl2);
-    const prof=capital*o.lever*0.04;
-    const risk=capital*o.lever*0.015;
-    document.getElementById('tm-profit').textContent='+$'+prof.toFixed(2);
-    document.getElementById('tm-risk').textContent='-$'+risk.toFixed(2);
-    document.getElementById('tm-rr').textContent='1:'+(prof/risk).toFixed(1);
-  }else{
-    document.getElementById('tm-entry').textContent='Marché';
-    document.getElementById('tm-tp').textContent='+4%';
-    document.getElementById('tm-sl').textContent='-1.5%';
-    document.getElementById('tm-profit').textContent='+$'+(capital*o.lever*0.04).toFixed(2);
-    document.getElementById('tm-risk').textContent='-$'+(capital*o.lever*0.015).toFixed(2);
-    document.getElementById('tm-rr').textContent='1:'+(0.04/0.015).toFixed(1);
-  }
-  document.getElementById('tm-ov').style.display='flex';
-}
-function updateLevSlider(v){
-  selectedLever=parseInt(v);
-  document.getElementById('lev-display').textContent='x'+v;
-  document.getElementById('tm-lev').textContent='x'+v;
-  if(curOpp){
-    const prof=capital*selectedLever*0.04;
-    const risk=capital*selectedLever*0.015;
-    document.getElementById('tm-profit').textContent='+$'+prof.toFixed(2);
-    document.getElementById('tm-risk').textContent='-$'+risk.toFixed(2);
-    document.getElementById('tm-rr').textContent='1:'+(prof/risk).toFixed(1);
-  }
-}
-function closeTrade(){document.getElementById('tm-ov').style.display='none';}
-function acceptTrade(){
-  if(!curOpp)return;
-  const entry=prices[curOpp.asset]?.price||null;
-  const trade={
-    id:Date.now(),
-    asset:curOpp.asset,dir:curOpp.dir,lever:selectedLever,
-    entry:entry,tp:entry?(curOpp.dir==='LONG'?entry*1.04:entry*0.96):null,
-    sl:entry?(curOpp.dir==='LONG'?entry*0.985:entry*1.015):null,
-    ts:Date.now(),r:'open',pnl:null
-  };
-  tradeHistory.push(trade);
-  ls('trades',JSON.stringify(tradeHistory));
-  updateWallet();closeTrade();
-  toast('⚡ Trade ouvert : '+curOpp.asset,'ok');
-}
-function refuseTrade(){closeTrade();toast('Trade refusé','info');}
-
-// ─── JOURNAL ─────────────────────────────────────────────────────
-function renderJournal(){
-  const list=document.getElementById('journal-list');
-  if(!list)return;
-  if(!tradeHistory.length){list.innerHTML='<div style="text-align:center;color:var(--txt2);font-size:12px;padding:16px">Aucun trade enregistré</div>';return;}
-  list.innerHTML=[...tradeHistory].reverse().slice(0,5).map(t=>tradeCard(t)).join('');
-}
-function tradeCard(t){
-  const isL=t.dir==='LONG';
-  const rCol=t.r==='win'?'var(--green)':t.r==='loss'?'var(--red)':t.r==='open'?'var(--cyan)':'var(--txt2)';
-  const rTxt=t.r==='win'?'WIN ✓':t.r==='loss'?'LOSS ✗':t.r==='open'?'OUVERT':'—';
-  const pnlStr=t.pnl!=null?(t.pnl>=0?'+':'')+'$'+t.pnl.toFixed(2):'—';
-  return `<div class="jentry">
-    <div style="font-size:13px;font-weight:900;font-family:'Space Mono',monospace;min-width:40px">${t.asset}</div>
-    <span class="jtag" style="background:${isL?'rgba(0,255,136,.08)':'rgba(255,61,110,.08)'};color:${isL?'var(--green)':'var(--red)'};border:1px solid ${isL?'rgba(0,255,136,.2)':'rgba(255,61,110,.2)'}">${t.dir}</span>
-    <span style="font-size:11px;color:var(--txt2);font-family:'Space Mono',monospace">x${t.lever}</span>
-    <span style="margin-left:auto;font-size:11px;font-weight:700;color:${rCol};font-family:'Space Mono',monospace">${rTxt}</span>
-    ${t.pnl!=null?`<span style="font-size:11px;font-weight:700;color:${t.pnl>=0?'var(--green)':'var(--red)'};font-family:'Space Mono',monospace">${pnlStr}</span>`:''}
-  </div>`;
-}
-function openJournal(){
-  document.getElementById('jnotif').style.display='none';
-  const wrap=document.getElementById('jr-full');
-  if(!tradeHistory.length){wrap.innerHTML='<div style="text-align:center;color:var(--txt2);padding:20px">Aucun trade</div>';
-  }else{wrap.innerHTML=[...tradeHistory].reverse().map(t=>tradeCard(t)).join('');}
-  document.getElementById('jr-ov').style.display='flex';
-}
-function closeJournal(){document.getElementById('jr-ov').style.display='none';}
-function clearJournal(){
-  if(!confirm('Vider le journal ?'))return;
-  tradeHistory=[];ls('trades','[]');updateWallet();toast('Journal vidé','info');
-}
-
-// ─── CLOSE TRADE ─────────────────────────────────────────────────
-function showCloseModal(){
-  const open=tradeHistory.filter(t=>t.r==='open');
-  const wrap=document.getElementById('open-trades-list');
-  if(!open.length){wrap.innerHTML='<div style="color:var(--txt2);font-size:12px;padding:12px">Aucune position ouverte.</div>';
-  }else{
-    wrap.innerHTML=open.map(t=>`
-      <div style="background:rgba(0,255,212,.03);border:1px solid rgba(0,255,212,.08);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:8px">
-        <div>
-          <div style="font-size:13px;font-weight:900;font-family:'Space Mono',monospace">${t.asset} ${t.dir} x${t.lever}</div>
-        </div>
-        <div style="display:flex;gap:6px">
-          <button onclick="closeTrade2(${t.id},'win')" class="btn-sm btn-g" style="font-size:10px;padding:5px 8px">✓ Win</button>
-          <button onclick="closeTrade2(${t.id},'loss')" class="btn-sm btn-r" style="font-size:10px;padding:5px 8px">✗ Loss</button>
-        </div>
-      </div>`).join('');
-  }
-  document.getElementById('close-ov').style.display='flex';
-}
-function closeCloseModal(){document.getElementById('close-ov').style.display='none';}
-function closeTrade2(id,result){
-  const t=tradeHistory.find(x=>x.id===id);
-  if(!t)return;
-  t.r=result;
-  const exitPrice=prices[t.asset]?.price||t.entry;
-  if(t.entry&&exitPrice){
-    const pct=(t.dir==='LONG')?(exitPrice-t.entry)/t.entry:(t.entry-exitPrice)/t.entry;
-    t.pnl=capital*t.lever*pct;
-    if(result==='win'){capital=Math.max(0,capital+Math.abs(t.pnl));}
-    else{capital=Math.max(0,capital-Math.abs(t.pnl));}
-    ls('cap',capital);
-  }
-  ls('trades',JSON.stringify(tradeHistory));
-  updateWallet();
-  closeCloseModal();
-}
-
-// ─── PIN ─────────────────────────────────────────────────────────
-function titleClick(){
-  tcnt++;clearTimeout(ttmr);
-  ttmr=setTimeout(()=>{tcnt=0;},1800);
-  if(tcnt>=5){tcnt=0;openPIN();}
-}
-function openPIN(){pinBuf='';updatePinDots();document.getElementById('pin-err').textContent='';document.getElementById('pin-ov').style.display='flex';}
-function closePIN(){document.getElementById('pin-ov').style.display='none';}
-function pk(v){
-  if(v==='C')pinBuf='';
-  else if(v==='D')pinBuf=pinBuf.slice(0,-1);
-  else if(pinBuf.length<4)pinBuf+=v;
-  updatePinDots();
-  if(pinBuf.length===4)checkPIN();
-}
-function updatePinDots(){for(let i=0;i<4;i++){const el=document.getElementById('pd'+i);if(el)el.classList.toggle('on',i<pinBuf.length);}}
-function checkPIN(){
-  if(pinBuf===PIN_CODE){
-    closePIN();
-    document.getElementById('api-in').value=apiKey;
-    document.getElementById('st-ov').style.display='flex';
-  }else{
-    document.getElementById('pin-err').textContent='PIN incorrect ❌';
-    setTimeout(()=>{pinBuf='';updatePinDots();document.getElementById('pin-err').textContent='';},800);
+function updateTickerItem(p){
+  const d=prices[p];
+  if(!d)return;
+  const el=document.getElementById('tp-'+p);
+  const ce=document.getElementById('tc-'+p);
+  if(el)el.textContent=' $ '+fp(d.price);
+  if(ce){
+    const up=d.change>=0;
+    ce.textContent=(up?'+':'')+d.change.toFixed(2)+'%';
+    ce.className='tch '+(up?'up':'dn');
   }
 }
 
-// ─── SETTINGS ────────────────────────────────────────────────────
-function closeST(){document.getElementById('st-ov').style.display='none';}
-function saveKey(){
-  const k=document.getElementById('api-in').value.trim();
-  if(!k){toast('Clé vide','err');return;}
-  apiKey=k;ls('gemKey',k);toast('✅ Clé Gemini sauvegardée','ok');
-}
-function testKey(){
-  toast('🧪 Ouvre le chat IA pour tester','info');
-}
-
-// ─── IA GEMINI (ROBUSTE ET CORRIGÉ) ───────────────────────────────
-function buildSystemPrompt() {
-  const pCtx=Object.entries(prices).map(([s,d])=>`${s}:$${fp(d.price)}(${d.change>=0?'+':''}${d.change?.toFixed(2)}%)`).join(' ');
-  return `Tu es SNIPER, un trader crypto IA d'élite. Parle français, sois direct et pro.
-CONTEXTE LIVE : Capital: $${capital.toFixed(2)} | Paire: ${curPair}/USDT | Prix: ${pCtx}
-FORMAT : Liste à puces, chiffres précis, pas de phrases longues.`;
-}
-
-function addAIMsg(text,isTyping=false){
-  const chat=document.getElementById('chat');
-  const div=document.createElement('div');
-  div.className='cmsg-ai';
-  if(isTyping){
-    div.innerHTML=`<div style="font-size:9px;color:var(--txt2);margin-bottom:4px;font-weight:700;letter-spacing:1px;font-family:'Space Mono',monospace">GEMINI ✦</div><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>`;
-    div.id='typing-bubble';
-  }else{
-    const fmt=esc(text).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
-    div.innerHTML=`<div style="font-size:9px;color:var(--txt2);margin-bottom:4px;font-weight:700;letter-spacing:1px;font-family:'Space Mono',monospace">GEMINI ✦</div>${fmt}`;
-  }
-  chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-  return div;
-}
-
-function addUserMsg(text){
-  const chat=document.getElementById('chat');
-  const div=document.createElement('div');
-  div.className='cmsg-user';
-  div.textContent=text;
-  chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-}
-
-function clearChat(){
-  document.getElementById('chat').innerHTML='';
-  addAIMsg('Chat réinitialisé. Que veux-tu analyser ?');
-}
-
-function exportChat(){ toast('📥 Chat exporté','ok'); }
-function quickMsg(msg){ document.getElementById('ci').value=msg; sendChat(); }
-function toggleBlur(){ blurOn=!blurOn; document.body.classList.toggle('blured',blurOn); document.getElementById('eye-btn').textContent=blurOn?'🙈 Visible':'👁 Discret'; }
-
-// Le cœur de l'API (Version Stable V1)
-// Le cœur de l'API (Compatibilité Maximale)
-async function callGemini(userMsg) {
-  if (!apiKey) throw new Error('Clé API manquante');
-
-  // ⚠️ LE FIX EST ICI : On utilise "gemini-pro" qui marche sur TOUS les comptes
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
-  const promptText = buildSystemPrompt() + "\n\nDemande de l'utilisateur : " + userMsg;
-
-  const payload = {
-    contents: [{
-      role: "user",
-      parts: [{ text: promptText }]
-    }],
-    generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
-  };
-
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  const data = await resp.json();
-
-  if (!resp.ok) {
-    throw new Error(data.error?.message || "Erreur de connexion à l'API Google");
-  }
-
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Aucune réponse générée.';
-}
-
-async function sendChat(){
-  const inp = document.getElementById('ci');
-  const msg = inp.value.trim();
-  if(!msg) return;
-  if(!apiKey){ toast('🔑 Configure ta clé Gemini (5× tap sur le titre)','warn'); return; }
-  
-  inp.value = '';
-  addUserMsg(msg);
-  
-  const sb = document.getElementById('sb');
-  const status = document.getElementById('ai-st');
-  
-  sb.disabled = true;
-  status.textContent = '● RÉFLEXION...';
-  status.style.color = 'var(--amber)';
-  
-  const typing = addAIMsg('', true);
-
-  try {
-    const reply = await callGemini(msg);
-    typing.remove();
-    addAIMsg(reply);
-  } catch(e) {
-    typing.remove();
-    addAIMsg('❌ Erreur : ' + e.message);
-    toast('Erreur IA', 'err');
-  } finally {
-    sb.disabled = false;
-    status.textContent = '● PRÊT';
-    status.style.color = 'var(--green)';
-  }
-}
-
-// ─── ACTIONS RAPIDES IA ──────────────────────────────────────────
-async function doAiScan(){
-  if(!apiKey){toast('🔑 Clé requise','warn');return;}
-  const pCtx=Object.entries(prices).map(([s,d])=>`${s} $${fp(d.price)} (${d.change?.toFixed(2)}%)`).join(', ');
-  const prompt=`Scan rapide marché. Prix: ${pCtx}. Donne 3 observations clés ultra-concises (momentum, domination BTC, corrélations). Max 4 lignes.`;
-  document.getElementById('ci').value=prompt; await sendChat();
-}
-
-async function doAiOpps(){
-  if(!apiKey){toast('🔑 Clé requise','warn');return;}
-  const pCtx=Object.entries(prices).map(([s,d])=>`${s} $${fp(d.price)} (${d.change?.toFixed(2)}%)`).join(', ');
-  const prompt=`Prix live: ${pCtx}. Capital $${capital.toFixed(2)}. Génère 2 setups trade précis avec: actif, direction, levier (x8-x13), prix entrée, SL exact, TP exact, RR calculé. Priorité risk management.`;
-  document.getElementById('ci').value=prompt; await sendChat();
-}
-
-// ─── FAKE FEAR & GREED ───────────────────────────────────────────
-function simulateFearGreed(){
-  const btc = prices.BTC;
-  if(!btc){ updateFearGreed(50); return; }
-  const base = 50;
-  const delta = btc.change * 2;
-  const val = Math.max(5, Math.min(95, Math.round(base + delta)));
-  updateFearGreed(val);
-}
-
-// ─── INIT ────────────────────────────────────────────────────────
-function init(){
-  buildTicker(); 
-  buildOpps(); 
-  updateWallet();
-  connectWS();
+function updateMainPrice(){
+  const d=prices[curPair];
+  if(!d)return;
+  const up=d.change>=0;
+  document.getElementById('main-price').textContent=' $ '+fp(d.price);
+  const ch=document.getElementById('main-ch');
+  ch.textContent=(up?'+':'')+d.change.toFixed(2)+'%';
+  ch.style.color=up?'var(--green)':'var(--red)';
+  if(d.high)document.getElementById('main-high').textContent=' $ '+fp(d.high);
+  if(d.low) document.getElementById('main-low').textContent=' $ '+fp(d.low);
+  if(d.vol) document.getElementById('main-vol').textContent=fv(d.vol);
+  updateMktOverview();
+  updateSentiment();
   simulateFearGreed();
-
-  if(document.getElementById('vib-tog')) document.getElementById('vib-tog').checked = vibOn;
-  if(document.getElementById('snd-tog')) document.getElementById('snd-tog').checked = sndOn;
-
-  setInterval(simulateFearGreed, 30000);
-  
-  setTimeout(() => {
-    addAIMsg("Système **Yenom V4** opérationnel. Connexion API établie. Prêt pour le scalp ? 🏹");
-  }, 1000);
 }
 
-document.addEventListener('DOMContentLoaded', init);
-</script>
-</body>
-</html>
+function updateMktOverview(){
+  const wrap=document.getElementById('mkt-overview');
+  wrap.innerHTML=PAIRS.map(p=>{
+    const d=prices[p];
+    if(!d)return`<div class="mkt-chip"><div class="slabel
