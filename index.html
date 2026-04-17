@@ -6,782 +6,609 @@
 <title>Yenom Trading Terminal</title>
 <style>
 :root{
-  --bg:#050508;--panel:#0d0d14;--panel2:#13131e;
+  --bg:#000;--panel:#0a0a0f;--panel2:#12121a;
   --neon:#00ff88;--neon2:#00d4ff;--red:#ff3860;
-  --amber:#ffb800;--purple:#b537f2;--txt:#e8e8f0;--mut:#4a4a5e;
-  --border:rgba(0,255,136,.12);
+  --amber:#ffb800;--purple:#b537f2;--txt:#e8e8f0;--mut:#5a5a6e;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden}
 body{
   background:var(--bg);color:var(--txt);
   font-family:'SF Mono','Menlo','Consolas',monospace;
-  min-height:100vh;
-}
-
-/* GRID BG */
-body::before{
-  content:'';position:fixed;inset:0;z-index:0;
   background-image:
-    linear-gradient(rgba(0,255,136,.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,136,.025) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;
+    linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);
+  background-size:30px 30px;min-height:100vh;
 }
-
-.wrap{max-width:760px;margin:0 auto;padding:14px 12px 100px;position:relative;z-index:1}
-
-/* ── HEADER ── */
-.hdr{
-  background:linear-gradient(135deg,#0d0d14,#13131e);
-  border:1px solid var(--border);border-radius:18px;
-  padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden;
-}
-.hdr::after{
-  content:'';position:absolute;top:0;left:-100%;
-  width:60%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--neon),transparent);
-  animation:scan 4s linear infinite;
-}
-@keyframes scan{to{left:200%}}
-.logo{
-  font-size:22px;font-weight:900;letter-spacing:4px;
-  background:linear-gradient(90deg,var(--neon),var(--neon2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  cursor:pointer;display:inline-block;user-select:none;
-}
-.sub{font-size:9px;color:var(--mut);letter-spacing:3px;margin-top:2px}
+.wrap{max-width:760px;margin:0 auto;padding:14px 12px 90px}
+.hdr{background:linear-gradient(135deg,#0a0a0f 0%,#12121a 100%);border:1px solid rgba(0,255,136,.2);border-radius:14px;padding:14px 16px;margin-bottom:12px;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:scan 3s linear infinite;}
+@keyframes scan{to{left:100%}}
+.logo{font-size:18px;font-weight:900;letter-spacing:3px;color:var(--neon);text-shadow:0 0 10px rgba(0,255,136,.5);cursor:pointer}
+.sub{font-size:10px;color:var(--mut);letter-spacing:2px;margin-top:2px}
 .hdr-row{display:flex;justify-content:space-between;align-items:center}
-.badge{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);
-  border-radius:20px;padding:4px 10px;font-size:9px;color:var(--neon);letter-spacing:1px;
-}
-.badge-dot{width:6px;height:6px;background:var(--neon);border-radius:50%;animation:pulse 1.5s infinite;box-shadow:0 0 6px var(--neon)}
-@keyframes pulse{50%{opacity:.2;transform:scale(.8)}}
-
-/* ── TICKER ── */
-.ticker-wrap{
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:12px;margin-bottom:14px;overflow:hidden;
-}
-.ticker-inner{
-  display:flex;gap:0;overflow-x:auto;scrollbar-width:none;
-  scroll-snap-type:x mandatory;
-}
-.ticker-inner::-webkit-scrollbar{display:none}
-.tick{
-  flex:0 0 auto;scroll-snap-align:start;
-  padding:10px 14px;cursor:pointer;transition:.2s;
-  border-right:1px solid var(--border);position:relative;
-}
-.tick:last-child{border-right:none}
-.tick.active{background:rgba(0,255,136,.07)}
-.tick.active::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;
-  height:2px;background:var(--neon);box-shadow:0 0 8px var(--neon);
-}
-.tick-sym{font-size:11px;font-weight:700;color:var(--txt);letter-spacing:1px}
-.tick-p{font-size:12px;font-weight:900;margin-top:2px}
-.tick-c{font-size:9px;margin-top:1px}
-.up{color:var(--neon)}.dn{color:var(--red)}
-
-/* ── PANELS ── */
-.panel{
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:16px;padding:18px;margin-bottom:14px;
-  position:relative;overflow:hidden;
-}
-.panel::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--border),transparent);
-}
-.panel-ttl{
-  font-size:9px;color:var(--mut);letter-spacing:3px;font-weight:700;
-  margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;
-  text-transform:uppercase;
-}
-.panel-ttl span:first-child{color:var(--neon);font-size:10px}
-
-/* ── WALLET ── */
-.cap-big{
-  font-size:48px;font-weight:900;letter-spacing:-2px;
-  background:linear-gradient(135deg,var(--neon),var(--neon2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  line-height:1;
-}
-.cap-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px}
-.cap-meta{text-align:right}
-.cap-lbl{font-size:9px;color:var(--mut);letter-spacing:2px}
-.cap-goal{font-size:20px;font-weight:700;color:var(--amber)}
-
-.goal-bar{height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;margin-bottom:6px}
-.goal-fill{
-  height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1);
-  background:linear-gradient(90deg,var(--neon),var(--neon2));
-  box-shadow:0 0 10px rgba(0,255,136,.4);
-  position:relative;
-}
-.goal-fill::after{
-  content:'';position:absolute;right:0;top:0;bottom:0;width:3px;
-  background:#fff;border-radius:2px;opacity:.7;
-}
-.goal-pct{font-size:9px;color:var(--mut);text-align:right}
-
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-.stat{
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
-  border-radius:10px;padding:10px;text-align:center;
-}
-.stat-v{font-size:16px;font-weight:800;color:var(--neon2)}
-.stat-l{font-size:8px;color:var(--mut);margin-top:2px;letter-spacing:1px}
-
-/* wallet edit */
-.wallet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
-.inp-group{display:flex;flex-direction:column;gap:5px}
-.inp-lbl{font-size:9px;color:var(--mut);letter-spacing:2px}
-.inp{
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-  color:var(--txt);padding:10px 12px;border-radius:10px;font-size:14px;
-  font-family:inherit;outline:none;width:100%;transition:.2s;
-}
-.inp:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,255,136,.08)}
-.btn{
-  padding:11px 16px;border:none;border-radius:10px;font-family:inherit;
-  font-weight:700;font-size:12px;cursor:pointer;transition:.15s;letter-spacing:1px;
-}
-.btn-neon{background:linear-gradient(135deg,var(--neon),var(--neon2));color:#000}
-.btn-neon:hover{filter:brightness(1.1);transform:translateY(-1px)}
-.btn-neon:active{transform:translateY(0)}
-.btn-ghost{background:rgba(255,255,255,.04);color:var(--txt);border:1px solid rgba(255,255,255,.08)}
-.btn-ghost:hover{background:rgba(255,255,255,.07)}
-.btn-red{background:rgba(255,56,96,.1);color:var(--red);border:1px solid rgba(255,56,96,.2)}
-.btn-row{display:flex;gap:8px;margin-top:12px}
-
-/* ── TRADE FORM ── */
-.pair-big{
-  font-size:28px;font-weight:900;color:var(--txt);letter-spacing:2px;
-}
-.price-live{
-  font-size:32px;font-weight:900;letter-spacing:-1px;
-  background:linear-gradient(135deg,#fff,var(--neon2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.trade-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.dir-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.dir-btn{
-  padding:14px;border:2px solid transparent;border-radius:12px;
-  background:rgba(255,255,255,.03);color:var(--mut);
-  font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;
-  transition:.2s;letter-spacing:2px;text-transform:uppercase;
-}
-.dir-btn.long.on{background:rgba(0,255,136,.1);border-color:var(--neon);color:var(--neon);box-shadow:0 0 20px rgba(0,255,136,.15)}
-.dir-btn.short.on{background:rgba(255,56,96,.1);border-color:var(--red);color:var(--red);box-shadow:0 0 20px rgba(255,56,96,.15)}
-.lev-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.lev-btn{
-  padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.03);color:var(--mut);
-  font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:.2s;
-}
-.lev-btn.on{background:rgba(180,55,242,.15);border-color:var(--purple);color:var(--purple);box-shadow:0 0 10px rgba(180,55,242,.2)}
-.trade-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.trade-summary{
-  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
-  border-radius:10px;padding:12px;margin-bottom:12px;
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
-}
-.ts-item{text-align:center}
-.ts-v{font-size:13px;font-weight:800}
-.ts-l{font-size:8px;color:var(--mut);margin-top:2px;letter-spacing:1px}
-
-/* ── HISTORY ── */
-.trade-list{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-.trade-item{
-  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
-  border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;
-  transition:.2s;
-}
-.trade-item:hover{background:rgba(255,255,255,.04)}
-.ti-left{display:flex;flex-direction:column;gap:3px}
-.ti-pair{font-size:13px;font-weight:800;color:var(--txt)}
-.ti-meta{font-size:9px;color:var(--mut);letter-spacing:1px}
-.ti-right{text-align:right}
-.ti-pnl{font-size:16px;font-weight:900}
-.ti-date{font-size:8px;color:var(--mut);margin-top:2px}
-.badge-dir{
-  display:inline-block;padding:2px 7px;border-radius:4px;font-size:8px;font-weight:700;letter-spacing:1px;
-  margin-left:6px;
-}
-.badge-long{background:rgba(0,255,136,.15);color:var(--neon)}
-.badge-short{background:rgba(255,56,96,.15);color:var(--red)}
-.empty-state{text-align:center;padding:30px;color:var(--mut);font-size:12px}
-
-/* ── AI CHAT ── */
-.ai-status{
-  display:flex;align-items:center;gap:8px;
-  font-size:9px;letter-spacing:2px;color:var(--neon);
-}
-#aist{display:flex;align-items:center;gap:5px}
-.chat-box{
-  height:340px;overflow-y:auto;padding:10px 0;
-  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
-  display:flex;flex-direction:column;gap:10px;
-}
-.chat-box::-webkit-scrollbar{width:3px}
-.chat-box::-webkit-scrollbar-track{background:transparent}
-.chat-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.msg{max-width:88%;animation:fadeup .3s ease}
-@keyframes fadeup{from{opacity:0;transform:translateY(8px)}}
-.msg-u{align-self:flex-end}
-.msg-a{align-self:flex-start}
-.lbl{font-size:8px;color:var(--mut);letter-spacing:2px;margin-bottom:4px}
-.bubble{
-  padding:12px 14px;border-radius:14px;font-size:12px;line-height:1.6;
-  white-space:pre-wrap;word-break:break-word;
-}
-.msg-u .bubble{
-  background:linear-gradient(135deg,rgba(0,255,136,.12),rgba(0,212,255,.08));
-  border:1px solid rgba(0,255,136,.2);border-radius:14px 14px 4px 14px;
-}
-.msg-a .bubble{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.06);border-radius:4px 14px 14px 14px;
-}
-.typing{display:flex;gap:5px;padding:4px 0}
-.typing span{
-  width:7px;height:7px;background:var(--neon);border-radius:50%;
-  animation:blink .9s infinite;box-shadow:0 0 6px var(--neon);
-}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--neon)}
+.live-dot{width:7px;height:7px;background:var(--neon);border-radius:50%;animation:pulse 1.5s infinite;box-shadow:0 0 8px var(--neon)}
+@keyframes pulse{50%{opacity:.3}}
+.panel{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:12px;}
+.panel-ttl{font-size:10px;color:var(--mut);letter-spacing:2px;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+.panel-ttl span:first-child::before{content:'▸ ';color:var(--neon)}
+.cap-big{font-size:42px;font-weight:900;color:var(--neon);text-shadow:0 0 20px rgba(0,255,136,.4);letter-spacing:-1px;}
+.cap-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+.goal-bar{height:6px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;margin-top:8px}
+.goal-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--neon2));border-radius:3px;transition:width 1s;box-shadow:0 0 10px var(--neon)}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kpi{background:var(--panel2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:10px;text-align:center}
+.kpi-l{font-size:9px;color:var(--mut);letter-spacing:1px;margin-bottom:4px}
+.kpi-v{font-size:14px;font-weight:800}
+.crypto-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px}
+.crypto-bar::-webkit-scrollbar{display:none}
+.cryp{flex-shrink:0;background:var(--panel2);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s;min-width:90px;}
+.cryp.on{border-color:var(--neon);background:rgba(0,255,136,.08);box-shadow:0 0 15px rgba(0,255,136,.15)}
+.cryp-s{font-size:11px;font-weight:800;color:var(--txt)}
+.cryp-p{font-size:11px;color:var(--mut);margin-top:2px}
+.cryp.on .cryp-p{color:var(--neon)}
+.cryp-c{font-size:9px;margin-top:2px}
+.price-main{background:linear-gradient(135deg,var(--panel2),var(--panel));border:1px solid rgba(0,212,255,.15);border-radius:12px;padding:16px;}
+.pair-name{font-size:12px;color:var(--mut);letter-spacing:1px;margin-bottom:4px}
+.price-v{font-size:32px;font-weight:900;color:var(--neon2);text-shadow:0 0 15px rgba(0,212,255,.3)}
+.price-ch{font-size:14px;font-weight:700;margin-top:4px}
+.chat-box{background:var(--panel2);border:1px solid rgba(255,255,255,.05);border-radius:12px;height:380px;display:flex;flex-direction:column;}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.5;word-wrap:break-word;white-space:pre-wrap}
+.msg-u{align-self:flex-end;background:linear-gradient(135deg,var(--neon),#00cc70);color:#000;font-weight:600}
+.msg-a{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+.msg-a .lbl{font-size:9px;color:var(--neon2);font-weight:800;letter-spacing:1px;margin-bottom:4px}
+.chat-in{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.05)}
+.chat-in input{flex:1;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;color:var(--txt);font-size:13px;outline:none;font-family:inherit;}
+.chat-in input:focus{border-color:var(--neon)}
+.chat-in button{background:var(--neon);color:#000;border:none;border-radius:10px;padding:0 18px;font-weight:800;cursor:pointer;font-family:inherit;}
+.chat-in button:disabled{opacity:.5}
+.btn{background:var(--panel2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;color:var(--txt);cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s;}
+.btn:hover,.btn:active{background:rgba(255,255,255,.06)}
+.btn-neon{background:rgba(0,255,136,.1);border-color:var(--neon);color:var(--neon)}
+.btn-cyan{background:rgba(0,212,255,.1);border-color:var(--neon2);color:var(--neon2)}
+.btn-red{background:rgba(255,56,96,.1);border-color:var(--red);color:var(--red)}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-full{width:100%}
+.mod{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;}
+.mod.on{display:flex}
+.mod-c{width:100%;max-width:520px;background:var(--panel);border:1px solid rgba(0,255,136,.2);border-radius:18px 18px 0 0;padding:20px 18px 36px;max-height:90vh;overflow-y:auto;animation:slup .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes slup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mod-h{font-size:16px;font-weight:800;color:var(--neon);letter-spacing:1px;margin-bottom:18px}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:10px;color:var(--mut);letter-spacing:1px;margin-bottom:6px;font-weight:700}
+.fld input,.fld textarea{width:100%;background:var(--panel2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;color:var(--txt);font-size:14px;outline:none;font-family:inherit;}
+.fld input:focus,.fld textarea:focus{border-color:var(--neon)}
+.fld textarea{resize:vertical;min-height:60px}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--panel);border:1px solid var(--neon);padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:200;transition:transform .3s;box-shadow:0 0 20px rgba(0,255,136,.2);}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err{border-color:var(--red);box-shadow:0 0 20px rgba(255,56,96,.2);color:var(--red)}
+.qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.qa{background:var(--panel2);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--txt);}
+.qa:active{border-color:var(--neon);background:rgba(0,255,136,.05)}
+.qa-i{font-size:18px;margin-bottom:4px}
+.qa-t{font-size:11px;font-weight:700}
+.qa-d{font-size:9px;color:var(--mut);margin-top:2px}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.typing span{display:inline-block;width:6px;height:6px;background:var(--neon);border-radius:50%;margin:0 2px;animation:tdot 1.2s infinite}
 .typing span:nth-child(2){animation-delay:.2s}
 .typing span:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,80%,100%{opacity:.2;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
-
-.quick-btns{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
-.qbtn{
-  padding:10px 8px;border-radius:10px;border:1px solid var(--border);
-  background:rgba(0,255,136,.04);color:var(--neon);
-  font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;
-  transition:.2s;letter-spacing:.5px;text-align:center;
-}
-.qbtn:hover{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.3)}
-.qbtn:active{transform:scale(.97)}
-
-.chat-inp-row{display:flex;gap:8px;margin-top:12px}
-.chat-inp{
-  flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-  color:var(--txt);padding:12px 14px;border-radius:12px;
-  font-family:inherit;font-size:12px;outline:none;transition:.2s;
-}
-.chat-inp:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,255,136,.06)}
-.send-btn{
-  background:linear-gradient(135deg,var(--neon),var(--neon2));
-  border:none;border-radius:12px;padding:12px 16px;
-  color:#000;font-family:inherit;font-size:16px;cursor:pointer;
-  transition:.15s;font-weight:900;
-}
-.send-btn:hover{filter:brightness(1.1);transform:scale(1.05)}
-.send-btn:disabled{opacity:.4;transform:none}
-
-/* ── MODAL ── */
-.modal{
-  display:none;position:fixed;inset:0;z-index:100;
-  background:rgba(0,0,0,.85);backdrop-filter:blur(12px);
-  align-items:center;justify-content:center;padding:20px;
-}
-.modal.on{display:flex}
-.modal-box{
-  background:var(--panel2);border:1px solid var(--border);
-  border-radius:20px;padding:24px;width:100%;max-width:420px;
-  position:relative;
-}
-.modal-ttl{font-size:14px;font-weight:800;color:var(--neon);margin-bottom:20px;letter-spacing:2px}
-.modal-close{
-  position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);
-  border:none;color:var(--mut);width:30px;height:30px;border-radius:8px;
-  font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-}
-.modal-close:hover{color:var(--txt);background:rgba(255,255,255,.1)}
-.modal-row{display:flex;gap:8px;margin-top:8px}
-
-/* ── TOAST ── */
-#toast{
-  position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--panel2);border:1px solid var(--border);
-  border-radius:12px;padding:12px 20px;font-size:12px;
-  pointer-events:none;opacity:0;transition:.3s;z-index:200;
-  white-space:nowrap;max-width:90vw;text-align:center;
-}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-#toast.err{border-color:rgba(255,56,96,.4);color:var(--red)}
-#toast.ok{border-color:rgba(0,255,136,.3);color:var(--neon)}
+@keyframes tdot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.hist-it{background:var(--panel2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.hist-p{font-size:12px;font-weight:700}
+.hist-n{font-size:10px;color:var(--mut);margin-top:2px}
+@media(max-width:400px){.cap-big{font-size:34px}.price-v{font-size:26px}.qa-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+
+<div class="toast" id="toast"></div>
+
 <div class="wrap">
-
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-row">
-    <div>
-      <div class="logo" onclick="tapLogo()" id="logoEl">⬡ YENOM</div>
-      <div class="sub">TRADING TERMINAL V4 — CRYPTO</div>
-    </div>
-    <div class="badge">
-      <div class="badge-dot"></div>
-      <span id="liveLabel">LIVE</span>
-    </div>
-  </div>
-</div>
-
-<!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker-inner" id="cryptoBar"></div>
-</div>
-
-<!-- WALLET -->
-<div class="panel">
-  <div class="panel-ttl">
-    <span>WALLET</span>
-    <button class="btn btn-ghost" style="padding:4px 10px;font-size:9px" onclick="toggleEdit()">⚙ EDIT</button>
-  </div>
-  <div class="cap-row">
-    <div>
-      <div style="font-size:9px;color:var(--mut);letter-spacing:2px;margin-bottom:4px">CAPITAL</div>
-      <div class="cap-big">$<span id="capDisp">0.00</span></div>
-    </div>
-    <div class="cap-meta">
-      <div class="cap-lbl">OBJECTIF</div>
-      <div class="cap-goal">$<span id="goalDisp">0</span></div>
-    </div>
-  </div>
-  <div class="goal-bar"><div class="goal-fill" id="goalFill" style="width:0%"></div></div>
-  <div class="goal-pct"><span id="goalPct">0%</span> vers l'objectif</div>
-  <div class="stats-row">
-    <div class="stat">
-      <div class="stat-v" id="stTrades">0</div>
-      <div class="stat-l">TRADES</div>
-    </div>
-    <div class="stat">
-      <div class="stat-v up" id="stWins">0</div>
-      <div class="stat-l">WINS</div>
-    </div>
-    <div class="stat">
-      <div class="stat-v" id="stWR">—</div>
-      <div class="stat-l">WIN RATE</div>
-    </div>
-  </div>
-  <div id="editArea" style="display:none">
-    <div class="wallet-grid" style="margin-top:14px">
-      <div class="inp-group">
-        <div class="inp-lbl">CAPITAL ($)</div>
-        <input id="inpCap" class="inp" type="number" step="0.01" placeholder="0.00"/>
+  <div class="hdr">
+    <div class="hdr-row">
+      <div onclick="tapLogo()">
+        <div class="logo">YENOM ⚡</div>
+        <div class="sub">TRADING TERMINAL V5</div>
       </div>
-      <div class="inp-group">
-        <div class="inp-lbl">OBJECTIF ($)</div>
-        <input id="inpGoal" class="inp" type="number" step="1" placeholder="100"/>
+      <div class="live"><span class="live-dot"></span> LIVE</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-ttl">
+      <span>WALLET</span>
+      <button class="btn" onclick="openWallet()">⚙ Edit</button>
+    </div>
+    <div class="cap-row">
+      <div>
+        <div style="font-size:10px;color:var(--mut);letter-spacing:1px">CAPITAL ACTUEL</div>
+        <div class="cap-big">$<span id="cap">23.95</span></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:10px;color:var(--mut)">OBJECTIF</div>
+        <div style="font-size:18px;color:var(--neon2);font-weight:800">$<span id="goal">50.00</span></div>
+        <div style="font-size:10px;color:var(--mut);margin-top:2px"><span id="goalpct">0</span>%</div>
+      </div>
+    </div>
+    <div class="goal-bar"><div class="goal-fill" id="goalbar" style="width:0%"></div></div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-l">EXPO x10</div>
+        <div class="kpi-v" style="color:var(--purple)">$<span id="expo">0</span></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">P&L</div>
+        <div class="kpi-v" id="pnl" style="color:var(--neon)">$0</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-l">TRADES</div>
+        <div class="kpi-v" style="color:var(--neon2)" id="tradescount">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-ttl"><span>CRYPTO</span><span style="color:var(--neon)" id="curpair">BTC/USDT</span></div>
+    <div class="crypto-bar" id="cbar"></div>
+    <div class="price-main">
+      <div class="pair-name" id="pname">BITCOIN / USDT</div>
+      <div class="price-v">$<span id="price">—</span></div>
+      <div class="price-ch" id="pchg">—</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-ttl"><span>GEMINI AI</span><span id="aist" style="color:var(--neon)">● PRÊT</span></div>
+    <div class="qa-grid">
+      <button class="qa" onclick="ask('Donne-moi LE meilleur trade maintenant sur '+curPair+'/USDT avec mon capital de $'+capital.toFixed(2)+'. Format: ENTRY / SL / TP / Levier / Risk:Reward. Sois précis.')">
+        <div class="qa-i">🎯</div><div class="qa-t">SIGNAL TRADE</div><div class="qa-d">Setup complet sur la crypto active</div>
+      </button>
+      <button class="qa" onclick="ask('Analyse technique complète de '+curPair+'/USDT (tendance, support/résistance, RSI, momentum). Court et précis.')">
+        <div class="qa-i">📊</div><div class="qa-t">ANALYSE TA</div><div class="qa-d">Tendance + S/R + indicateurs</div>
+      </button>
+      <button class="qa" onclick="ask('Quel est le MEILLEUR trade actuel parmi BTC, ETH, SOL, BNB ? Compare et donne UN seul setup gagnant.')">
+        <div class="qa-i">⚡</div><div class="qa-t">TOP OPPORTUNITÉ</div><div class="qa-d">Compare toutes les cryptos</div>
+      </button>
+      <button class="qa" onclick="ask('Avec $'+capital.toFixed(2)+' et objectif $'+goal.toFixed(2)+', quelle stratégie suivre ? Combien de trades, quel risk par trade, quel levier ?')">
+        <div class="qa-i">🛡️</div><div class="qa-t">RISK MGMT</div><div class="qa-d">Plan pour atteindre ton goal</div>
+      </button>
+    </div>
+    <div class="chat-box">
+      <div class="chat-msgs" id="chat">
+        <div class="msg msg-a">
+          <div class="lbl">GEMINI ✦</div>
+Salut trader ! 🚀 Je suis connecté à Gemini 1.5 Flash. Demande-moi une analyse, un setup ou une stratégie risk management.
+        </div>
+      </div>
+      <div class="chat-in">
+        <input id="msg" type="text" placeholder="Ex: Signal SOL x10..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+        <button id="sendbtn" onclick="sendMsg()">▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-ttl"><span>HISTORIQUE</span>
+      <button class="btn" onclick="openTradeMod()">+ Nouveau</button>
+    </div>
+    <div id="hist" style="display:flex;flex-direction:column;gap:8px">
+      <div style="text-align:center;color:var(--mut);font-size:11px;padding:18px">Aucun trade enregistré</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="mod" id="walletmod" onclick="if(event.target===this)closeMod('walletmod')">
+  <div class="mod-c">
+    <div class="mod-h">💼 MODIFIER WALLET</div>
+    <div class="fld"><label>CAPITAL ACTUEL ($)</label><input type="number" id="i-cap" step="0.01"/></div>
+    <div class="fld"><label>OBJECTIF ($)</label><input type="number" id="i-goal" step="0.01"/></div>
+    <div class="fld">
+      <label>AJUSTER (+/- $)</label>
+      <input type="number" id="i-adj" step="0.01" placeholder="Montant"/>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn btn-neon" style="flex:1" onclick="adj(1)">+ Ajouter</button>
+        <button class="btn btn-red" style="flex:1" onclick="adj(-1)">− Retirer</button>
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-neon" style="flex:1" onclick="saveWallet()">✓ Sauvegarder</button>
-      <button class="btn btn-ghost" onclick="toggleEdit()">Annuler</button>
+      <button class="btn" style="flex:1" onclick="closeMod('walletmod')">Annuler</button>
+      <button class="btn btn-neon" style="flex:1" onclick="saveWallet()">✓ SAUVEGARDER</button>
     </div>
   </div>
 </div>
 
-<!-- TRADE FORM -->
-<div class="panel">
-  <div class="panel-ttl"><span>NOUVEAU TRADE</span></div>
-  <div class="trade-head">
-    <div class="pair-big" id="pairBig">BTC/USDT</div>
-    <div class="price-live" id="priceLive">—</div>
-  </div>
-  <div class="dir-row">
-    <button class="dir-btn long on" id="dLong" onclick="setDir('long')">▲ LONG</button>
-    <button class="dir-btn short" id="dShort" onclick="setDir('short')">▼ SHORT</button>
-  </div>
-  <div style="font-size:9px;color:var(--mut);letter-spacing:2px;margin-bottom:6px">LEVIER</div>
-  <div class="lev-row" id="levRow">
-    <button class="lev-btn" onclick="setLev(1)">×1</button>
-    <button class="lev-btn" onclick="setLev(3)">×3</button>
-    <button class="lev-btn" onclick="setLev(5)">×5</button>
-    <button class="lev-btn on" onclick="setLev(10)">×10</button>
-    <button class="lev-btn" onclick="setLev(20)">×20</button>
-    <button class="lev-btn" onclick="setLev(50)">×50</button>
-  </div>
-  <div class="trade-inputs">
-    <div class="inp-group">
-      <div class="inp-lbl">ENTRY ($)</div>
-      <input id="inpEntry" class="inp" type="number" step="any" placeholder="auto"/>
-    </div>
-    <div class="inp-group">
-      <div class="inp-lbl">MISE ($)</div>
-      <input id="inpSize" class="inp" type="number" step="0.01" placeholder="5.00" oninput="calcSummary()"/>
-    </div>
-    <div class="inp-group">
-      <div class="inp-lbl">RISK (%)</div>
-      <input id="inpRisk" class="inp" type="number" step="0.5" value="2" oninput="calcSummary()"/>
-    </div>
-  </div>
-  <div class="trade-summary">
-    <div class="ts-item">
-      <div class="ts-v up" id="sumTP">—</div>
-      <div class="ts-l">TAKE PROFIT</div>
-    </div>
-    <div class="ts-item">
-      <div class="ts-v dn" id="sumSL">—</div>
-      <div class="ts-l">STOP LOSS</div>
-    </div>
-    <div class="ts-item">
-      <div class="ts-v" id="sumRR" style="color:var(--amber)">—</div>
-      <div class="ts-l">RISK:REWARD</div>
-    </div>
-  </div>
-  <div class="btn-row">
-    <button class="btn btn-neon" style="flex:1;padding:14px" onclick="execTrade()">⚡ EXÉCUTER</button>
-    <button class="btn btn-ghost" onclick="clearForm()">✕</button>
-  </div>
-</div>
-
-<!-- HISTORY -->
-<div class="panel">
-  <div class="panel-ttl">
-    <span>HISTORIQUE</span>
-    <span style="color:var(--mut)" id="histCount">0 trades</span>
-  </div>
-  <div class="trade-list" id="tradeList">
-    <div class="empty-state">Aucun trade enregistré</div>
-  </div>
-</div>
-
-<!-- AI CHAT -->
-<div class="panel">
-  <div class="panel-ttl">
-    <span>IA GEMINI</span>
-    <div class="ai-status">
-      <div id="aist" style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--neon)">
-        <div class="badge-dot"></div>● PRÊT
-      </div>
-    </div>
-  </div>
-  <div class="quick-btns">
-    <button class="qbtn" onclick="ask('Signal trade sur '+curPair+' maintenant, entry SL TP levier recommandé')">🎯 Signal rapide</button>
-    <button class="qbtn" onclick="ask('Analyse technique complète de '+curPair+' avec supports résistances et tendance')">📊 Analyse tech</button>
-    <button class="qbtn" onclick="ask('Quelle est la meilleure opportunité parmi BTC ETH SOL BNB XRP en ce moment ?')">🚀 Top oppo</button>
-    <button class="qbtn" onclick="ask('Optimise mon risk management pour un capital de $'+capital.toFixed(2)+' avec objectif $'+goal.toFixed(2))">🛡️ Risk mgmt</button>
-  </div>
-  <div class="chat-box" id="chat">
-    <div class="msg msg-a">
-      <div class="lbl">GEMINI ✦</div>
-      <div class="bubble">Salut trader ! 🚀 Configure ta clé API via <b>5× clic sur YENOM</b> puis demande-moi n'importe quel signal ou analyse.<br><br>Capital détecté : <b>$<span id="ai-cap">0.00</span></b></div>
-    </div>
-  </div>
-  <div class="chat-inp-row">
-    <input id="msg" class="chat-inp" type="text" placeholder="Signal BTC x10, analyse SOL, meilleur entry..." onkeydown="if(event.key==='Enter')sendMsg()"/>
-    <button class="send-btn" id="sendbtn" onclick="sendMsg()">➤</button>
-  </div>
-</div>
-
-</div><!-- /wrap -->
-
-<!-- SETTINGS MODAL -->
-<div class="modal" id="setmod">
-  <div class="modal-box">
-    <button class="modal-close" onclick="document.getElementById('setmod').classList.remove('on')">✕</button>
-    <div class="modal-ttl">⚙ PARAMÈTRES</div>
-    <div class="inp-group">
-      <div class="inp-lbl">CLÉ API GEMINI</div>
-      <input id="i-key" class="inp" type="password" placeholder="AIza..."/>
-    </div>
-    <div class="modal-row">
-      <button class="btn btn-neon" style="flex:1" onclick="saveKey()">💾 Sauvegarder</button>
-      <button class="btn btn-ghost" onclick="testKey()">🧪 Tester</button>
-    </div>
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-      <button class="btn btn-red" style="width:100%" onclick="resetAll()">🗑 Reset total</button>
+<div class="mod" id="trademod" onclick="if(event.target===this)closeMod('trademod')">
+  <div class="mod-c">
+    <div class="mod-h">📝 NOUVEAU TRADE</div>
+    <div class="fld"><label>PAIRE</label><input type="text" id="t-pair" value="BTC/USDT"/></div>
+    <div class="fld"><label>P&L ($)</label><input type="number" id="t-pnl" step="0.01" placeholder="+5.20 ou -3.10"/></div>
+    <div class="fld"><label>NOTE</label><textarea id="t-note" placeholder="Setup utilisé..."></textarea></div>
+    <div class="btn-row">
+      <button class="btn" style="flex:1" onclick="closeMod('trademod')">Annuler</button>
+      <button class="btn btn-neon" style="flex:1" onclick="saveTrade()">✓ ENREGISTRER</button>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
+<div class="mod" id="setmod" onclick="if(event.target===this)closeMod('setmod')">
+  <div class="mod-c">
+    <div class="mod-h">⚙ PARAMÈTRES</div>
+    <div class="fld">
+      <label>CLÉ API GEMINI 🔑</label>
+      <input type="text" id="i-key" placeholder="AIza..."/>
+      <div style="font-size:10px;color:var(--mut);margin-top:6px">aistudio.google.com/app/apikey</div>
+    </div>
+    <div class="btn-row" style="margin-bottom:10px">
+      <button class="btn btn-cyan" style="flex:1" onclick="testKey()">🧪 TESTER</button>
+      <button class="btn btn-neon" style="flex:1" onclick="saveKey()">✓ SAUVER</button>
+    </div>
+    <button class="btn btn-red btn-full" onclick="resetAll()">⚠ RESET TOUT</button>
+  </div>
+</div>
 
 <script>
-// ── STORAGE ──
-const S = (k,v)=>v===undefined?JSON.parse(localStorage.getItem(k)||'null'):localStorage.setItem(k,JSON.stringify(v));
+// ════════════════════════════════════════
+// VARIABLES GLOBALES — EN PREMIER, TOUJOURS
+// ════════════════════════════════════════
+var capital, goal, capBase, trades, apiKey, curPair, prices, logoTaps, logoTimer;
 
-// ── STATE ──
-let capital = S('cap')||20;
-let goal    = S('goal')||100;
-let trades  = S('trades')||[];
-let apiKey  = S('geminiKey')||'';
-let curPair = S('pair')||'BTC';
-let curDir  = 'long';
-let curLev  = 10;
-let prices  = {};
-let logoTaps=0,logoTimer;
-
-const PAIRS=['BTC','ETH','SOL','BNB','XRP','DOGE','ADA','AVAX','MATIC','LINK'];
-const IDS={
-  BTC:'bitcoin',ETH:'ethereum',SOL:'solana',BNB:'binancecoin',
-  XRP:'ripple',DOGE:'dogecoin',ADA:'cardano',AVAX:'avalanche-2',
-  MATIC:'matic-network',LINK:'chainlink'
-};
-
-// ── FORMAT ──
-const fp=(n,d=2)=>n>=1000?n.toLocaleString('en',{maximumFractionDigits:d}):n<0.01?n.toFixed(6):n.toFixed(d);
-const fd=n=>(n>=0?'+':'')+n.toFixed(2)+'%';
-
-// ── TOAST ──
-function toast(msg,type='ok'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.className='show '+(type==='err'?'err':'ok');
-  clearTimeout(t._t);t._t=setTimeout(()=>t.className='',2500);
+// Storage helpers — safe
+function lsGet(k){
+  try{ return localStorage.getItem(k); }catch(e){ return null; }
+}
+function lsSet(k,v){
+  try{ localStorage.setItem(k,v); }catch(e){}
+}
+function lsGetJSON(k){
+  try{
+    var raw = localStorage.getItem(k);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){
+    // Valeur corrompue → on la supprime
+    try{ localStorage.removeItem(k); }catch(e2){}
+    return null;
+  }
+}
+function lsGetFloat(k, def){
+  var v = parseFloat(lsGet(k));
+  return isNaN(v) ? def : v;
 }
 
-// ── WALLET ──
+// ── INIT VARIABLES ──
+capital  = lsGetFloat('cap', 23.95);
+goal     = lsGetFloat('goal', 50.00);
+capBase  = lsGetFloat('capBase', capital);
+trades   = lsGetJSON('trades') || [];
+apiKey   = lsGet('geminiKey') || '';
+curPair  = lsGet('curPair') || 'BTC';
+prices   = {};
+logoTaps = 0;
+logoTimer = null;
+
+if(!lsGet('capBase')) lsSet('capBase', capBase);
+
+// ════════════════════════════════════════
+// CONSTANTES
+// ════════════════════════════════════════
+var PAIRS = ['BTC','ETH','SOL','BNB','XRP','DOGE','ADA','AVAX','LINK','SUI'];
+var NAMES = {BTC:'BITCOIN',ETH:'ETHEREUM',SOL:'SOLANA',BNB:'BNB',XRP:'RIPPLE',
+             DOGE:'DOGECOIN',ADA:'CARDANO',AVAX:'AVALANCHE',LINK:'CHAINLINK',SUI:'SUI'};
+
+// ════════════════════════════════════════
+// UTILITAIRES
+// ════════════════════════════════════════
+function toast(m, type){
+  var t = document.getElementById('toast');
+  t.textContent = m;
+  t.className = 'toast show' + (type==='err' ? ' err' : '');
+  setTimeout(function(){ t.className = 'toast'; }, 3000);
+}
+function fp(n){
+  n = parseFloat(n);
+  if(isNaN(n)) return '—';
+  if(n >= 1000) return n.toLocaleString('en-US',{maximumFractionDigits:2});
+  if(n >= 1)    return n.toFixed(3);
+  if(n >= .01)  return n.toFixed(4);
+  return n.toFixed(6);
+}
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+// ════════════════════════════════════════
+// WALLET
+// ════════════════════════════════════════
 function updateWallet(){
-  document.getElementById('capDisp').textContent=fp(capital);
-  document.getElementById('goalDisp').textContent=fp(goal,0);
-  document.getElementById('ai-cap').textContent=fp(capital);
-  const pct=Math.min((capital/goal)*100,100);
-  document.getElementById('goalFill').style.width=pct+'%';
-  document.getElementById('goalPct').textContent=pct.toFixed(1)+'%';
-  const wins=trades.filter(t=>t.pnl>0).length;
-  document.getElementById('stTrades').textContent=trades.length;
-  document.getElementById('stWins').textContent=wins;
-  document.getElementById('stWR').textContent=trades.length?Math.round(wins/trades.length*100)+'%':'—';
-  renderTrades();
+  document.getElementById('cap').textContent = capital.toFixed(2);
+  document.getElementById('goal').textContent = goal.toFixed(2);
+  document.getElementById('expo').textContent = (capital*10).toFixed(2);
+  var pct = goal > 0 ? Math.min(100,(capital/goal)*100) : 0;
+  document.getElementById('goalpct').textContent = pct.toFixed(1);
+  document.getElementById('goalbar').style.width = pct + '%';
+  var pnl = capital - capBase;
+  var pe = document.getElementById('pnl');
+  pe.textContent = (pnl >= 0 ? '+$' : '-$') + Math.abs(pnl).toFixed(2);
+  pe.style.color = pnl >= 0 ? 'var(--neon)' : 'var(--red)';
+  document.getElementById('tradescount').textContent = trades.length;
+  renderHist();
 }
-function toggleEdit(){
-  const el=document.getElementById('editArea');
-  const on=el.style.display==='none';
-  el.style.display=on?'block':'none';
-  if(on){document.getElementById('inpCap').value=capital;document.getElementById('inpGoal').value=goal;}
+function openWallet(){
+  document.getElementById('i-cap').value = capital.toFixed(2);
+  document.getElementById('i-goal').value = goal.toFixed(2);
+  document.getElementById('i-adj').value = '';
+  document.getElementById('walletmod').classList.add('on');
 }
 function saveWallet(){
-  capital=parseFloat(document.getElementById('inpCap').value)||capital;
-  goal=parseFloat(document.getElementById('inpGoal').value)||goal;
-  S('cap',capital);S('goal',goal);
-  updateWallet();toggleEdit();toast('✅ Wallet mis à jour');
+  var c = parseFloat(document.getElementById('i-cap').value);
+  var g = parseFloat(document.getElementById('i-goal').value);
+  if(!isNaN(c) && c >= 0){ capital = c; lsSet('cap',c); capBase = c; lsSet('capBase',c); }
+  if(!isNaN(g) && g > 0){ goal = g; lsSet('goal',g); }
+  updateWallet();
+  closeMod('walletmod');
+  toast('✅ Wallet sauvegardé');
+}
+function adj(sign){
+  var v = parseFloat(document.getElementById('i-adj').value);
+  if(isNaN(v) || v <= 0){ toast('Montant invalide','err'); return; }
+  capital = Math.max(0, capital + sign*v);
+  lsSet('cap', capital);
+  document.getElementById('i-cap').value = capital.toFixed(2);
+  document.getElementById('i-adj').value = '';
+  updateWallet();
+  toast(sign > 0 ? '✅ +$'+v.toFixed(2)+' ajoutés' : '⚠ -$'+v.toFixed(2)+' retirés');
+}
+function closeMod(id){ document.getElementById(id).classList.remove('on'); }
+
+// ════════════════════════════════════════
+// TRADES
+// ════════════════════════════════════════
+function openTradeMod(){
+  document.getElementById('t-pair').value = curPair + '/USDT';
+  document.getElementById('t-pnl').value = '';
+  document.getElementById('t-note').value = '';
+  document.getElementById('trademod').classList.add('on');
+}
+function saveTrade(){
+  var pair = document.getElementById('t-pair').value.trim();
+  var pnl  = parseFloat(document.getElementById('t-pnl').value);
+  var note = document.getElementById('t-note').value.trim();
+  if(!pair || isNaN(pnl)){ toast('Remplis les champs','err'); return; }
+  trades.unshift({pair:pair, pnl:pnl, note:note, date:Date.now()});
+  capital = Math.max(0, capital + pnl);
+  lsSet('cap', capital);
+  lsSet('trades', JSON.stringify(trades));
+  updateWallet();
+  closeMod('trademod');
+  toast(pnl >= 0 ? '✅ Trade +$'+pnl.toFixed(2) : '❌ Trade -$'+Math.abs(pnl).toFixed(2));
+}
+function renderHist(){
+  var h = document.getElementById('hist');
+  if(trades.length === 0){
+    h.innerHTML = '<div style="text-align:center;color:var(--mut);font-size:11px;padding:18px">Aucun trade enregistré</div>';
+    return;
+  }
+  h.innerHTML = trades.slice(0,8).map(function(t){
+    var col  = t.pnl >= 0 ? 'var(--neon)' : 'var(--red)';
+    var sign = t.pnl >= 0 ? '+' : '';
+    var d    = new Date(t.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
+    return '<div class="hist-it"><div><div class="hist-p">'+esc(t.pair)+'</div>'
+         + '<div class="hist-n">'+d+' · '+esc(t.note||'—')+'</div></div>'
+         + '<div style="font-weight:800;color:'+col+'">'+sign+'$'+t.pnl.toFixed(2)+'</div></div>';
+  }).join('');
 }
 
-// ── CRYPTO BAR ──
+// ════════════════════════════════════════
+// CRYPTO PRICES
+// ════════════════════════════════════════
 function buildCryptoBar(){
-  const bar=document.getElementById('cryptoBar');
-  bar.innerHTML=PAIRS.map(p=>`
-    <div class="tick${p===curPair?' active':''}" id="tick-${p}" onclick="switchPair('${p}')">
-      <div class="tick-sym">${p}</div>
-      <div class="tick-p" id="tp-${p}">—</div>
-      <div class="tick-c" id="tc-${p}">—</div>
-    </div>`).join('');
+  var bar = document.getElementById('cbar');
+  bar.innerHTML = '';
+  PAIRS.forEach(function(p){
+    var d  = document.createElement('div');
+    d.className = 'cryp' + (p === curPair ? ' on' : '');
+    d.onclick = function(){ switchPair(p); };
+    var pr = prices[p];
+    var ch = pr ? pr.change : 0;
+    d.innerHTML = '<div class="cryp-s">'+p+'</div>'
+      + '<div class="cryp-p">$'+(pr ? fp(pr.price) : '—')+'</div>'
+      + '<div class="cryp-c" style="color:'+(ch>=0?'var(--neon)':'var(--red)')+'">'+
+        (ch>=0?'+':'')+ch.toFixed(2)+'%</div>';
+    bar.appendChild(d);
+  });
 }
 function switchPair(p){
-  curPair=p;S('pair',p);
-  document.querySelectorAll('.tick').forEach(el=>el.classList.remove('active'));
-  const el=document.getElementById('tick-'+p);
-  if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
-  document.getElementById('pairBig').textContent=p+'/USDT';
-  const d=prices[p];
-  document.getElementById('priceLive').textContent=d?'$'+fp(d.price):'—';
-  document.getElementById('inpEntry').placeholder=d?fp(d.price):'auto';
-  calcSummary();
+  curPair = p;
+  lsSet('curPair', p);
+  document.getElementById('curpair').textContent = p + '/USDT';
+  document.getElementById('pname').textContent = (NAMES[p]||p) + ' / USDT';
+  buildCryptoBar();
+  updatePriceDisplay();
 }
-
+function updatePriceDisplay(){
+  var pr = prices[curPair];
+  if(!pr){ document.getElementById('price').textContent = '—'; return; }
+  document.getElementById('price').textContent = fp(pr.price);
+  var pc = document.getElementById('pchg');
+  pc.textContent = (pr.change >= 0 ? '▲ +' : '▼ ') + pr.change.toFixed(2) + '% (24h)';
+  pc.style.color = pr.change >= 0 ? 'var(--neon)' : 'var(--red)';
+}
 async function fetchPrices(){
   try{
-    const ids=PAIRS.map(p=>IDS[p]).join(',');
-    const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
-    const data=await r.json();
-    PAIRS.forEach(p=>{
-      const d=data[IDS[p]];if(!d)return;
-      prices[p]={price:d.usd,change:d.usd_24h_change||0};
-      const up=d.usd_24h_change>=0;
-      const tp=document.getElementById('tp-'+p);
-      const tc=document.getElementById('tc-'+p);
-      if(tp)tp.textContent='$'+fp(d.usd);
-      if(tp)tp.className='tick-p '+(up?'up':'dn');
-      if(tc)tc.textContent=fd(d.usd_24h_change);
-      if(tc)tc.className='tick-c '+(up?'up':'dn');
+    var symbols = encodeURIComponent(JSON.stringify(PAIRS.map(function(p){ return p+'USDT'; })));
+    var r = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols='+symbols);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var data = await r.json();
+    data.forEach(function(d){
+      var sym = d.symbol.replace('USDT','');
+      prices[sym] = { price: parseFloat(d.lastPrice), change: parseFloat(d.priceChangePercent) };
     });
-    switchPair(curPair);
-  }catch(e){console.warn('Price fetch:',e)}
+    buildCryptoBar();
+    updatePriceDisplay();
+  }catch(e){
+    console.warn('Fallback prix:', e);
+  }
 }
 
-// ── TRADE FORM ──
-function setDir(d){
-  curDir=d;
-  document.getElementById('dLong').className='dir-btn long'+(d==='long'?' on':'');
-  document.getElementById('dShort').className='dir-btn short'+(d==='short'?' on':'');
-  calcSummary();
-}
-function setLev(l){
-  curLev=l;
-  document.querySelectorAll('.lev-btn').forEach(b=>b.classList.remove('on'));
-  event.target.classList.add('on');
-  calcSummary();
-}
-function calcSummary(){
-  const entry=parseFloat(document.getElementById('inpEntry').value)||(prices[curPair]?.price||0);
-  const size=parseFloat(document.getElementById('inpSize').value)||5;
-  const risk=parseFloat(document.getElementById('inpRisk').value)||2;
-  if(!entry){return;}
-  const slPct=risk/curLev;
-  const tpPct=slPct*2;
-  const sl=curDir==='long'?entry*(1-slPct/100):entry*(1+slPct/100);
-  const tp=curDir==='long'?entry*(1+tpPct/100):entry*(1-tpPct/100);
-  document.getElementById('sumTP').textContent='$'+fp(tp);
-  document.getElementById('sumSL').textContent='$'+fp(sl);
-  document.getElementById('sumRR').textContent='1:2';
-}
-function clearForm(){
-  document.getElementById('inpEntry').value='';
-  document.getElementById('inpSize').value='';
-  document.getElementById('inpRisk').value='2';
-  calcSummary();
-}
-function execTrade(){
-  const entry=parseFloat(document.getElementById('inpEntry').value)||(prices[curPair]?.price||0);
-  const size=parseFloat(document.getElementById('inpSize').value);
-  if(!entry||!size){toast('Entre entry et mise','err');return;}
-  const risk=parseFloat(document.getElementById('inpRisk').value)||2;
-  const slPct=risk/curLev;
-  const tpPct=slPct*2;
-  const sl=curDir==='long'?entry*(1-slPct/100):entry*(1+slPct/100);
-  const tp=curDir==='long'?entry*(1+tpPct/100):entry*(1-tpPct/100);
-  // simulate close at TP 60% / SL 40%
-  const win=Math.random()<0.6;
-  const pnl=win?(size*tpPct/100)*curLev:-(size*slPct/100)*curLev;
-  const trade={id:Date.now(),pair:curPair,dir:curDir,lev:curLev,entry,size,sl,tp,pnl,date:new Date().toLocaleDateString('fr')};
-  trades.unshift(trade);
-  capital=Math.max(0,capital+pnl);
-  S('trades',trades);S('cap',capital);
-  updateWallet();clearForm();
-  toast((pnl>0?'✅ WIN +':'❌ LOSS ')+fp(pnl,2)+'$',pnl>0?'ok':'err');
-}
-
-// ── RENDER TRADES ──
-function renderTrades(){
-  const list=document.getElementById('tradeList');
-  document.getElementById('histCount').textContent=trades.length+' trades';
-  if(!trades.length){list.innerHTML='<div class="empty-state">📭 Aucun trade enregistré</div>';return;}
-  list.innerHTML=trades.slice(0,20).map(t=>`
-    <div class="trade-item">
-      <div class="ti-left">
-        <div class="ti-pair">${t.pair}/USDT <span class="badge-dir badge-${t.dir}">${t.dir.toUpperCase()}</span></div>
-        <div class="ti-meta">×${t.lev} • Entry $${fp(t.entry)} • $${fp(t.size)} mise</div>
-      </div>
-      <div class="ti-right">
-        <div class="ti-pnl ${t.pnl>0?'up':'dn'}">${t.pnl>0?'+':''}${fp(t.pnl,2)}$</div>
-        <div class="ti-date">${t.date}</div>
-      </div>
-    </div>`).join('');
-}
-
-// ── GEMINI API ──
+// ════════════════════════════════════════
+// GEMINI AI
+// ════════════════════════════════════════
 async function callGemini(userMsg){
-  if(!apiKey){throw new Error('Configure ta clé API — 5× clic sur YENOM');}
-  const cleanKey=apiKey.trim().replace(/\s+/g,'');
-  const ctx=Object.entries(prices).slice(0,6)
-    .map(([s,d])=>`${s}:$${fp(d.price)}(${d.change>=0?'+':''}${d.change.toFixed(2)}%)`)
-    .join(' | ');
-  const prompt=`Tu es un expert trader crypto francophone, direct et précis.
-CONTEXTE LIVE:
-- Capital: $${capital.toFixed(2)} | Objectif: $${goal.toFixed(2)}
-- Paire active: ${curPair}/USDT
-- Prix: ${ctx||'chargement...'}
-- Trades: ${trades.length} | WR: ${trades.length?Math.round(trades.filter(t=>t.pnl>0).length/trades.length*100)+'%':'—'}
+  if(!apiKey){ throw new Error('Clé API manquante — 5× clic sur YENOM'); }
 
-RÈGLES RÉPONSE:
-• Setups: toujours ENTRY / SL / TP / Levier / R:R
-• Format bullet points + emojis
-• Concis et actionnable
-• Adapté au capital disponible
+  var ctx = Object.entries(prices).slice(0,6)
+    .map(function(e){
+      var s = e[0], d = e[1];
+      return s+':$'+fp(d.price)+'('+(d.change>=0?'+':'')+d.change.toFixed(2)+'%)';
+    }).join(' | ');
 
-MESSAGE: ${userMsg}`;
+  var sysPrompt = 'Tu es un trader crypto expert français, direct et concis.\n'
+    + 'CONTEXTE:\n'
+    + '- Capital: $'+capital.toFixed(2)+' | Objectif: $'+goal.toFixed(2)+'\n'
+    + '- Paire active: '+curPair+'/USDT\n'
+    + '- Prix live: '+(ctx||'chargement...')+'\n'
+    + '- Trades: '+trades.length+'\n\n'
+    + 'RÈGLES:\n'
+    + '1. Toujours donner ENTRY / SL / TP / Levier / Risk:Reward sur les setups\n'
+    + '2. Format court avec emojis et bullet points\n'
+    + '3. Pas de disclaimer, parle comme un pote trader\n'
+    + '4. Capital faible = levier max x10 conseillé\n\n'
+    + 'QUESTION: '+userMsg;
 
-  const body={
-    contents:[{role:'user',parts:[{text:prompt}]}],
-    generationConfig:{temperature:0.8,maxOutputTokens:800,topP:0.9}
+  var body = {
+    contents: [{ role:'user', parts:[{ text: sysPrompt }] }],
+    generationConfig: { temperature: 0.8, maxOutputTokens: 800 }
   };
-  const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${cleanKey}`;
-  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const data=await r.json();
-  if(!r.ok) throw new Error(data?.error?.message||`HTTP ${r.status}`);
-  const text=data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key='+apiKey.trim();
+
+  var r = await fetch(url, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+
+  var data = await r.json();
+  if(!r.ok){ throw new Error(data && data.error ? data.error.message : 'HTTP '+r.status); }
+
+  var text = data && data.candidates && data.candidates[0] &&
+             data.candidates[0].content && data.candidates[0].content.parts &&
+             data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
+
   if(!text) throw new Error('Réponse vide de Gemini');
   return text;
 }
 
-// ── CHAT ──
-function addMsg(text,who){
-  const chat=document.getElementById('chat');
-  const div=document.createElement('div');
-  div.className='msg msg-'+(who==='u'?'u':'a');
-  div.innerHTML=`<div class="lbl">${who==='u'?'VOUS':'GEMINI ✦'}</div><div class="bubble">${text.replace(/</g,'&lt;').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}</div>`;
+function addMsg(text, who){
+  var chat = document.getElementById('chat');
+  var div  = document.createElement('div');
+  div.className = 'msg ' + (who === 'u' ? 'msg-u' : 'msg-a');
+  if(who === 'a'){
+    div.innerHTML = '<div class="lbl">GEMINI ✦</div>' + esc(text);
+  } else {
+    div.textContent = text;
+  }
   chat.appendChild(div);
-  chat.scrollTop=chat.scrollHeight;
-}
-function addTyping(){
-  const chat=document.getElementById('chat');
-  const div=document.createElement('div');
-  div.className='msg msg-a';div.id='typing';
-  div.innerHTML=`<div class="lbl">GEMINI ✦</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
-  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
+  chat.scrollTop = chat.scrollHeight;
   return div;
 }
-async function ask(q){document.getElementById('msg').value=q;await sendMsg();}
+function addTyping(){
+  var chat = document.getElementById('chat');
+  var div  = document.createElement('div');
+  div.className = 'msg msg-a';
+  div.id = 'typing';
+  div.innerHTML = '<div class="lbl">GEMINI ✦</div><div class="typing"><span></span><span></span><span></span></div>';
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+async function ask(q){
+  document.getElementById('msg').value = q;
+  await sendMsg();
+}
 async function sendMsg(){
-  const inp=document.getElementById('msg');
-  const m=inp.value.trim();if(!m)return;
-  inp.value='';addMsg(m,'u');
-  const btn=document.getElementById('sendbtn');btn.disabled=true;
-  document.getElementById('aist').innerHTML='<div class="badge-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></div>● RÉFLEXION';
-  const typing=addTyping();
+  var inp = document.getElementById('msg');
+  var m   = inp.value.trim();
+  if(!m) return;
+  inp.value = '';
+  addMsg(m, 'u');
+  var btn = document.getElementById('sendbtn');
+  btn.disabled = true;
+  var aist = document.getElementById('aist');
+  aist.textContent = '● RÉFLEXION';
+  aist.style.color = 'var(--amber)';
+  var typing = addTyping();
   try{
-    const res=await callGemini(m);
-    typing.remove();addMsg(res,'a');
+    var res = await callGemini(m);
+    typing.remove();
+    addMsg(res, 'a');
   }catch(e){
-    typing.remove();addMsg('❌ '+e.message,'a');
+    typing.remove();
+    addMsg('❌ Erreur : '+e.message, 'a');
   }
-  btn.disabled=false;
-  document.getElementById('aist').innerHTML='<div class="badge-dot"></div>● PRÊT';
+  btn.disabled = false;
+  aist.textContent = '● PRÊT';
+  aist.style.color = 'var(--neon)';
 }
 
-// ── SETTINGS ──
+// ════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════
 function tapLogo(){
-  logoTaps++;clearTimeout(logoTimer);
-  logoTimer=setTimeout(()=>logoTaps=0,800);
-  if(logoTaps>=5){
-    logoTaps=0;
-    document.getElementById('i-key').value=apiKey;
+  logoTaps++;
+  clearTimeout(logoTimer);
+  logoTimer = setTimeout(function(){ logoTaps = 0; }, 800);
+  if(logoTaps >= 5){
+    logoTaps = 0;
+    document.getElementById('i-key').value = apiKey;
     document.getElementById('setmod').classList.add('on');
   }
 }
 function saveKey(){
-  const k=document.getElementById('i-key').value.trim();
-  if(!k){toast('Clé vide','err');return;}
-  apiKey=k;S('geminiKey',k);toast('✅ Clé sauvegardée');
+  var k = document.getElementById('i-key').value.trim();
+  if(!k){ toast('Clé vide','err'); return; }
+  apiKey = k;
+  lsSet('geminiKey', k);
+  toast('✅ Clé sauvegardée');
 }
 async function testKey(){
-  const k=document.getElementById('i-key').value.trim()||apiKey;
-  if(!k){toast('Entre une clé','err');return;}
-  toast('🧪 Test...');
-  const old=apiKey;apiKey=k;
+  var k = document.getElementById('i-key').value.trim() || apiKey;
+  if(!k){ toast('Entre une clé','err'); return; }
+  toast('🧪 Test en cours...');
+  var oldKey = apiKey;
+  apiKey = k;
   try{
-    const r=await callGemini('Réponds juste OK');
-    if(r) toast('✅ Clé valide !');
-    else{apiKey=old;toast('❌ Réponse vide','err');}
-  }catch(e){apiKey=old;toast('❌ '+e.message,'err');}
+    var res = await callGemini('Réponds juste OK');
+    if(res){ toast('✅ Clé valide — Gemini répond !'); lsSet('geminiKey',k); }
+    else { apiKey = oldKey; toast('❌ Réponse vide','err'); }
+  }catch(e){
+    apiKey = oldKey;
+    toast('❌ '+e.message,'err');
+  }
 }
 function resetAll(){
-  if(!confirm('Reset TOUT ?'))return;
-  localStorage.clear();location.reload();
+  if(!confirm('Reset TOUT ? (wallet, trades, clé)')) return;
+  localStorage.clear();
+  location.reload();
 }
 
-// ── INIT ──
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
 function init(){
-  updateWallet();buildCryptoBar();switchPair(curPair);fetchPrices();
-  setInterval(fetchPrices,15000);
+  updateWallet();
+  buildCryptoBar();
+  switchPair(curPair);
+  fetchPrices();
+  setInterval(fetchPrices, 15000);
 }
-document.addEventListener('DOMContentLoaded',init);
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
