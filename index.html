@@ -2,611 +2,447 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-<title>Yenom Trading Terminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>⚡ SNIPER TRADE V4</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
 <style>
+/* ═══════════════════════════════════════════════════
+   DESIGN SYSTEM — CYBER TERMINAL
+═══════════════════════════════════════════════════ */
 :root{
-  --bg:#000;--panel:#0a0a0f;--panel2:#12121a;
-  --neon:#00ff88;--neon2:#00d4ff;--red:#ff3860;
-  --amber:#ffb800;--purple:#b537f2;--txt:#e8e8f0;--mut:#5a5a6e;
+  --bg:       #060B14;
+  --bg1:      #0A1220;
+  --bg2:      #0E1A2E;
+  --bg3:      #142038;
+  --cyan:     #00FFD4;
+  --cyan2:    #00C9A7;
+  --green:    #00FF88;
+  --green2:   #00C968;
+  --red:      #FF3D6E;
+  --red2:     #CC1F4A;
+  --amber:    #FFB800;
+  --purple:   #9D6EFF;
+  --pink:     #FF4DCA;
+  --txt:      #D4E2F4;
+  --txt2:     #6B8AAD;
+  --txt3:     #2A3F5A;
+  --border:   rgba(0,255,212,.08);
+  --glow-c:   rgba(0,255,212,.15);
+  --glow-g:   rgba(0,255,136,.12);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow-x:hidden}
+
 body{
-  background:var(--bg);color:var(--txt);
-  font-family:'SF Mono','Menlo','Consolas',monospace;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'Outfit',sans-serif;
+  font-size:14px;
   background-image:
-    linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);
-  background-size:30px 30px;min-height:100vh;
+    linear-gradient(rgba(0,255,212,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,212,.025) 1px,transparent 1px),
+    radial-gradient(ellipse 80% 60% at 20% 20%,rgba(0,255,212,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%,rgba(157,110,255,.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,255,136,.03) 0%,transparent 70%);
+  background-size:40px 40px,40px 40px,100% 100%,100% 100%,100% 100%;
 }
-.wrap{max-width:760px;margin:0 auto;padding:14px 12px 90px}
-.hdr{background:linear-gradient(135deg,#0a0a0f 0%,#12121a 100%);border:1px solid rgba(0,255,136,.2);border-radius:14px;padding:14px 16px;margin-bottom:12px;position:relative;overflow:hidden;}
-.hdr::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:scan 3s linear infinite;}
-@keyframes scan{to{left:100%}}
-.logo{font-size:18px;font-weight:900;letter-spacing:3px;color:var(--neon);text-shadow:0 0 10px rgba(0,255,136,.5);cursor:pointer}
-.sub{font-size:10px;color:var(--mut);letter-spacing:2px;margin-top:2px}
-.hdr-row{display:flex;justify-content:space-between;align-items:center}
-.live{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--neon)}
-.live-dot{width:7px;height:7px;background:var(--neon);border-radius:50%;animation:pulse 1.5s infinite;box-shadow:0 0 8px var(--neon)}
-@keyframes pulse{50%{opacity:.3}}
-.panel{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:12px;}
-.panel-ttl{font-size:10px;color:var(--mut);letter-spacing:2px;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
-.panel-ttl span:first-child::before{content:'▸ ';color:var(--neon)}
-.cap-big{font-size:42px;font-weight:900;color:var(--neon);text-shadow:0 0 20px rgba(0,255,136,.4);letter-spacing:-1px;}
-.cap-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
-.goal-bar{height:6px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;margin-top:8px}
-.goal-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--neon2));border-radius:3px;transition:width 1s;box-shadow:0 0 10px var(--neon)}
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-.kpi{background:var(--panel2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:10px;text-align:center}
-.kpi-l{font-size:9px;color:var(--mut);letter-spacing:1px;margin-bottom:4px}
-.kpi-v{font-size:14px;font-weight:800}
-.crypto-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px}
-.crypto-bar::-webkit-scrollbar{display:none}
-.cryp{flex-shrink:0;background:var(--panel2);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s;min-width:90px;}
-.cryp.on{border-color:var(--neon);background:rgba(0,255,136,.08);box-shadow:0 0 15px rgba(0,255,136,.15)}
-.cryp-s{font-size:11px;font-weight:800;color:var(--txt)}
-.cryp-p{font-size:11px;color:var(--mut);margin-top:2px}
-.cryp.on .cryp-p{color:var(--neon)}
-.cryp-c{font-size:9px;margin-top:2px}
-.price-main{background:linear-gradient(135deg,var(--panel2),var(--panel));border:1px solid rgba(0,212,255,.15);border-radius:12px;padding:16px;}
-.pair-name{font-size:12px;color:var(--mut);letter-spacing:1px;margin-bottom:4px}
-.price-v{font-size:32px;font-weight:900;color:var(--neon2);text-shadow:0 0 15px rgba(0,212,255,.3)}
-.price-ch{font-size:14px;font-weight:700;margin-top:4px}
-.chat-box{background:var(--panel2);border:1px solid rgba(255,255,255,.05);border-radius:12px;height:380px;display:flex;flex-direction:column;}
-.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.5;word-wrap:break-word;white-space:pre-wrap}
-.msg-u{align-self:flex-end;background:linear-gradient(135deg,var(--neon),#00cc70);color:#000;font-weight:600}
-.msg-a{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
-.msg-a .lbl{font-size:9px;color:var(--neon2);font-weight:800;letter-spacing:1px;margin-bottom:4px}
-.chat-in{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.05)}
-.chat-in input{flex:1;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;color:var(--txt);font-size:13px;outline:none;font-family:inherit;}
-.chat-in input:focus{border-color:var(--neon)}
-.chat-in button{background:var(--neon);color:#000;border:none;border-radius:10px;padding:0 18px;font-weight:800;cursor:pointer;font-family:inherit;}
-.chat-in button:disabled{opacity:.5}
-.btn{background:var(--panel2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px;color:var(--txt);cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s;}
-.btn:hover,.btn:active{background:rgba(255,255,255,.06)}
-.btn-neon{background:rgba(0,255,136,.1);border-color:var(--neon);color:var(--neon)}
-.btn-cyan{background:rgba(0,212,255,.1);border-color:var(--neon2);color:var(--neon2)}
-.btn-red{background:rgba(255,56,96,.1);border-color:var(--red);color:var(--red)}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap}
-.btn-full{width:100%}
-.mod{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;}
-.mod.on{display:flex}
-.mod-c{width:100%;max-width:520px;background:var(--panel);border:1px solid rgba(0,255,136,.2);border-radius:18px 18px 0 0;padding:20px 18px 36px;max-height:90vh;overflow-y:auto;animation:slup .3s cubic-bezier(.34,1.56,.64,1);}
-@keyframes slup{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.mod-h{font-size:16px;font-weight:800;color:var(--neon);letter-spacing:1px;margin-bottom:18px}
-.fld{margin-bottom:14px}
-.fld label{display:block;font-size:10px;color:var(--mut);letter-spacing:1px;margin-bottom:6px;font-weight:700}
-.fld input,.fld textarea{width:100%;background:var(--panel2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;color:var(--txt);font-size:14px;outline:none;font-family:inherit;}
-.fld input:focus,.fld textarea:focus{border-color:var(--neon)}
-.fld textarea{resize:vertical;min-height:60px}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--panel);border:1px solid var(--neon);padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:200;transition:transform .3s;box-shadow:0 0 20px rgba(0,255,136,.2);}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.toast.err{border-color:var(--red);box-shadow:0 0 20px rgba(255,56,96,.2);color:var(--red)}
-.qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
-.qa{background:var(--panel2);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px;text-align:left;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--txt);}
-.qa:active{border-color:var(--neon);background:rgba(0,255,136,.05)}
-.qa-i{font-size:18px;margin-bottom:4px}
-.qa-t{font-size:11px;font-weight:700}
-.qa-d{font-size:9px;color:var(--mut);margin-top:2px}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
-.typing span{display:inline-block;width:6px;height:6px;background:var(--neon);border-radius:50%;margin:0 2px;animation:tdot 1.2s infinite}
-.typing span:nth-child(2){animation-delay:.2s}
-.typing span:nth-child(3){animation-delay:.4s}
-@keyframes tdot{0%,80%,100%{opacity:.2}40%{opacity:1}}
-.hist-it{background:var(--panel2);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
-.hist-p{font-size:12px;font-weight:700}
-.hist-n{font-size:10px;color:var(--mut);margin-top:2px}
-@media(max-width:400px){.cap-big{font-size:34px}.price-v{font-size:26px}.qa-grid{grid-template-columns:1fr}}
+
+::-webkit-scrollbar{width:2px;height:2px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--cyan2);border-radius:2px;opacity:.3}
+
+.glass{
+  background:rgba(10,18,32,.8);
+  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  border:1px solid var(--border);
+  border-radius:16px;
+  position:relative;
+  overflow:hidden;
+}
+.glass::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,255,212,.3),transparent);
+  pointer-events:none;
+}
+.card-c{box-shadow:0 0 40px rgba(0,255,212,.05),0 4px 24px rgba(0,0,0,.4)}
+.card-g{box-shadow:0 0 40px rgba(0,255,136,.05),0 4px 24px rgba(0,0,0,.4)}
+
+.nc{color:var(--cyan);text-shadow:0 0 20px rgba(0,255,212,.5),0 0 40px rgba(0,255,212,.2)}
+.ng{color:var(--green);text-shadow:0 0 20px rgba(0,255,136,.5),0 0 40px rgba(0,255,136,.2)}
+.nr{color:var(--red);text-shadow:0 0 20px rgba(255,61,110,.5)}
+.np{color:var(--purple);text-shadow:0 0 20px rgba(157,110,255,.5)}
+.na{color:var(--amber);text-shadow:0 0 15px rgba(255,184,0,.4)}
+
+.ldot{
+  display:inline-block;width:6px;height:6px;
+  background:var(--green);border-radius:50%;
+  box-shadow:0 0 8px var(--green),0 0 16px rgba(0,255,136,.5);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+.tbar{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;scrollbar-width:none;}
+.tbar::-webkit-scrollbar{display:none}
+.titem{
+  flex-shrink:0;min-width:82px;background:rgba(0,255,212,.03);
+  border:1px solid rgba(0,255,212,.07);border-radius:10px;padding:8px 10px;
+  text-align:center;cursor:pointer;transition:all .18s;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+}
+.titem.on{
+  border-color:rgba(0,255,212,.4);background:rgba(0,255,212,.08);
+  box-shadow:0 0 20px rgba(0,255,212,.1),inset 0 0 10px rgba(0,255,212,.05);
+}
+
+.ocard{
+  background:rgba(10,18,32,.9);border:1px solid rgba(0,255,212,.07);
+  border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+}
+.ocard:hover{transform:translateY(-3px);border-color:rgba(0,255,212,.25);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+
+.cmsg-user{
+  align-self:flex-end;background:linear-gradient(135deg,rgba(0,255,212,.12),rgba(157,110,255,.08));
+  border:1px solid rgba(0,255,212,.18);border-radius:16px 16px 3px 16px;
+  padding:10px 14px;max-width:82%;font-size:13px;line-height:1.5;
+}
+.cmsg-ai{
+  align-self:flex-start;background:rgba(14,26,46,.9);
+  border:1px solid rgba(0,255,212,.08);border-radius:16px 16px 16px 3px;
+  padding:10px 14px;max-width:90%;font-size:13px;line-height:1.6;color:#A8C0DC;
+}
+.cmsg-ai b{color:var(--cyan)}
+
+.cinput{
+  display:flex;gap:8px;align-items:center;background:rgba(0,255,212,.03);
+  border:1px solid rgba(0,255,212,.1);border-radius:12px;padding:6px 6px 6px 14px;
+}
+.cinput input{flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:13px;font-family:'Outfit',sans-serif}
+
+.sbtn{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;border-radius:9px;width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#000;font-weight:900;
+}
+
+.btn-p{background:linear-gradient(135deg,rgba(0,255,212,.15),rgba(157,110,255,.12));color:var(--cyan);border:1px solid rgba(0,255,212,.25);border-radius:10px;padding:11px 18px;cursor:pointer;font-size:13px;font-weight:700;width:100%;}
+.btn-d{background:rgba(255,61,110,.08);color:var(--red);border:1px solid rgba(255,61,110,.2);border-radius:10px;padding:11px 18px;cursor:pointer;font-size:13px;font-weight:700;width:100%;}
+.btn-sm{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:11px;font-weight:600;color:var(--txt2);}
+.btn-pu{background:rgba(157,110,255,.07);border-color:rgba(157,110,255,.2);color:var(--purple)}
+.btn-c{background:rgba(0,255,212,.07);border-color:rgba(0,255,212,.2);color:var(--cyan)}
+.btn-g{background:rgba(0,255,136,.07);border-color:rgba(0,255,136,.2);color:var(--green)}
+.btn-r{background:rgba(255,61,110,.07);border-color:rgba(255,61,110,.2);color:var(--red)}
+
+.ov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);display:flex;align-items:flex-end;justify-content:center;display:none;}
+.sheet{width:100%;max-width:560px;background:#0A1628;border:1px solid rgba(0,255,212,.12);border-top:2px solid rgba(0,255,212,.25);border-radius:20px 20px 0 0;padding:20px 20px 44px;max-height:92vh;overflow-y:auto;animation:slideup .3s;}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.handle{width:36px;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:2px;margin:0 auto 20px;opacity:.4;}
+
+.flabel{font-size:10px;color:var(--txt2);font-weight:700;letter-spacing:1px;display:block;margin-bottom:5px;text-transform:uppercase;font-family:'Space Mono',monospace}
+.finput{width:100%;background:rgba(0,255,212,.04);border:1px solid rgba(0,255,212,.1);border-radius:10px;padding:10px 13px;color:var(--txt);font-size:13px;outline:none;}
+
+.pin-ov{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.9);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:20px;display:none;}
+.pin-box{background:#0A1628;border:1px solid rgba(0,255,212,.15);border-radius:20px;padding:28px 22px;width:100%;max-width:290px;text-align:center;}
+.pdots{display:flex;justify-content:center;gap:14px;margin:16px 0}
+.pdot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(0,255,212,.2);}
+.pdot.on{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 12px rgba(0,255,212,.8);}
+.pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.pkey{background:rgba(0,255,212,.04);border:1px solid rgba(0,255,212,.1);border-radius:10px;padding:14px;color:var(--txt);font-size:18px;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;}
+
+.sigbar{position:fixed;top:0;left:0;right:0;z-index:1000;transform:translateY(-100%);transition:transform .4s;}
+.sigbar.show{transform:translateY(0)}
+.sigbar-inner{background:linear-gradient(135deg,rgba(0,255,212,.18),rgba(157,110,255,.15));backdrop-filter:blur(30px);border-bottom:1px solid rgba(0,255,212,.35);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
+
+.tdot{display:inline-block;width:5px;height:5px;background:var(--cyan);border-radius:50%;margin:0 2px;animation:tblink 1.2s infinite;}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+@keyframes tblink{0%,80%,100%{opacity:.15}40%{opacity:1}}
+
+.blurtgt{transition:filter .3s}
+.blured .blurtgt{filter:blur(14px);user-select:none;pointer-events:none}
+
+.sitem{background:rgba(0,255,212,.03);border:1px solid rgba(0,255,212,.07);border-radius:10px;padding:10px;text-align:center;}
+.slabel{font-size:9px;color:var(--txt2);font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:'Space Mono',monospace;}
+
+.ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.ring{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.06);stroke-width:5}
+.ring-fill{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1.2s}
+
+.tst{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);backdrop-filter:blur(24px);border-radius:12px;padding:10px 20px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:all .25s;pointer-events:none;}
+.jentry{background:rgba(0,255,212,.03);border:1px solid rgba(0,255,212,.07);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;}
+.mono{font-family:'Space Mono',monospace}
 </style>
 </head>
 <body>
 
-<div class="toast" id="toast"></div>
-
-<div class="wrap">
-  <div class="hdr">
-    <div class="hdr-row">
-      <div onclick="tapLogo()">
-        <div class="logo">YENOM ⚡</div>
-        <div class="sub">TRADING TERMINAL V5</div>
-      </div>
-      <div class="live"><span class="live-dot"></span> LIVE</div>
-    </div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-ttl">
-      <span>WALLET</span>
-      <button class="btn" onclick="openWallet()">⚙ Edit</button>
-    </div>
-    <div class="cap-row">
+<div class="sigbar" id="sig-banner">
+  <div class="sigbar-inner">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:22px">⚡</div>
       <div>
-        <div style="font-size:10px;color:var(--mut);letter-spacing:1px">CAPITAL ACTUEL</div>
-        <div class="cap-big">$<span id="cap">23.95</span></div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:10px;color:var(--mut)">OBJECTIF</div>
-        <div style="font-size:18px;color:var(--neon2);font-weight:800">$<span id="goal">50.00</span></div>
-        <div style="font-size:10px;color:var(--mut);margin-top:2px"><span id="goalpct">0</span>%</div>
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);letter-spacing:2.5px;font-family:'Space Mono',monospace">SIGNAL SNIPER</div>
+        <div id="sig-txt" style="font-size:12px;color:var(--txt2);margin-top:1px">Opportunité haute confiance détectée</div>
       </div>
     </div>
-    <div class="goal-bar"><div class="goal-fill" id="goalbar" style="width:0%"></div></div>
-    <div class="kpi-row">
-      <div class="kpi">
-        <div class="kpi-l">EXPO x10</div>
-        <div class="kpi-v" style="color:var(--purple)">$<span id="expo">0</span></div>
+    <button onclick="closeSig()" class="btn-sm">✕</button>
+  </div>
+</div>
+
+<div style="max-width:1020px;margin:0 auto;padding:14px 12px 90px">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <h1 onclick="titleClick()" style="font-size:20px;font-weight:900;letter-spacing:3px;cursor:pointer;user-select:none;font-family:'Space Mono',monospace;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent">
+          SNIPER TRADE v4
+        </h1>
       </div>
-      <div class="kpi">
-        <div class="kpi-l">P&L</div>
-        <div class="kpi-v" id="pnl" style="color:var(--neon)">$0</div>
+      <div style="display:flex;align-items:center;gap:7px;margin-top:3px">
+        <div class="ldot"></div>
+        <span style="font-size:9px;color:var(--txt3);letter-spacing:1.5px;font-family:'Space Mono',monospace">BINANCE LIVE</span>
+        <span id="ws-st" style="font-size:9px;color:var(--txt2);font-family:'Space Mono',monospace">INIT...</span>
       </div>
-      <div class="kpi">
-        <div class="kpi-l">TRADES</div>
-        <div class="kpi-v" style="color:var(--neon2)" id="tradescount">0</div>
-      </div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+      <button onclick="openJournal()" class="btn-sm btn-pu">📓 Journal</button>
+      <button onclick="doAiScan()" class="btn-sm btn-pu">🔍 Scan IA</button>
+      <button onclick="doAiOpps()" class="btn-sm btn-c">🎯 Signaux</button>
+      <button onclick="toggleBlur()" id="eye-btn" class="btn-sm">👁 Discret</button>
     </div>
   </div>
 
-  <div class="panel">
-    <div class="panel-ttl"><span>CRYPTO</span><span style="color:var(--neon)" id="curpair">BTC/USDT</span></div>
-    <div class="crypto-bar" id="cbar"></div>
-    <div class="price-main">
-      <div class="pair-name" id="pname">BITCOIN / USDT</div>
-      <div class="price-v">$<span id="price">—</span></div>
-      <div class="price-ch" id="pchg">—</div>
-    </div>
+  <div class="glass" style="margin-bottom:12px;padding:0;overflow:hidden">
+    <div class="tbar" id="tbar"></div>
   </div>
 
-  <div class="panel">
-    <div class="panel-ttl"><span>GEMINI AI</span><span id="aist" style="color:var(--neon)">● PRÊT</span></div>
-    <div class="qa-grid">
-      <button class="qa" onclick="ask('Donne-moi LE meilleur trade maintenant sur '+curPair+'/USDT avec mon capital de $'+capital.toFixed(2)+'. Format: ENTRY / SL / TP / Levier / Risk:Reward. Sois précis.')">
-        <div class="qa-i">🎯</div><div class="qa-t">SIGNAL TRADE</div><div class="qa-d">Setup complet sur la crypto active</div>
-      </button>
-      <button class="qa" onclick="ask('Analyse technique complète de '+curPair+'/USDT (tendance, support/résistance, RSI, momentum). Court et précis.')">
-        <div class="qa-i">📊</div><div class="qa-t">ANALYSE TA</div><div class="qa-d">Tendance + S/R + indicateurs</div>
-      </button>
-      <button class="qa" onclick="ask('Quel est le MEILLEUR trade actuel parmi BTC, ETH, SOL, BNB ? Compare et donne UN seul setup gagnant.')">
-        <div class="qa-i">⚡</div><div class="qa-t">TOP OPPORTUNITÉ</div><div class="qa-d">Compare toutes les cryptos</div>
-      </button>
-      <button class="qa" onclick="ask('Avec $'+capital.toFixed(2)+' et objectif $'+goal.toFixed(2)+', quelle stratégie suivre ? Combien de trades, quel risk par trade, quel levier ?')">
-        <div class="qa-i">🛡️</div><div class="qa-t">RISK MGMT</div><div class="qa-d">Plan pour atteindre ton goal</div>
-      </button>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+    <div class="glass card-c" style="padding:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="slabel">📡 Prix live</div>
+        <div id="pair-badge" style="font-size:10px;font-weight:800;color:var(--cyan);background:rgba(0,255,212,.08);padding:3px 10px;border-radius:20px;border:1px solid rgba(0,255,212,.18);font-family:'Space Mono',monospace">BTC/USDT</div>
+      </div>
+      <div id="main-price" class="nc blurtgt mono" style="font-size:38px;font-weight:700;line-height:1;margin-bottom:8px">—</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div id="chg-badge" style="font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);color:var(--green);font-family:'Space Mono',monospace">—</div>
+      </div>
     </div>
-    <div class="chat-box">
-      <div class="chat-msgs" id="chat">
-        <div class="msg msg-a">
-          <div class="lbl">GEMINI ✦</div>
-Salut trader ! 🚀 Je suis connecté à Gemini 1.5 Flash. Demande-moi une analyse, un setup ou une stratégie risk management.
+    <div class="glass card-g" style="padding:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="slabel">💼 Portefeuille</div>
+        <button onclick="openWallet()" class="btn-sm btn-g" style="font-size:10px">✏️ Edit</button>
+      </div>
+      <div class="blurtgt">
+        <div class="ng mono" style="font-size:36px;font-weight:700;line-height:1">$<span id="cap-v">20.57</span></div>
+        <div style="font-size:11px;color:var(--txt2);margin-top:4px">Objectif: <span id="goal-v" style="color:var(--txt)">$50.00</span></div>
+      </div>
+      <div style="margin-top:10px">
+        <div style="height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden">
+          <div id="goal-bar" style="height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:2px;width:0%"></div>
         </div>
       </div>
-      <div class="chat-in">
-        <input id="msg" type="text" placeholder="Ex: Signal SOL x10..." onkeydown="if(event.key==='Enter')sendMsg()"/>
-        <button id="sendbtn" onclick="sendMsg()">▶</button>
+    </div>
+  </div>
+
+  <div class="glass" style="padding:20px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="slabel">🎯 Hub d'opportunités</div>
+      <div style="display:flex;gap:6px">
+        <button onclick="buildOpps()" class="btn-sm">↻</button>
       </div>
     </div>
+    <div id="opp-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px"></div>
   </div>
 
-  <div class="panel">
-    <div class="panel-ttl"><span>HISTORIQUE</span>
-      <button class="btn" onclick="openTradeMod()">+ Nouveau</button>
+  <div class="glass" style="padding:20px;display:flex;flex-direction:column;height:480px;margin-bottom:12px">
+    <div class="slabel" style="margin-bottom:12px">💬 Assistant Gemini <span id="ai-st" style="color:var(--green)">● PRÊT</span></div>
+    <div id="chat" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
+      <div class="cmsg-ai"><b>GEMINI ✦</b><br>Système connecté avec la nouvelle sécurité (x-goog-api-key). Prêt à analyser !</div>
     </div>
-    <div id="hist" style="display:flex;flex-direction:column;gap:8px">
-      <div style="text-align:center;color:var(--mut);font-size:11px;padding:18px">Aucun trade enregistré</div>
-    </div>
-  </div>
-</div>
-
-<!-- MODALS -->
-<div class="mod" id="walletmod" onclick="if(event.target===this)closeMod('walletmod')">
-  <div class="mod-c">
-    <div class="mod-h">💼 MODIFIER WALLET</div>
-    <div class="fld"><label>CAPITAL ACTUEL ($)</label><input type="number" id="i-cap" step="0.01"/></div>
-    <div class="fld"><label>OBJECTIF ($)</label><input type="number" id="i-goal" step="0.01"/></div>
-    <div class="fld">
-      <label>AJUSTER (+/- $)</label>
-      <input type="number" id="i-adj" step="0.01" placeholder="Montant"/>
-      <div class="btn-row" style="margin-top:8px">
-        <button class="btn btn-neon" style="flex:1" onclick="adj(1)">+ Ajouter</button>
-        <button class="btn btn-red" style="flex:1" onclick="adj(-1)">− Retirer</button>
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn" style="flex:1" onclick="closeMod('walletmod')">Annuler</button>
-      <button class="btn btn-neon" style="flex:1" onclick="saveWallet()">✓ SAUVEGARDER</button>
+    <div class="cinput">
+      <input id="ci" type="text" placeholder="Analyse SOL, signal BTC x12..." onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="sbtn" onclick="sendChat()" id="sb">GO</button>
     </div>
   </div>
 </div>
 
-<div class="mod" id="trademod" onclick="if(event.target===this)closeMod('trademod')">
-  <div class="mod-c">
-    <div class="mod-h">📝 NOUVEAU TRADE</div>
-    <div class="fld"><label>PAIRE</label><input type="text" id="t-pair" value="BTC/USDT"/></div>
-    <div class="fld"><label>P&L ($)</label><input type="number" id="t-pnl" step="0.01" placeholder="+5.20 ou -3.10"/></div>
-    <div class="fld"><label>NOTE</label><textarea id="t-note" placeholder="Setup utilisé..."></textarea></div>
-    <div class="btn-row">
-      <button class="btn" style="flex:1" onclick="closeMod('trademod')">Annuler</button>
-      <button class="btn btn-neon" style="flex:1" onclick="saveTrade()">✓ ENREGISTRER</button>
-    </div>
+<div id="st-ov" class="ov">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div style="font-size:17px;font-weight:900;margin-bottom:20px;color:var(--cyan)">⚙️ Paramètres IA</div>
+    <label class="flabel">🔑 Clé API Gemini (AQ...)</label>
+    <input class="finput" type="password" id="api-in" placeholder="Colle ta clé AQ... ici"/>
+    <button onclick="saveKey()" class="btn-p" style="margin-top:14px">✓ Sauvegarder</button>
+    <button onclick="closeST()" class="btn-d" style="margin-top:8px">Fermer</button>
   </div>
 </div>
 
-<div class="mod" id="setmod" onclick="if(event.target===this)closeMod('setmod')">
-  <div class="mod-c">
-    <div class="mod-h">⚙ PARAMÈTRES</div>
-    <div class="fld">
-      <label>CLÉ API GEMINI 🔑</label>
-      <input type="text" id="i-key" placeholder="AIza..."/>
-      <div style="font-size:10px;color:var(--mut);margin-top:6px">aistudio.google.com/app/apikey</div>
+<div id="pin-ov" class="pin-ov">
+  <div class="pin-box">
+    <div style="font-size:24px;margin-bottom:6px">🔐</div>
+    <div style="font-size:15px;font-weight:800">Accès admin</div>
+    <div class="pgrid" style="margin-top:15px">
+      <button class="pkey" onclick="pk('1')">1</button><button class="pkey" onclick="pk('2')">2</button><button class="pkey" onclick="pk('3')">3</button>
+      <button class="pkey" onclick="pk('4')">4</button><button class="pkey" onclick="pk('5')">5</button><button class="pkey" onclick="pk('6')">6</button>
+      <button class="pkey" onclick="pk('7')">7</button><button class="pkey" onclick="pk('8')">8</button><button class="pkey" onclick="pk('9')">9</button>
+      <button class="pkey" onclick="pk('C')">C</button><button class="pkey" onclick="pk('0')">0</button><button class="pkey" onclick="pk('D')">⌫</button>
     </div>
-    <div class="btn-row" style="margin-bottom:10px">
-      <button class="btn btn-cyan" style="flex:1" onclick="testKey()">🧪 TESTER</button>
-      <button class="btn btn-neon" style="flex:1" onclick="saveKey()">✓ SAUVER</button>
-    </div>
-    <button class="btn btn-red btn-full" onclick="resetAll()">⚠ RESET TOUT</button>
+    <button onclick="closePIN()" style="background:none;border:none;color:var(--txt2);margin-top:15px;cursor:pointer">Annuler</button>
+  </div>
+</div>
+
+<div id="wl-ov" class="ov">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div style="font-size:17px;font-weight:900;margin-bottom:18px;color:var(--cyan)">💼 Portefeuille</div>
+    <label class="flabel">Capital actuel ($)</label>
+    <input class="finput" type="number" id="w-cap" step="0.01"/>
+    <button class="btn-p" onclick="saveWallet()" style="margin-top:14px">✓ Sauvegarder</button>
+    <button class="btn-d" onclick="closeWallet()" style="margin-top:8px">Annuler</button>
   </div>
 </div>
 
 <script>
-// ════════════════════════════════════════
-// VARIABLES GLOBALES — EN PREMIER, TOUJOURS
-// ════════════════════════════════════════
-var capital, goal, capBase, trades, apiKey, curPair, prices, logoTaps, logoTimer;
+const PIN_CODE = '1704';
+const PAIRS = ['BTC','ETH','SOL','PEPE','WIF','BONK'];
+let capital = parseFloat(localStorage.getItem('cap') ?? '20.57');
+let capitalGoal = parseFloat(localStorage.getItem('goal') ?? '50');
+let apiKey = localStorage.getItem('gemKey') || '';
+let curPair = 'BTC';
+let prices = {};
+let ws = null;
+let tcnt = 0, ttmr = null;
+let pinBuf = '';
+let blurOn = false;
 
-// Storage helpers — safe
-function lsGet(k){
-  try{ return localStorage.getItem(k); }catch(e){ return null; }
-}
-function lsSet(k,v){
-  try{ localStorage.setItem(k,v); }catch(e){}
-}
-function lsGetJSON(k){
-  try{
-    var raw = localStorage.getItem(k);
-    if(!raw) return null;
-    return JSON.parse(raw);
-  }catch(e){
-    // Valeur corrompue → on la supprime
-    try{ localStorage.removeItem(k); }catch(e2){}
-    return null;
-  }
-}
-function lsGetFloat(k, def){
-  var v = parseFloat(lsGet(k));
-  return isNaN(v) ? def : v;
-}
+function fp(n){ return parseFloat(n).toFixed(2); }
+const ls = (k,v) => localStorage.setItem(k,v);
 
-// ── INIT VARIABLES ──
-capital  = lsGetFloat('cap', 23.95);
-goal     = lsGetFloat('goal', 50.00);
-capBase  = lsGetFloat('capBase', capital);
-trades   = lsGetJSON('trades') || [];
-apiKey   = lsGet('geminiKey') || '';
-curPair  = lsGet('curPair') || 'BTC';
-prices   = {};
-logoTaps = 0;
-logoTimer = null;
-
-if(!lsGet('capBase')) lsSet('capBase', capBase);
-
-// ════════════════════════════════════════
-// CONSTANTES
-// ════════════════════════════════════════
-var PAIRS = ['BTC','ETH','SOL','BNB','XRP','DOGE','ADA','AVAX','LINK','SUI'];
-var NAMES = {BTC:'BITCOIN',ETH:'ETHEREUM',SOL:'SOLANA',BNB:'BNB',XRP:'RIPPLE',
-             DOGE:'DOGECOIN',ADA:'CARDANO',AVAX:'AVALANCHE',LINK:'CHAINLINK',SUI:'SUI'};
-
-// ════════════════════════════════════════
-// UTILITAIRES
-// ════════════════════════════════════════
-function toast(m, type){
-  var t = document.getElementById('toast');
-  t.textContent = m;
-  t.className = 'toast show' + (type==='err' ? ' err' : '');
-  setTimeout(function(){ t.className = 'toast'; }, 3000);
-}
-function fp(n){
-  n = parseFloat(n);
-  if(isNaN(n)) return '—';
-  if(n >= 1000) return n.toLocaleString('en-US',{maximumFractionDigits:2});
-  if(n >= 1)    return n.toFixed(3);
-  if(n >= .01)  return n.toFixed(4);
-  return n.toFixed(6);
-}
-function esc(s){
-  return String(s).replace(/[&<>"']/g, function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-  });
+// --- WEBSOCKET ---
+function connectWS(){
+  if(ws) ws.close();
+  const streams = PAIRS.map(p=>p.toLowerCase()+'usdt@ticker').join('/');
+  ws = new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
+  ws.onmessage = e => {
+    const d = JSON.parse(e.data).data;
+    if(!d?.s) return;
+    const sym = d.s.replace('USDT','');
+    prices[sym] = {price: parseFloat(d.c), change: parseFloat(d.P)};
+    updateTickerItem(sym);
+    if(sym===curPair) updateMainPrice();
+  };
 }
 
-// ════════════════════════════════════════
-// WALLET
-// ════════════════════════════════════════
+function buildTicker(){
+  document.getElementById('tbar').innerHTML = PAIRS.map(p=>`<div class="titem" id="ti-${p}" onclick="switchPair('${p}')">${p}<br>--</div>`).join('');
+}
+function updateTickerItem(sym){
+  const el = document.getElementById('ti-'+sym);
+  if(el) el.innerHTML = `${sym}<br><span style="color:${prices[sym].change>=0?'var(--green)':'var(--red)'}">${fp(prices[sym].price)}</span>`;
+}
+function switchPair(p){ curPair=p; document.getElementById('pair-badge').textContent=p+'/USDT'; updateMainPrice(); }
+function updateMainPrice(){
+  const d = prices[curPair]; if(!d) return;
+  document.getElementById('main-price').textContent = '$'+fp(d.price);
+  document.getElementById('chg-badge').textContent = d.change.toFixed(2)+'%';
+  document.getElementById('chg-badge').style.color = d.change>=0?'var(--green)':'var(--red)';
+}
+
+// --- WALLET & OPPS ---
 function updateWallet(){
-  document.getElementById('cap').textContent = capital.toFixed(2);
-  document.getElementById('goal').textContent = goal.toFixed(2);
-  document.getElementById('expo').textContent = (capital*10).toFixed(2);
-  var pct = goal > 0 ? Math.min(100,(capital/goal)*100) : 0;
-  document.getElementById('goalpct').textContent = pct.toFixed(1);
-  document.getElementById('goalbar').style.width = pct + '%';
-  var pnl = capital - capBase;
-  var pe = document.getElementById('pnl');
-  pe.textContent = (pnl >= 0 ? '+$' : '-$') + Math.abs(pnl).toFixed(2);
-  pe.style.color = pnl >= 0 ? 'var(--neon)' : 'var(--red)';
-  document.getElementById('tradescount').textContent = trades.length;
-  renderHist();
+  document.getElementById('cap-v').textContent = capital.toFixed(2);
+  document.getElementById('goal-bar').style.width = Math.min((capital/capitalGoal)*100,100)+'%';
 }
-function openWallet(){
-  document.getElementById('i-cap').value = capital.toFixed(2);
-  document.getElementById('i-goal').value = goal.toFixed(2);
-  document.getElementById('i-adj').value = '';
-  document.getElementById('walletmod').classList.add('on');
-}
-function saveWallet(){
-  var c = parseFloat(document.getElementById('i-cap').value);
-  var g = parseFloat(document.getElementById('i-goal').value);
-  if(!isNaN(c) && c >= 0){ capital = c; lsSet('cap',c); capBase = c; lsSet('capBase',c); }
-  if(!isNaN(g) && g > 0){ goal = g; lsSet('goal',g); }
-  updateWallet();
-  closeMod('walletmod');
-  toast('✅ Wallet sauvegardé');
-}
-function adj(sign){
-  var v = parseFloat(document.getElementById('i-adj').value);
-  if(isNaN(v) || v <= 0){ toast('Montant invalide','err'); return; }
-  capital = Math.max(0, capital + sign*v);
-  lsSet('cap', capital);
-  document.getElementById('i-cap').value = capital.toFixed(2);
-  document.getElementById('i-adj').value = '';
-  updateWallet();
-  toast(sign > 0 ? '✅ +$'+v.toFixed(2)+' ajoutés' : '⚠ -$'+v.toFixed(2)+' retirés');
-}
-function closeMod(id){ document.getElementById(id).classList.remove('on'); }
+function openWallet(){ document.getElementById('w-cap').value=capital; document.getElementById('wl-ov').style.display='flex'; }
+function closeWallet(){ document.getElementById('wl-ov').style.display='none'; }
+function saveWallet(){ capital=parseFloat(document.getElementById('w-cap').value); ls('cap',capital); updateWallet(); closeWallet(); }
 
-// ════════════════════════════════════════
-// TRADES
-// ════════════════════════════════════════
-function openTradeMod(){
-  document.getElementById('t-pair').value = curPair + '/USDT';
-  document.getElementById('t-pnl').value = '';
-  document.getElementById('t-note').value = '';
-  document.getElementById('trademod').classList.add('on');
-}
-function saveTrade(){
-  var pair = document.getElementById('t-pair').value.trim();
-  var pnl  = parseFloat(document.getElementById('t-pnl').value);
-  var note = document.getElementById('t-note').value.trim();
-  if(!pair || isNaN(pnl)){ toast('Remplis les champs','err'); return; }
-  trades.unshift({pair:pair, pnl:pnl, note:note, date:Date.now()});
-  capital = Math.max(0, capital + pnl);
-  lsSet('cap', capital);
-  lsSet('trades', JSON.stringify(trades));
-  updateWallet();
-  closeMod('trademod');
-  toast(pnl >= 0 ? '✅ Trade +$'+pnl.toFixed(2) : '❌ Trade -$'+Math.abs(pnl).toFixed(2));
-}
-function renderHist(){
-  var h = document.getElementById('hist');
-  if(trades.length === 0){
-    h.innerHTML = '<div style="text-align:center;color:var(--mut);font-size:11px;padding:18px">Aucun trade enregistré</div>';
-    return;
-  }
-  h.innerHTML = trades.slice(0,8).map(function(t){
-    var col  = t.pnl >= 0 ? 'var(--neon)' : 'var(--red)';
-    var sign = t.pnl >= 0 ? '+' : '';
-    var d    = new Date(t.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
-    return '<div class="hist-it"><div><div class="hist-p">'+esc(t.pair)+'</div>'
-         + '<div class="hist-n">'+d+' · '+esc(t.note||'—')+'</div></div>'
-         + '<div style="font-weight:800;color:'+col+'">'+sign+'$'+t.pnl.toFixed(2)+'</div></div>';
-  }).join('');
+function buildOpps(){
+  const ops = [{asset:'SOL',dir:'LONG',conf:91,lever:13},{asset:'BTC',dir:'SHORT',conf:84,lever:10}];
+  document.getElementById('opp-grid').innerHTML = ops.map(o=>`<div class="ocard"><b>${o.asset}</b> ${o.dir}<br>${o.conf}% Confiance</div>`).join('');
 }
 
-// ════════════════════════════════════════
-// CRYPTO PRICES
-// ════════════════════════════════════════
-function buildCryptoBar(){
-  var bar = document.getElementById('cbar');
-  bar.innerHTML = '';
-  PAIRS.forEach(function(p){
-    var d  = document.createElement('div');
-    d.className = 'cryp' + (p === curPair ? ' on' : '');
-    d.onclick = function(){ switchPair(p); };
-    var pr = prices[p];
-    var ch = pr ? pr.change : 0;
-    d.innerHTML = '<div class="cryp-s">'+p+'</div>'
-      + '<div class="cryp-p">$'+(pr ? fp(pr.price) : '—')+'</div>'
-      + '<div class="cryp-c" style="color:'+(ch>=0?'var(--neon)':'var(--red)')+'">'+
-        (ch>=0?'+':'')+ch.toFixed(2)+'%</div>';
-    bar.appendChild(d);
-  });
+// --- PIN & SETTINGS ---
+function titleClick(){ tcnt++; clearTimeout(ttmr); ttmr=setTimeout(()=>tcnt=0,1500); if(tcnt>=5){ tcnt=0; document.getElementById('pin-ov').style.display='flex'; } }
+function closePIN(){ document.getElementById('pin-ov').style.display='none'; pinBuf=''; }
+function pk(v){
+  if(v==='C') pinBuf=''; else if(v==='D') pinBuf=pinBuf.slice(0,-1); else pinBuf+=v;
+  if(pinBuf===PIN_CODE){ closePIN(); document.getElementById('api-in').value=apiKey; document.getElementById('st-ov').style.display='flex'; }
 }
-function switchPair(p){
-  curPair = p;
-  lsSet('curPair', p);
-  document.getElementById('curpair').textContent = p + '/USDT';
-  document.getElementById('pname').textContent = (NAMES[p]||p) + ' / USDT';
-  buildCryptoBar();
-  updatePriceDisplay();
-}
-function updatePriceDisplay(){
-  var pr = prices[curPair];
-  if(!pr){ document.getElementById('price').textContent = '—'; return; }
-  document.getElementById('price').textContent = fp(pr.price);
-  var pc = document.getElementById('pchg');
-  pc.textContent = (pr.change >= 0 ? '▲ +' : '▼ ') + pr.change.toFixed(2) + '% (24h)';
-  pc.style.color = pr.change >= 0 ? 'var(--neon)' : 'var(--red)';
-}
-async function fetchPrices(){
-  try{
-    var symbols = encodeURIComponent(JSON.stringify(PAIRS.map(function(p){ return p+'USDT'; })));
-    var r = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols='+symbols);
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    var data = await r.json();
-    data.forEach(function(d){
-      var sym = d.symbol.replace('USDT','');
-      prices[sym] = { price: parseFloat(d.lastPrice), change: parseFloat(d.priceChangePercent) };
-    });
-    buildCryptoBar();
-    updatePriceDisplay();
-  }catch(e){
-    console.warn('Fallback prix:', e);
-  }
+function closeST(){ document.getElementById('st-ov').style.display='none'; }
+function saveKey(){ apiKey=document.getElementById('api-in').value.trim(); ls('gemKey',apiKey); closeST(); }
+function toggleBlur(){ blurOn=!blurOn; document.body.classList.toggle('blured',blurOn); }
+function closeSig(){ document.getElementById('sig-banner').classList.remove('show'); }
+
+function buildSystemPrompt() {
+  return `Tu es SNIPER, un trader expert. Capital : $${capital}. Paire active : ${curPair}. Réponds de façon concise et pro.`;
 }
 
-// ════════════════════════════════════════
-// GEMINI AI
-// ════════════════════════════════════════
-async function callGemini(userMsg){
-  if(!apiKey){ throw new Error('Clé API manquante — 5× clic sur YENOM'); }
+// --- IA GEMINI (NOUVELLE SECURITE AQ AVEC HEADER x-goog-api-key) ---
+async function callGemini(userMsg) {
+  if (!apiKey) throw new Error('Clé API manquante');
 
-  var ctx = Object.entries(prices).slice(0,6)
-    .map(function(e){
-      var s = e[0], d = e[1];
-      return s+':$'+fp(d.price)+'('+(d.change>=0?'+':'')+d.change.toFixed(2)+'%)';
-    }).join(' | ');
+  // URL propre, SANS "?key="
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
+  
+  const promptText = buildSystemPrompt() + "\n\nDemande de l'utilisateur : " + userMsg;
 
-  var sysPrompt = 'Tu es un trader crypto expert français, direct et concis.\n'
-    + 'CONTEXTE:\n'
-    + '- Capital: $'+capital.toFixed(2)+' | Objectif: $'+goal.toFixed(2)+'\n'
-    + '- Paire active: '+curPair+'/USDT\n'
-    + '- Prix live: '+(ctx||'chargement...')+'\n'
-    + '- Trades: '+trades.length+'\n\n'
-    + 'RÈGLES:\n'
-    + '1. Toujours donner ENTRY / SL / TP / Levier / Risk:Reward sur les setups\n'
-    + '2. Format court avec emojis et bullet points\n'
-    + '3. Pas de disclaimer, parle comme un pote trader\n'
-    + '4. Capital faible = levier max x10 conseillé\n\n'
-    + 'QUESTION: '+userMsg;
-
-  var body = {
-    contents: [{ role:'user', parts:[{ text: sysPrompt }] }],
-    generationConfig: { temperature: 0.8, maxOutputTokens: 800 }
+  const payload = {
+    contents: [{ role: "user", parts: [{ text: promptText }] }],
+    generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
   };
 
-  var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key='+apiKey.trim();
-
-  var r = await fetch(url, {
+  const resp = await fetch(url, {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(body)
+    headers: { 
+      'Content-Type': 'application/json',
+      'x-goog-api-key': apiKey // LA MAGIE EST ICI
+    },
+    body: JSON.stringify(payload)
   });
 
-  var data = await r.json();
-  if(!r.ok){ throw new Error(data && data.error ? data.error.message : 'HTTP '+r.status); }
+  const data = await resp.json();
 
-  var text = data && data.candidates && data.candidates[0] &&
-             data.candidates[0].content && data.candidates[0].content.parts &&
-             data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
-
-  if(!text) throw new Error('Réponse vide de Gemini');
-  return text;
-}
-
-function addMsg(text, who){
-  var chat = document.getElementById('chat');
-  var div  = document.createElement('div');
-  div.className = 'msg ' + (who === 'u' ? 'msg-u' : 'msg-a');
-  if(who === 'a'){
-    div.innerHTML = '<div class="lbl">GEMINI ✦</div>' + esc(text);
-  } else {
-    div.textContent = text;
+  if (!resp.ok) {
+    throw new Error(data.error?.message || "Erreur API Google");
   }
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-  return div;
+
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Aucune réponse générée.';
 }
-function addTyping(){
-  var chat = document.getElementById('chat');
-  var div  = document.createElement('div');
-  div.className = 'msg msg-a';
-  div.id = 'typing';
-  div.innerHTML = '<div class="lbl">GEMINI ✦</div><div class="typing"><span></span><span></span><span></span></div>';
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-  return div;
-}
-async function ask(q){
-  document.getElementById('msg').value = q;
-  await sendMsg();
-}
-async function sendMsg(){
-  var inp = document.getElementById('msg');
-  var m   = inp.value.trim();
-  if(!m) return;
+
+async function sendChat(){
+  const inp = document.getElementById('ci');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  if(!apiKey){ alert('Configure ta clé Gemini (5x tap sur le titre)'); return; }
+  
   inp.value = '';
-  addMsg(m, 'u');
-  var btn = document.getElementById('sendbtn');
-  btn.disabled = true;
-  var aist = document.getElementById('aist');
-  aist.textContent = '● RÉFLEXION';
-  aist.style.color = 'var(--amber)';
-  var typing = addTyping();
-  try{
-    var res = await callGemini(m);
-    typing.remove();
-    addMsg(res, 'a');
-  }catch(e){
-    typing.remove();
-    addMsg('❌ Erreur : '+e.message, 'a');
+  document.getElementById('chat').innerHTML += `<div class="cmsg-user">${msg}</div>`;
+  const typing = document.createElement('div'); typing.className = 'cmsg-ai'; typing.innerHTML = '<b>GEMINI ✦</b><br>Réflexion...';
+  document.getElementById('chat').appendChild(typing);
+
+  try {
+    const reply = await callGemini(msg);
+    typing.innerHTML = `<b>GEMINI ✦</b><br>${reply.replace(/\n/g,'<br>')}`;
+  } catch(e) {
+    typing.innerHTML = `<b>GEMINI ✦</b><br>❌ Erreur : ${e.message}`;
   }
-  btn.disabled = false;
-  aist.textContent = '● PRÊT';
-  aist.style.color = 'var(--neon)';
+  document.getElementById('chat').scrollTop = 9999;
 }
 
-// ════════════════════════════════════════
-// SETTINGS
-// ════════════════════════════════════════
-function tapLogo(){
-  logoTaps++;
-  clearTimeout(logoTimer);
-  logoTimer = setTimeout(function(){ logoTaps = 0; }, 800);
-  if(logoTaps >= 5){
-    logoTaps = 0;
-    document.getElementById('i-key').value = apiKey;
-    document.getElementById('setmod').classList.add('on');
-  }
+// --- ACTIONS RAPIDES ---
+async function doAiScan(){
+  document.getElementById('ci').value = `Analyse rapide du marché sur ${curPair}`;
+  await sendChat();
 }
-function saveKey(){
-  var k = document.getElementById('i-key').value.trim();
-  if(!k){ toast('Clé vide','err'); return; }
-  apiKey = k;
-  lsSet('geminiKey', k);
-  toast('✅ Clé sauvegardée');
-}
-async function testKey(){
-  var k = document.getElementById('i-key').value.trim() || apiKey;
-  if(!k){ toast('Entre une clé','err'); return; }
-  toast('🧪 Test en cours...');
-  var oldKey = apiKey;
-  apiKey = k;
-  try{
-    var res = await callGemini('Réponds juste OK');
-    if(res){ toast('✅ Clé valide — Gemini répond !'); lsSet('geminiKey',k); }
-    else { apiKey = oldKey; toast('❌ Réponse vide','err'); }
-  }catch(e){
-    apiKey = oldKey;
-    toast('❌ '+e.message,'err');
-  }
-}
-function resetAll(){
-  if(!confirm('Reset TOUT ? (wallet, trades, clé)')) return;
-  localStorage.clear();
-  location.reload();
+async function doAiOpps(){
+  document.getElementById('ci').value = `Donne-moi un setup de trade sur ${curPair}`;
+  await sendChat();
 }
 
-// ════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════
+// --- INIT ---
 function init(){
-  updateWallet();
-  buildCryptoBar();
-  switchPair(curPair);
-  fetchPrices();
-  setInterval(fetchPrices, 15000);
+  buildTicker(); buildOpps(); updateWallet(); connectWS();
+  setTimeout(()=>document.getElementById('sig-banner').classList.add('show'), 3000);
 }
 document.addEventListener('DOMContentLoaded', init);
 </script>
