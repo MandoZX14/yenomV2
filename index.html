@@ -376,7 +376,7 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cur
     <div id="chat" style="flex:1; overflow-y:auto; padding: 24px; display:flex; flex-direction:column; gap:16px;">
       <div class="cmsg-ai">
         <div style="font-size:10px; color:var(--txt-muted); margin-bottom:6px; font-weight:700; letter-spacing:1px; font-family:var(--font-mono);">SNIPER IA ✦</div>
-        Système opérationnel. Données Live synchronisées. Mode chirurgical activé. <br><br>En attente de requête.
+        Système opérationnel. Intelligence dynamique activée. <br><br>En attente de requête...
       </div>
     </div>
     
@@ -696,18 +696,20 @@ function saveKey(){ apiKey=document.getElementById('api-in').value.trim(); ls('g
 function toggleBlur(){ blurOn=!blurOn; document.body.classList.toggle('blured',blurOn); }
 function closeSig(){ document.getElementById('sig-banner').style.display='none'; clearInterval(sigTimer); }
 
-// --- IA GEMINI (CORRECTION PRIX LIVE) ---
+// --- IA GEMINI (NOUVEAU PROMPT DYNAMIQUE ET FLEXIBLE) ---
 function buildSystemPrompt() { 
   const currentPrice = prices[curPair]?.price ? prices[curPair].price.toFixed(2) : 'En attente des données Live';
   
   return `Tu es SNIPER, un assistant de trading institutionnel ultra-premium. Capital : $${capital}. Paire active : ${curPair} (Prix actuel : $${currentPrice}). 
 RÈGLES ABSOLUES :
-- ZERO bla-bla : aucun "bonjour", aucune intro, aucune conclusion.
+- ZERO bla-bla : aucun "bonjour", aucune intro, aucune conclusion. Va droit au but.
 - Sois extrêmement concis, direct, froid et chirurgical. 
-- Utilise UNIQUEMENT des listes à puces et du texte en gras pour les chiffres.
-- Format imposé : 1. Tendance courte. 2. Niveaux Clés (Support/Résistance). 3. Setup recommandé (Entrée, TP, SL).
-- Les prix proposés (Entrée, TP, SL) DOIVENT IMPÉRATIVEMENT être logiques et cohérents avec le prix actuel fourni de $${currentPrice}. N'utilise JAMAIS de vieilles données d'entraînement pour les prix.
-- Va droit au but, chaque mot doit avoir de la valeur.`; 
+- Utilise des listes à puces et du texte en gras pour les chiffres importants.
+- Les prix proposés DOIVENT IMPÉRATIVEMENT être cohérents avec le prix actuel ($${currentPrice}).
+- ADAPTE TON FORMAT À LA DEMANDE DE L'UTILISATEUR :
+  * Si l'utilisateur demande un "Setup", un "Signal" ou une analyse de trading : Utilise le format strict : 1. Tendance courte 2. Niveaux Clés 3. Setup (Entrée, TP, SL).
+  * Si l'utilisateur demande une définition ou une explication (ex: "Qu'est ce que le RSI ?") : Réponds en 3 bullet points ultra-précis et clairs.
+  * Si l'utilisateur pose une question générale courte : Réponds en une ou deux phrases chirurgicales.`; 
 }
 
 let activeGeminiModel = null;
