@@ -376,7 +376,7 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cur
     <div id="chat" style="flex:1; overflow-y:auto; padding: 24px; display:flex; flex-direction:column; gap:16px;">
       <div class="cmsg-ai">
         <div style="font-size:10px; color:var(--txt-muted); margin-bottom:6px; font-weight:700; letter-spacing:1px; font-family:var(--font-mono);">SNIPER IA ✦</div>
-        Système initialisé avec la sécurité de niveau Pro (x-goog-api-key). Analyseur quantique prêt.<br><br>Que souhaitez-vous analyser ?
+        Système opérationnel et reconnecté. Je suis prêt à vous faire des analyses claires et détaillées. <br><br>Comment puis-je vous aider ?
       </div>
     </div>
     
@@ -696,8 +696,10 @@ function saveKey(){ apiKey=document.getElementById('api-in').value.trim(); ls('g
 function toggleBlur(){ blurOn=!blurOn; document.body.classList.toggle('blured',blurOn); }
 function closeSig(){ document.getElementById('sig-banner').style.display='none'; clearInterval(sigTimer); }
 
-// --- IA GEMINI (AUTO-DISCOVERY / AQ FIX) ---
-function buildSystemPrompt() { return `Tu es SNIPER, un trader quantique expert. Capital : $${capital}. Paire active : ${curPair}. Réponds de façon technique, ultra-concise, format terminal professionnel.`; }
+// --- IA GEMINI (PROMPT CORRIGÉ POUR ÊTRE HUMAIN) ---
+function buildSystemPrompt() { 
+  return `Tu es SNIPER, un trader professionnel. Capital : $${capital}. Paire active : ${curPair}. Fais des analyses techniques précises, structurées et très claires. Ne parle SURTOUT PAS comme un robot ou un ordinateur. N'utilise jamais de syntaxe de terminal ou de faux code informatique. Réponds naturellement et de manière experte.`; 
+}
 
 let activeGeminiModel = null;
 async function callGemini(userMsg) {
@@ -752,14 +754,14 @@ async function sendChat(){
     const reply = await callGemini(msg);
     addAIMsg(reply);
   } catch(e) {
-    addAIMsg('❌ Erreur Critique : ' + e.message);
+    addAIMsg('❌ Erreur : ' + e.message);
   } finally {
     sb.disabled = false; status.textContent = '● CONNECTÉ'; status.style.color = 'var(--green)';
   }
 }
 
-async function doAiScan(){ document.getElementById('ci').value = `Scan algorithmique requis sur ${curPair}. Donne 3 métriques clés.`; await sendChat(); }
-async function doAiOpps(){ document.getElementById('ci').value = `Génère un setup de trading institutionnel pour ${curPair}.`; await sendChat(); }
+async function doAiScan(){ document.getElementById('ci').value = `Fais-moi une analyse rapide du marché sur ${curPair} en 3 points clairs.`; await sendChat(); }
+async function doAiOpps(){ document.getElementById('ci').value = `Propose-moi un setup de trading clair pour ${curPair} (Entrée, TP, SL).`; await sendChat(); }
 
 // --- INIT ---
 function init(){
