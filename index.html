@@ -1,331 +1,297 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNIPER V4 - AI Trading Terminal</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;600&display=swap');
-        *{box-sizing:border-box;margin:0;padding:0}
-        body { background: #0d0f1a; }
-        .sn{
-            font-family:'Inter',sans-serif;
-            color:#e8eaf6;
-            background:#0d0f1a;
-            min-height:100vh;
-            padding:18px;
-            position:relative;
-            overflow-x:hidden;
-        }
-        .orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;}
-        .orb1{width:400px;height:400px;top:-120px;left:-100px;background:radial-gradient(circle,rgba(167,139,250,.15),transparent 65%);}
-        .orb2{width:300px;height:300px;bottom:-80px;right:-80px;background:radial-gradient(circle,rgba(125,211,252,.1),transparent 65%);}
-        .orb3{width:250px;height:250px;top:45%;left:35%;background:radial-gradient(circle,rgba(249,168,212,.07),transparent 65%);}
-        .g{position:relative;z-index:1;max-width:1200px;margin:0 auto;}
-        
-        /* HEADER */
-        .hdr{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:18px;}
-        .logo{font-family:'Sora',sans-serif;font-size:17px;font-weight:600;background:linear-gradient(135deg,#fff 30%,#c4b5fd 65%,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-        .sub-hdr{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;color:#3d4563;margin-top:4px;display:flex;align-items:center;gap:7px;}
-        .dot-pulse{width:5px;height:5px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 7px rgba(110,231,183,.6);animation:dp 2s infinite;}
-        @keyframes dp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
-        
-        .hdr-btns{display:flex;gap:6px;flex-wrap:wrap;}
-        .btn{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:7px 12px;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;transition:all .18s;line-height:1;}
-        .btn-v{border-color:rgba(167,139,250,.3);color:#c4b5fd;background:rgba(167,139,250,.08);}
-        .btn-v:hover{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.5);}
-        .btn-n{border-color:rgba(255,255,255,.1);color:#9198b3;background:rgba(255,255,255,.03);}
-        .btn-n:hover{border-color:rgba(255,255,255,.2);color:#e8eaf6;background:rgba(255,255,255,.06);}
-        .btn-g{border-color:rgba(110,231,183,.25);color:#6ee7b7;background:rgba(110,231,183,.07);}
-        .btn-r{border-color:rgba(252,165,165,.25);color:#fca5a5;background:rgba(252,165,165,.07);}
-
-        /* MODAL */
-        #settings-modal {
-            display:none; position:fixed; inset:0; background:rgba(13,15,26,.98); z-index:1000; 
-            align-items:center; justify-content:center;
-        }
-        .modal-content {
-            background:rgba(255,255,255,.03); border:1px solid rgba(167,139,250,.3); 
-            padding:30px; border-radius:20px; width:90%; max-width:400px;
-        }
-
-        /* TICKER */
-        .ticker{display:flex;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;margin-bottom:16px;}
-        .ti{flex:1;padding:11px 12px;border-right:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);cursor:pointer;transition:.2s;}
-        .ti.on{background:rgba(167,139,250,.09);border-bottom:2px solid #a78bfa;}
-        .ti-sym{font-family:'DM Mono',monospace;font-size:8px;color:#3d4563;}
-        .ti-price{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;margin-top:3px;}
-
-        /* CARDS & GRID */
-        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-        .card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:20px 18px;position:relative;overflow:hidden;}
-        .clbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;color:#3d4563;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-        .clbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.07),transparent);}
-        .price-big{font-family:'Sora',sans-serif;font-size:38px;font-weight:300;color:#e8eaf6;line-height:1;margin:8px 0;}
-        .pill{font-family:'DM Mono',monospace;font-size:9px;padding:3px 9px;border-radius:7px;border:1px solid;}
-        .pill-g{color:#6ee7b7;border-color:rgba(110,231,183,.25);background:rgba(110,231,183,.08);}
-        .pill-r{color:#fca5a5;border-color:rgba(252,165,165,.25);background:rgba(252,165,165,.08);}
-
-        /* OPPORTUNITIES */
-        .sec-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;color:#3d4563;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin:16px 0 10px;}
-        .sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.07),transparent);}
-        .opp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-        .ocard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:15px 13px;cursor:pointer;transition:.22s;}
-        .ocard:hover{border-color:rgba(167,139,250,.3);transform:translateY(-2px);}
-        .ocard-sym{font-family:'Sora',sans-serif;font-size:15px;font-weight:600;}
-        .ocard-why{font-size:10px;color:#3d4563;line-height:1.5;margin-top:5px;}
-
-        /* CHAT */
-        .chat-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;}
-        .chat-hdr{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;}
-        .chat-msgs{padding:14px;display:flex;flex-direction:column;gap:9px;max-height:250px;overflow-y:auto;}
-        .msg-ai{background:rgba(255,255,255,.04);border-left:2px solid #a78bfa;border-radius:4px 12px 12px 12px;padding:10px 13px;font-size:11px;color:#7880a0;}
-        .msg-u{align-self:flex-end;background:rgba(167,139,250,.09);border-radius:12px 12px 4px 12px;padding:9px 13px;font-size:11px;color:#e8eaf6;}
-        .chat-inp-row{display:flex;gap:7px;padding:9px;border-top:1px solid rgba(255,255,255,.07);}
-        .chat-inp{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 13px;color:#fff;font-size:11px;outline:none;}
-        
-        .tdot{display:inline-block;width:4px;height:4px;background:#a78bfa;border-radius:50%;margin:0 2px;animation:td 1.2s infinite;}
-        @keyframes td{0%,80%,100%{opacity:.2}40%{opacity:1}}
-        .mkt-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
-        .mkt-c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:7px 8px;text-align:center;}
-        
-        @media (max-width: 768px) { .opp-grid { grid-template-columns: 1fr; } .grid2 { grid-template-columns: 1fr; } }
-    </style>
-</head>
-<body>
-
-<div class="sn">
-    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
-
-    <div class="g">
-        <div class="hdr">
-            <div>
-                <div class="logo">SNIPER V4</div>
-                <div class="sub-hdr">
-                    <div class="dot-pulse"></div>
-                    <span id="ws-st">INITIALISATION...</span>
-                </div>
-            </div>
-            <div class="hdr-btns">
-                <button class="btn btn-v" id="scan-btn" onclick="doFullScan()">⚡ Scan IA</button>
-                <button class="btn btn-n" onclick="toggleSettings()" style="font-size: 14px;">⚙</button>
-            </div>
-        </div>
-
-        <div id="settings-modal">
-            <div class="modal-content">
-                <div class="clbl">Configuration</div>
-                <h3 style="font-family:'Sora'; margin-bottom:10px;">Clé API Gemini</h3>
-                <p style="font-size:10px; color:#3d4563; margin-bottom:15px;">La clé est stockée uniquement dans votre navigateur.</p>
-                <input type="password" id="api-key-input" class="chat-inp" style="width:100%; margin-bottom:20px;" placeholder="AIzaSy...">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <button class="btn btn-n" onclick="toggleSettings()">Fermer</button>
-                    <button class="btn btn-v" onclick="saveSettings()">Sauvegarder</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="ticker" id="ticker-wrap">
-            <div class="ti on" onclick="sw('BTC',this)"><div class="ti-sym">BTC</div><div class="ti-price" id="p-BTC">—</div></div>
-            <div class="ti" onclick="sw('ETH',this)"><div class="ti-sym">ETH</div><div class="ti-price" id="p-ETH">—</div></div>
-            <div class="ti" onclick="sw('SOL',this)"><div class="ti-sym">SOL</div><div class="ti-price" id="p-SOL">—</div></div>
-            <div class="ti" onclick="sw('PEPE',this)"><div class="ti-sym">PEPE</div><div class="ti-price" id="p-PEPE">—</div></div>
-            <div class="ti" onclick="sw('WIF',this)"><div class="ti-sym">WIF</div><div class="ti-price" id="p-WIF">—</div></div>
-        </div>
-
-        <div class="grid2">
-            <div class="card">
-                <div class="clbl">Prix live <span id="pair-lbl">BTC / USDT</span></div>
-                <div class="price-big" id="main-price">—</div>
-                <div class="pill pill-g" id="chg-pill">0.00%</div>
-            </div>
-            <div class="card">
-                <div class="clbl">Portefeuille</div>
-                <div style="font-family:'Sora'; font-size:24px; color:#fcd34d;">$20.57</div>
-                <div style="font-family:'DM Mono'; font-size:9px; color:#3d4563; margin-top:5px;">Objectif: $50.00 (41%)</div>
-            </div>
-        </div>
-
-        <div class="card" style="margin-bottom:12px;">
-            <div class="clbl">Marché Express</div>
-            <div class="mkt-grid" id="mkt-grid"></div>
-        </div>
-
-        <div class="sec-lbl">Signaux IA Détectés</div>
-        <div id="scan-status" style="display:none; font-family:'DM Mono'; font-size:9px; color:#a78bfa; text-align:center; padding:10px;">
-            <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span> Analyse des flux binance...
-        </div>
-        <div class="opp-grid" id="opp-grid"></div>
-
-        <div class="sec-lbl">Terminal IA</div>
-        <div class="chat-box">
-            <div class="chat-hdr">
-                <div style="font-family:'Sora'; font-size:13px; font-weight:600;">Sniper Assistant</div>
-                <div id="ai-st" style="font-size:8px; color:#3d4563;">● VEILLE ACTIVE</div>
-            </div>
-            <div class="chat-msgs" id="chat">
-                <div class="msg-ai">Bienvenue Maestro. Configure ta clé ⚙ pour activer l'analyse prédictive.</div>
-            </div>
-            <div class="chat-inp-row">
-                <input class="chat-inp" id="ci" placeholder="Pose une question technique..." onkeydown="if(event.key==='Enter')sendMsg()">
-                <button class="btn btn-v" onclick="sendMsg()">➤</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-    // ══ CONFIG DYNAMIQUE ══
-    let GEMINI_KEY = localStorage.getItem('SNIPER_API_KEY') || '';
-    const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const PIN_CODE = '1704';
+const PAIRS = ['BTC','ETH','SOL','PEPE','WIF','BONK'];
+let capital = parseFloat(localStorage.getItem('cap') ?? '20.57');
+let capitalGoal = parseFloat(localStorage.getItem('goal') ?? '50');
+let apiKey = localStorage.getItem('gemKey') || '';
+let curPair = 'BTC';
+let prices = {};
+let ws = null;
+let tcnt = 0, ttmr = null;
+let pinBuf = '';
+let blurOn = false;
+let tradeHistory = JSON.parse(localStorage.getItem('trades') ?? '[]');
+let curOpp = null;
+let selectedLever = 10;
+let sigTimer = null;
 
-    const PAIRS = ['BTC','ETH','SOL','PEPE','WIF'];
-    let prices = {};
-    let curPair = 'BTC';
-    let allOpps = [];
+function fp(n){ return parseFloat(n).toFixed(2); }
+const ls = (k,v) => localStorage.setItem(k,v);
+const fdt = ts => new Date(ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
 
-    // -- Fonctions de base --
-    function fp(n){ return parseFloat(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 5}); }
+function toast(msg,type='ok'){
+  const t = document.createElement('div');
+  t.className = 'tst';
+  t.innerHTML = msg;
+  if(type==='err') t.style.border = '1px solid var(--red)';
+  else if(type==='warn') t.style.border = '1px solid var(--gold)';
+  else t.style.border = '1px solid var(--cyan)';
+  document.body.appendChild(t);
+  requestAnimationFrame(() => { t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(10px)'; setTimeout(()=>t.remove(),300); }, 2600);
+}
 
-    function toggleSettings() {
-        const m = document.getElementById('settings-modal');
-        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-        if(m.style.display === 'flex') document.getElementById('api-key-input').value = GEMINI_KEY;
-    }
+// --- WEBSOCKET ---
+function connectWS(){
+  if(ws) ws.close();
+  const streams = PAIRS.map(p=>p.toLowerCase()+'usdt@ticker').join('/');
+  ws = new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
+  ws.onopen = () => { document.getElementById('ws-st').textContent = 'CONNECTÉ'; document.getElementById('ws-st').style.color = 'var(--green)'; }
+  ws.onmessage = e => {
+    const d = JSON.parse(e.data).data;
+    if(!d?.s) return;
+    const sym = d.s.replace('USDT','');
+    prices[sym] = {price: parseFloat(d.c), change: parseFloat(d.P), high: parseFloat(d.h), low: parseFloat(d.l), vol: parseFloat(d.q)};
+    updateTickerItem(sym);
+    if(sym===curPair) updateMainPrice();
+  };
+}
 
-    function saveSettings() {
-        const val = document.getElementById('api-key-input').value.trim();
-        if(val) {
-            localStorage.setItem('SNIPER_API_KEY', val);
-            GEMINI_KEY = val;
-            toggleSettings();
-            addMsg('ai', '<b>Système prêt.</b> Clé API enregistrée. Prêt pour le scan, Maestro.');
-        }
-    }
+function buildTicker(){
+  document.getElementById('tbar').innerHTML = PAIRS.map(p=>`<div class="titem" id="ti-${p}" onclick="switchPair('${p}')"></div>`).join('');
+}
+function updateTickerItem(sym){
+  const el = document.getElementById('ti-'+sym);
+  if(!el) return;
+  const col = prices[sym].change >= 0 ? 'var(--green)' : 'var(--red)';
+  el.innerHTML = `<span style="font-size:11px; font-weight:700; color:var(--txt-main); font-family:var(--font-mono);">${sym}</span>
+                  <span style="display:block; margin-top:4px; font-size:12px; color:${col}; font-family:var(--font-mono);">${fp(prices[sym].price)}</span>`;
+}
+function switchPair(p){ 
+  curPair=p; 
+  document.getElementById('pair-badge').textContent=p+'/USDT'; 
+  document.querySelectorAll('.titem').forEach(e => e.classList.remove('on'));
+  const el = document.getElementById('ti-'+p);
+  if(el) el.classList.add('on');
+  updateMainPrice(); 
+}
+function updateMainPrice(){
+  const d = prices[curPair]; if(!d) return;
+  const mp = document.getElementById('main-price');
+  mp.textContent = '$'+fp(d.price);
+  mp.style.color = d.change >= 0 ? 'var(--cyan)' : 'var(--red)';
+  
+  const cb = document.getElementById('chg-badge');
+  cb.textContent = (d.change>=0?'+':'') + d.change.toFixed(2)+'%';
+  cb.className = 'badge ' + (d.change>=0?'green':'red');
+  
+  document.getElementById('hi-v').textContent = '$'+fp(d.high);
+  document.getElementById('lo-v').textContent = '$'+fp(d.low);
+  document.getElementById('vo-v').textContent = (d.vol / 1000).toFixed(1)+'K';
+}
 
-    // -- WebSocket Binance --
-    function connectWS(){
-        const streams = PAIRS.map(p => p.toLowerCase()+'usdt@ticker').join('/');
-        const ws = new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
-        
-        ws.onopen = () => { document.getElementById('ws-st').textContent = 'LIVE'; document.getElementById('ws-st').style.color='#6ee7b7'; };
-        
-        ws.onmessage = (e) => {
-            const d = JSON.parse(e.data).data;
-            const sym = d.s.replace('USDT','');
-            prices[sym] = { price: d.c, change: d.P };
-            
-            // UI Updates
-            const pe = document.getElementById('p-'+sym);
-            if(pe) pe.textContent = '$' + fp(d.c);
-            
-            if(sym === curPair) {
-                document.getElementById('main-price').textContent = '$' + fp(d.c);
-                const cp = document.getElementById('chg-pill');
-                cp.textContent = (d.P >= 0 ? '+' : '') + d.P + '%';
-                cp.className = 'pill ' + (d.P >= 0 ? 'pill-g' : 'pill-r');
-            }
-            updateMktGrid();
-        };
-    }
+// --- WALLET ---
+function updateWallet(){
+  document.getElementById('cap-v').textContent = capital.toFixed(2);
+  const pct = capitalGoal > 0 ? Math.min((capital/capitalGoal)*100, 100) : 0;
+  document.getElementById('goal-bar').style.width = pct + '%';
+  document.getElementById('goal-pct').textContent = pct.toFixed(1) + '%';
+}
+function openWallet(){ document.getElementById('w-cap').value=capital; document.getElementById('wl-ov').style.display='flex'; }
+function closeWallet(){ document.getElementById('wl-ov').style.display='none'; }
+function saveWallet(){ capital=parseFloat(document.getElementById('w-cap').value); ls('cap',capital); updateWallet(); closeWallet(); toast('Capital mis à jour');}
 
-    function sw(p, el) {
-        curPair = p;
-        document.querySelectorAll('.ti').forEach(t => t.classList.remove('on'));
-        el.classList.add('on');
-        document.getElementById('pair-lbl').textContent = p + ' / USDT';
-    }
-
-    function updateMktGrid() {
-        const g = document.getElementById('mkt-grid');
-        g.innerHTML = PAIRS.map(p => {
-            const d = prices[p] || {change:0};
-            return `<div class="mkt-c">
-                <div style="font-size:7px; color:#3d4563;">${p}</div>
-                <div style="font-size:9px; color:${d.change >= 0 ? '#6ee7b7':'#fca5a5'}">${d.change}%</div>
+// --- OPPS & TRADES ---
+function buildOpps(){
+  const ops = [
+    {asset:'SOL',dir:'LONG',conf:91,lever:13, reason:'Breakout majeur validé sur RSI 1H.'},
+    {asset:'BTC',dir:'SHORT',conf:84,lever:10, reason:'Rejet résistance institutionnelle 4H.'}
+  ];
+  document.getElementById('opp-grid').innerHTML = ops.map(o=>{
+    const col = o.dir === 'LONG' ? 'var(--green)' : 'var(--red)';
+    const badge = o.dir === 'LONG' ? 'green' : 'red';
+    return `<div class="ocard" onclick="openTrade('${o.asset}', '${o.dir}', ${o.lever}, ${o.conf}, '${o.reason}')">
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span class="mono font-bold" style="font-size:16px;">${o.asset}</span>
+                <span class="badge ${badge}">${o.dir}</span>
+              </div>
+              <div class="mono" style="font-size:24px; font-weight:800; color:${o.conf>85?'var(--cyan)':'var(--gold)'}">${o.conf}%</div>
+              <div style="font-size:11px; color:var(--txt-muted); margin-top:8px;">Tap pour analyser →</div>
             </div>`;
-        }).join('');
-    }
+  }).join('');
+}
 
-    // -- IA Logic --
-    async function doFullScan() {
-        if(!GEMINI_KEY) { addMsg('ai', 'Maestro, configure ta clé API d\'abord (⚙).'); toggleSettings(); return; }
-        
-        const btn = document.getElementById('scan-btn');
-        const status = document.getElementById('scan-status');
-        btn.disabled = true; status.style.display = 'block';
+function openTrade(asset, dir, lev, conf, reason){
+  curOpp = {asset, dir, lever:lev, conf, reason};
+  selectedLever = lev;
+  const p = prices[asset]?.price || 0;
+  
+  document.getElementById('tm-asset').textContent = asset+'/USDT';
+  document.getElementById('tm-dir').textContent = dir;
+  document.getElementById('tm-dir').className = 'badge ' + (dir==='LONG'?'green':'red');
+  document.getElementById('tm-lev').textContent = 'x'+lev;
+  document.getElementById('tm-conf-b').textContent = conf+'% CONF.';
+  document.getElementById('tm-reason').textContent = reason;
+  
+  document.getElementById('lev-slider').value = lev;
+  document.getElementById('lev-display').textContent = 'x'+lev;
+  
+  if(p > 0){
+    document.getElementById('tm-entry').textContent = '$'+fp(p);
+    document.getElementById('tm-tp').textContent = '$'+fp(dir==='LONG' ? p*1.04 : p*0.96);
+    document.getElementById('tm-sl').textContent = '$'+fp(dir==='LONG' ? p*0.985 : p*1.015);
+  } else {
+    document.getElementById('tm-entry').textContent = 'Market';
+    document.getElementById('tm-tp').textContent = '+4%';
+    document.getElementById('tm-sl').textContent = '-1.5%';
+  }
+  
+  document.getElementById('tm-ov').style.display='flex';
+}
+function updateLevSlider(v){
+  selectedLever = parseInt(v);
+  document.getElementById('lev-display').textContent = 'x'+v;
+  document.getElementById('tm-lev').textContent = 'x'+v;
+}
+function closeTrade(){ document.getElementById('tm-ov').style.display='none'; }
+function refuseTrade(){ closeTrade(); toast('Opportunité ignorée'); }
+function acceptTrade(){
+  if(!curOpp) return;
+  const trade = { id:Date.now(), asset:curOpp.asset, dir:curOpp.dir, lever:selectedLever, ts:Date.now(), r:'open' };
+  tradeHistory.push(trade); ls('trades', JSON.stringify(tradeHistory));
+  closeTrade(); toast(`Position ${curOpp.asset} x${selectedLever} ouverte !`);
+}
 
-        const prompt = `En tant que SNIPER V4, expert trading, analyse ces prix: ${JSON.stringify(prices)}. 
-        Génère 3 opportunités (LONG ou SHORT). 
-        Réponds UNIQUEMENT en JSON: [{"asset":"BTC","dir":"LONG","conf":85,"reason":"texte court"}]`;
+// --- JOURNAL ---
+function openJournal(){
+  const wrap=document.getElementById('jr-full');
+  if(!tradeHistory.length){ wrap.innerHTML='<div style="text-align:center; color:var(--txt-muted); padding:20px;">Aucun historique</div>'; }
+  else {
+    wrap.innerHTML=[...tradeHistory].reverse().map(t=>{
+      const bg = t.dir==='LONG'?'rgba(0,255,102,0.1)':'rgba(255,42,85,0.1)';
+      const col = t.dir==='LONG'?'var(--green)':'var(--red)';
+      return `<div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; padding:16px; display:flex; align-items:center; gap:12px;">
+                <div class="mono font-bold" style="font-size:16px; min-width:40px;">${t.asset}</div>
+                <div class="badge" style="background:${bg}; color:${col};">${t.dir}</div>
+                <div class="mono" style="font-size:12px; color:var(--txt-muted);">x${t.lever}</div>
+                <div style="margin-left:auto; font-size:12px; color:var(--txt-dark);">${fdt(t.ts)}</div>
+              </div>`;
+    }).join('');
+  }
+  document.getElementById('jr-ov').style.display='flex';
+}
+function closeJournal(){ document.getElementById('jr-ov').style.display='none'; }
 
-        try {
-            const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            const data = await r.json();
-            let txt = data.candidates[0].content.parts[0].text;
-            const json = JSON.parse(txt.replace(/```json|```/g, ''));
-            
-            renderOpps(json);
-            addMsg('ai', '<b>Scan terminé.</b> 3 vecteurs haute probabilité identifiés.');
-        } catch(e) {
-            addMsg('ai', 'Erreur de scan. Vérifie ta clé ou ta connexion.');
-        } finally {
-            btn.disabled = false; status.style.display = 'none';
-        }
-    }
+// --- PIN & SETTINGS ---
+function titleClick(){ tcnt++; clearTimeout(ttmr); ttmr=setTimeout(()=>tcnt=0,1500); if(tcnt>=5){ tcnt=0; document.getElementById('pin-ov').style.display='flex'; } }
+function closePIN(){ document.getElementById('pin-ov').style.display='none'; pinBuf=''; updatePinDots(); }
+function pk(v){
+  if(v==='C') pinBuf=''; else if(v==='D') pinBuf=pinBuf.slice(0,-1); else if(pinBuf.length<4) pinBuf+=v;
+  updatePinDots();
+  if(pinBuf.length===4){
+    if(pinBuf===PIN_CODE){ closePIN(); document.getElementById('api-in').value=apiKey; document.getElementById('st-ov').style.display='flex'; }
+    else { toast('Code PIN erroné', 'err'); pinBuf=''; updatePinDots(); }
+  }
+}
+function updatePinDots(){ for(let i=0;i<4;i++){ const el=document.getElementById('pd'+i); if(el) el.style.background = (i<pinBuf.length) ? 'var(--cyan)' : 'transparent'; } }
+function closeST(){ document.getElementById('st-ov').style.display='none'; }
+function saveKey(){ apiKey=document.getElementById('api-in').value.trim(); ls('gemKey',apiKey); closeST(); toast('Clé API enregistrée'); }
+function toggleBlur(){ blurOn=!blurOn; document.body.classList.toggle('blured',blurOn); }
+function closeSig(){ document.getElementById('sig-banner').style.display='none'; clearInterval(sigTimer); }
 
-    function renderOpps(list) {
-        const g = document.getElementById('opp-grid');
-        g.innerHTML = list.map(o => `
-            <div class="ocard">
-                <div style="display:flex; justify-content:space-between;">
-                    <span class="ocard-sym">${o.asset}</span>
-                    <span style="color:${o.dir === 'LONG' ? '#6ee7b7':'#fca5a5'}">${o.dir}</span>
-                </div>
-                <div style="font-size:18px; font-family:'DM Mono'; margin:5px 0;">${o.conf}%</div>
-                <div class="ocard-why">${o.reason}</div>
-            </div>
-        `).join('');
-    }
+// --- IA GEMINI (NOUVEAU CERVEAU MENTOR CHILL + FORÇAGE DES PRIX) ---
+function buildSystemPrompt() { 
+  return `Tu es SNIPER, un trader pro et un mentor crypto. Ton style est "chill", naturel, humain et clair. Tu t'exprimes de manière décontractée mais experte (un peu comme un pote calé en trading). Tes explications sont concises, percutantes et faciles à lire. Évite absolument le mode "robot" ou les longues listes à puces interminables, sauf si on te demande un Setup précis.`; 
+}
 
-    async function sendMsg() {
-        const inp = document.getElementById('ci');
-        const msg = inp.value.trim(); if(!msg || !GEMINI_KEY) return;
-        
-        addMsg('u', msg);
-        inp.value = '';
-        const st = document.getElementById('ai-st'); st.textContent = '● RÉFLEXION...';
+let activeGeminiModel = null;
+async function callGemini(userMsg) {
+  if (!apiKey) throw new Error("Accès API non configuré.");
+  
+  if (Object.keys(prices).length === 0) {
+    throw new Error("Connexion au marché en cours. Réessayez dans 2 secondes.");
+  }
 
-        try {
-            const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ contents: [{ parts: [{ text: `Tu es Sniper V4, assistant trading. Style chill, pro, appelle-moi Maestro. Réponse courte. Question: ${msg}` }] }] })
-            });
-            const data = await r.json();
-            addMsg('ai', data.candidates[0].content.parts[0].text);
-        } catch(e) {
-            addMsg('ai', 'Erreur terminal.');
-        } finally { st.textContent = '● VEILLE ACTIVE'; }
-    }
+  // On récupère tous les prix et on les prépare
+  const allPrices = Object.keys(prices)
+    .map(p => `${p} = $${prices[p]?.price ? prices[p].price.toFixed(2) : 'N/A'}`)
+    .join(' | ');
 
-    function addMsg(type, html) {
-        const c = document.getElementById('chat');
-        const d = document.createElement('div');
-        d.className = type === 'ai' ? 'msg-ai' : 'msg-u';
-        d.innerHTML = html;
-        c.appendChild(d);
-        c.scrollTop = c.scrollHeight;
-    }
+  // On crée une instruction invisible qu'on colle au message de l'utilisateur
+  const forcedContext = `
+  \n\n---
+  [INSTRUCTION SYSTÈME INVISIBLE POUR TE FORCER À UTILISER LE BON PRIX]
+  Attention SNIPER : Les prix ACTUELS et RÉELS du marché à la seconde près sont : ${allPrices}.
+  RÈGLE ABSOLUE : Si tu parles d'une crypto, TU DOIS regarder cette liste et utiliser EXACTEMENT ce prix. Si le SOL est à 86$, tu dis 86$. N'invente rien, n'utilise pas tes anciennes données.
+  Sois chill, réponds clairement au message de l'utilisateur ci-dessus.
+  ---`;
 
-    // Init
-    connectWS();
-    if(!GEMINI_KEY) setTimeout(() => toggleSettings(), 1500);
+  if (!activeGeminiModel) {
+    try {
+      const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models`, { headers: { 'x-goog-api-key': apiKey } });
+      const listData = await listResp.json();
+      if (listData.models) {
+        const validModels = listData.models.filter(m => m.supportedGenerationMethods?.includes("generateContent"));
+        const bestModel = validModels.find(m => m.name.includes("flash")) || validModels.find(m => m.name.includes("pro")) || validModels[0];
+        if (bestModel) activeGeminiModel = bestModel.name.replace('models/', '');
+      }
+    } catch (e) { console.warn("Auto-discovery fallback"); }
+  }
+
+  const useModel = activeGeminiModel || "gemini-1.5-flash";
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${useModel}:generateContent`;
+
+  const payload = {
+    // On fusionne le message de l'utilisateur avec notre contrainte de prix cachée
+    contents: [{ role: "user", parts: [{ text: buildSystemPrompt() + "\n\nMessage : " + userMsg + forcedContext }] }],
+    // Température à 0.6 pour le rendre un peu plus naturel et moins robotique
+    generationConfig: { temperature: 0.6, maxOutputTokens: 2000 }
+  };
+
+  const resp = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey }, body: JSON.stringify(payload) });
+  const data = await resp.json();
+  if (!resp.ok) { activeGeminiModel = null; throw new Error(data.error?.message || "Erreur de connexion."); }
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Silence réseau.';
+}
+
+function addAIMsg(text){
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div'); div.className = 'cmsg-ai';
+  // On nettoie les petites balises markdown pour que ce soit propre
+  let formattedText = text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
+  div.innerHTML = `<div style="font-size:10px; color:var(--cyan); margin-bottom:6px; font-weight:700; font-family:var(--font-mono);">SNIPER IA ✦</div>${formattedText}`;
+  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
+}
+
+async function sendChat(){
+  const inp = document.getElementById('ci'); const msg = inp.value.trim(); if(!msg) return;
+  if(!apiKey){ toast('Authentification API requise','err'); return; }
+  
+  if(!prices[curPair]?.price) {
+    toast('Attente de la connexion au flux Binance...', 'warn');
+    return;
+  }
+
+  inp.value = '';
+  const chat = document.getElementById('chat');
+  const userDiv = document.createElement('div'); userDiv.className = 'cmsg-user'; userDiv.textContent = msg;
+  chat.appendChild(userDiv); chat.scrollTop = chat.scrollHeight;
+  
+  const sb = document.getElementById('sb'); const status = document.getElementById('ai-st');
+  sb.disabled = true; status.textContent = '● CALCUL EN COURS...'; status.style.color = 'var(--gold)';
+  
+  try {
+    const reply = await callGemini(msg);
+    addAIMsg(reply);
+  } catch(e) {
+    addAIMsg('❌ Erreur : ' + e.message);
+  } finally {
+    sb.disabled = false; status.textContent = '● CONNECTÉ'; status.style.color = 'var(--green)';
+  }
+}
+
+async function doAiScan(){ document.getElementById('ci').value = `Fais-moi une analyse rapide du marché sur ${curPair}.`; await sendChat(); }
+async function doAiOpps(){ document.getElementById('ci').value = `Propose-moi un setup de trading clair pour ${curPair}.`; await sendChat(); }
+
+// --- INIT ---
+function init(){
+  buildTicker(); switchPair('BTC'); buildOpps(); updateWallet(); connectWS();
+  setTimeout(()=>{
+    const ban = document.getElementById('sig-banner');
+    ban.style.display = 'flex';
+    let t=10; document.getElementById('sig-timer').textContent='10s';
+    sigTimer = setInterval(()=>{ t--; document.getElementById('sig-timer').textContent=t+'s'; if(t<=0){closeSig();} }, 1000);
+  }, 4000);
+}
+document.addEventListener('DOMContentLoaded', init);
 </script>
-
-</body>
-</html>
