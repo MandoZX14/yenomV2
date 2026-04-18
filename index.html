@@ -1,204 +1,192 @@
-/********************************************************
- * ======================= STATE ========================
- ********************************************************/
-const STATE = {
-  pairs: ["BTC","ETH","SOL","BNB","XRP","DOGE"],
-  prices: {},
-  currentPair: localStorage.getItem('pair') || 'BTC',
-  capital: Number(localStorage.getItem('cap') ?? 20),
-  goal: Number(localStorage.getItem('goal') ?? 100),
-  ws: null
-};
+<!DOCTYPE html>
 
-/********************************************************
- * ======================= UTILS ========================
- ********************************************************/
-const $ = id => document.getElementById(id);
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SNIPER BOT</title>
 
-const formatPrice = n => {
-  if(!Number.isFinite(n)) return '—';
-  return n >= 1000
-    ? n.toLocaleString('fr-FR',{maximumFractionDigits:2})
-    : n.toLocaleString('fr-FR',{maximumFractionDigits:6});
-};
+<style>
+body{
+  background:#0a0f25;
+  color:white;
+  font-family:Arial;
+  margin:0;
+  padding:20px;
+}
 
-const toast = (title, text) => {
-  $("toastTitle").textContent = title;
-  $("toastText").textContent = text;
-  $("toastBox").classList.add('show');
-  setTimeout(()=> $("toastBox").classList.remove('show'), 1500);
-};
+button{
+  padding:10px;
+  margin:5px;
+  background:#111;
+  border:1px solid #444;
+  color:white;
+  cursor:pointer;
+}
 
-/********************************************************
- * ======================= WEBSOCKET ====================
- ********************************************************/
-function connectWS(){
-  if(STATE.ws) STATE.ws.close();
+.card{
+  background:#111;
+  padding:10px;
+  margin:5px;
+  border-radius:10px;
+  border:1px solid #333;
+}
 
-  const streams = STATE.pairs.map(p => p.toLowerCase()+'usdt@ticker').join('/');
-  const url = `wss://stream.binance.com:9443/stream?streams=${streams}`;
+</style>
 
-  STATE.ws = new WebSocket(url);
+</head>
 
-  STATE.ws.onopen = () => {
-    $("ws-st").textContent = "CONNECTÉ";
-    $("ws-st").style.color = "var(--green)";
-  };
+<body>
 
-  STATE.ws.onclose = () => {
-    $("ws-st").textContent = "RECONNECT...";
-    setTimeout(connectWS, 2000);
-  };
+<h2>🤖 SNIPER BOT (SIMU)</h2>
 
-  STATE.ws.onerror = () => {
-    STATE.ws.close();
-  };
+<button onclick="runAI()">SCAN IA</button> <button onclick="runBot()">LANCER BOT</button>
 
-  STATE.ws.onmessage = e => {
-    const data = JSON.parse(e.data).data;
-    if(!data?.s) return;
+<h3>Opportunités</h3>
+<div id="opps"></div>
 
-    const sym = data.s.replace('USDT','');
+<h3>Wallet</h3>
+<input id="capInput" placeholder="capital">
+<button onclick="saveCap()">Save</button>
+<div id="wallet"></div>
 
-    STATE.prices[sym] = {
-      price: +data.c,
-      change: +data.P,
-      high: +data.h,
-      low: +data.l,
-      vol: +data.q
-    };
+<h3>Trades</h3>
+<div id="trades"></div>
 
-    updateTicker(sym);
+<script>
 
-    if(sym === STATE.currentPair){
-      updateMain();
+/******** STATE ********/
+let capital = Number(localStorage.getItem("cap")||100);
+let trades = [];
+let signals = [];
+
+const PAIRS = ["BTC","ETH","SOL"];
+
+/******** API ********/
+async function getHistory(sym){
+  try{
+    const res = await fetch(
+      `https://api.binance.com/api/v3/klines?symbol=${sym}USDT&interval=1m&limit=30`
+    );
+    const data = await res.json();
+    return data.map(c=>+c[4]);
+  }catch{
+    return [];
+  }
+}
+
+/******** INDICATEURS ********/
+function calcRSI(arr){
+  let g=0,l=0;
+  for(let i=1;i<arr.length;i++){
+    let d=arr[i]-arr[i-1];
+    d>0?g+=d:l-=d;
+  }
+  let rs=g/(l||1);
+  return 100-(100/(1+rs));
+}
+
+function calcEMA(arr){
+  let k=2/(arr.length+1);
+  let ema=arr[0];
+  for(let i=1;i<arr.length;i++){
+    ema=arr[i]*k+ema*(1-k);
+  }
+  return ema;
+}
+
+/******** IA ********/
+async function runAI(){
+  signals = [];
+
+  for(let sym of PAIRS){
+
+    let h = await getHistory(sym);
+    if(h.length<10) continue;
+
+    let rsi = calcRSI(h);
+    let ema = calcEMA(h);
+    let price = h[h.length-1];
+
+    if(rsi<30 && price>ema){
+      signals.push({sym,dir:"LONG",price});
     }
-  };
+
+    if(rsi>70 && price<ema){
+      signals.push({sym,dir:"SHORT",price});
+    }
+  }
+
+  renderOpps();
 }
 
-/********************************************************
- * ======================= UI ===========================
- ********************************************************/
-function buildTicker(){
-  $("tickerBar").innerHTML = STATE.pairs.map(p =>
-    `<div class="titem" id="ti-${p}" onclick="switchPair('${p}')"></div>`
-  ).join('');
-}
+/******** BOT ********/
+function runBot(){
 
-function updateTicker(sym){
-  const el = $("ti-"+sym);
-  const d = STATE.prices[sym];
-  if(!el || !d) return;
+  if(signals.length===0){
+    alert("Aucun signal");
+    return;
+  }
 
-  el.innerHTML = `
-    <span class="mono">${sym}</span>
-    <span style="color:${d.change>=0?'var(--green)':'var(--red)'}">
-      ${formatPrice(d.price)}
-    </span>
-  `;
-}
+  signals.forEach(s=>{
 
-function updateMain(){
-  const d = STATE.prices[STATE.currentPair];
-  if(!d) return;
+    let risk = capital*0.02;
+    let size = risk/(s.price*0.01);
 
-  $("mainPairName").textContent = STATE.currentPair;
-  $("main-price").textContent = "$"+formatPrice(d.price);
+    trades.push({
+      sym:s.sym,
+      dir:s.dir,
+      entry:s.price,
+      size:size,
+      time:new Date().toLocaleTimeString()
+    });
 
-  const badge = $("chg-badge");
-  badge.textContent = (d.change>=0?'+':'')+d.change.toFixed(2)+'%';
-  badge.className = "badge " + (d.change>=0?'green':'red');
+    capital -= risk;
+  });
 
-  $("hi-v").textContent = "$"+formatPrice(d.high);
-  $("lo-v").textContent = "$"+formatPrice(d.low);
-  $("vo-v").textContent = (d.vol/1000).toFixed(1)+'K';
-}
-
-/********************************************************
- * ======================= WALLET =======================
- ********************************************************/
-function updateWallet(){
-  $("cap-v").textContent = STATE.capital.toFixed(2);
-  $("goal-v").textContent = STATE.goal.toFixed(2);
-
-  const pct = Math.min((STATE.capital/STATE.goal)*100,100);
-  $("goal-bar").style.width = pct+"%";
-  $("goal-pct").textContent = pct.toFixed(1)+"%";
-}
-
-function saveWallet(){
-  const val = Number($("walletInput").value);
-  if(!val || val <= 0) return toast("ERREUR","Capital invalide");
-
-  STATE.capital = val;
-  localStorage.setItem('cap', val);
-
+  updateTrades();
   updateWallet();
-  toast("OK","Capital mis à jour");
 }
 
-/********************************************************
- * ======================= LOGIC ========================
- ********************************************************/
-function switchPair(p){
-  STATE.currentPair = p;
-  localStorage.setItem('pair', p);
-
-  document.querySelectorAll('.titem').forEach(el =>
-    el.classList.remove('active')
-  );
-  $("ti-"+p).classList.add('active');
-
-  updateMain();
-}
-
-/********************************************************
- * ======================= OPPS =========================
- ********************************************************/
-function buildOpps(){
-  const ops = [
-    {asset:'SOL',dir:'LONG',conf:91},
-    {asset:'BTC',dir:'SHORT',conf:84}
-  ];
-
-  $("oppsGrid").innerHTML = ops.map(o=>`
-    <div class="ocard" onclick="openTrade('${o.asset}','${o.dir}',${o.conf})">
-      <div style="display:flex;justify-content:space-between">
-        <span class="mono">${o.asset}</span>
-        <span class="badge ${o.dir==='LONG'?'green':'red'}">${o.dir}</span>
+/******** UI ********/
+function renderOpps(){
+  document.getElementById("opps").innerHTML =
+    signals.map(s=>`
+      <div class="card">
+        ${s.sym} ${s.dir}
       </div>
-      <div style="font-size:22px">${o.conf}%</div>
-    </div>
-  `).join('');
-
-  $("oppsCount").textContent = ops.length;
+    `).join("");
 }
 
-/********************************************************
- * ======================= TRADE ========================
- ********************************************************/
-function openTrade(asset, dir, conf){
-  $("tradeAsset").textContent = `${asset} • ${dir}`;
-  $("tradeOverlay").classList.add("show");
+function updateTrades(){
+  document.getElementById("trades").innerHTML =
+    trades.map(t=>`
+      <div class="card">
+        ${t.time} - ${t.sym} ${t.dir}<br>
+        Entry: ${t.entry.toFixed(2)}<br>
+        Size: ${t.size.toFixed(4)}
+      </div>
+    `).join("");
 }
 
-function closeTrade(){
-  $("tradeOverlay").classList.remove("show");
+function updateWallet(){
+  document.getElementById("wallet").innerHTML =
+    "Capital: "+capital.toFixed(2);
 }
 
-/********************************************************
- * ======================= INIT =========================
- ********************************************************/
-function init(){
-  buildTicker();
-  buildOpps();
-  updateWallet();
-
-  $("walletInput").value = STATE.capital;
-
-  connectWS();
-
-  setTimeout(updateMain, 500);
+/******** WALLET ********/
+function saveCap(){
+  let v = Number(document.getElementById("capInput").value);
+  if(v>0){
+    capital=v;
+    localStorage.setItem("cap",v);
+    updateWallet();
+  }
 }
 
-document.addEventListener("DOMContentLoaded", init);
+/******** INIT ********/
+updateWallet();
+
+</script>
+
+</body>
+</html>
