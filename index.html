@@ -149,6 +149,21 @@
         <button class="btn btn-v" id="scan-btn" onclick="doFullScan()">⚡ Scan IA</button>
         <button class="btn btn-n" onclick="toggleSettings()" style="font-size: 14px; padding: 5px 10px;">⚙</button>
       </div>
+      <div id="settings-modal" style="display:none; position:fixed; inset:0; background:rgba(13,15,26,.95); z-index:100; padding:40px 20px;">
+      <div class="card" style="max-width:400px; margin:0 auto; border:1px solid rgba(167,139,250,.3);">
+        <div class="clbl">Configuration</div>
+        <h3 style="font-family:'Sora'; margin-bottom:15px; font-size:18px;">Clé API Gemini</h3>
+        <p style="font-size:10px; color:#7880a0; margin-bottom:15px; line-height:1.5;">
+          Ta clé est stockée localement dans ton navigateur. <br>
+          Obtiens-en une sur : <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#a78bfa;">Google AI Studio</a>
+        </p>
+        <input type="password" id="api-key-input" class="chat-inp" placeholder="AIzaSy..." style="width:100%; margin-bottom:20px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <button class="btn btn-n" onclick="toggleSettings()">Annuler</button>
+          <button class="btn btn-v" onclick="saveSettings()">Sauvegarder</button>
+        </div>
+      </div>
+    </div>
     </div>
 
     <!-- SIGNAL BANNER -->
