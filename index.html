@@ -11,341 +11,390 @@
   --bg:#070810;
   --bg2:#0c0e1a;
   --bg3:#12152a;
-  --glass-bg:rgba(255,255,255,0.03);
-  --glass-border:rgba(255,255,255,0.07);
+  --glass:rgba(255,255,255,0.03);
+  --border:rgba(255,255,255,0.07);
   --cyan:#00ffe0;
   --green:#00ff66;
   --red:#ff2a55;
   --gold:#ffd84d;
-  --txt-main:#e8eaf6;
-  --txt-muted:#6b7280;
-  --txt-dark:#374151;
-  --font-main:'Space Grotesk',sans-serif;
-  --font-mono:'Space Mono',monospace;
+  --txt:#e8eaf6;
+  --muted:#6b7280;
+  --dark:#2d3148;
+  --mono:'Space Mono',monospace;
+  --sans:'Space Grotesk',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--txt-main);font-family:var(--font-main);overflow-x:hidden;min-height:100vh}
-body{padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+html,body{background:var(--bg);color:var(--txt);font-family:var(--sans);overflow-x:hidden;height:100vh}
+body{display:flex;flex-direction:column}
 body.blured .blur-target{filter:blur(8px);transition:.3s}
 
-/* ─── SCROLLBAR ─── */
+/* ─ SCROLLBAR ─ */
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-thumb{background:rgba(0,255,224,.2);border-radius:2px}
 
-/* ─── LAYOUT ─── */
-#app{max-width:430px;margin:0 auto;padding:14px 13px 100px}
+/* ══════════════════════════════
+   LAYOUT PRINCIPAL — 3 COLONNES
+══════════════════════════════ */
+#topbar{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:12px;
+  padding:8px 18px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+}
+#main{
+  flex:1;
+  display:grid;
+  grid-template-columns:260px 1fr 340px;
+  grid-template-rows:1fr;
+  overflow:hidden;
+}
 
-/* ─── HEADER ─── */
-#hdr{display:flex;justify-content:space-between;align-items:center;padding:8px 0 14px;position:relative}
-.logo{font-family:var(--font-mono);font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--cyan);text-shadow:0 0 20px rgba(0,255,224,.4);cursor:pointer;user-select:none}
-.logo span{color:var(--txt-muted)}
-.hdr-r{display:flex;align-items:center;gap:10px}
+/* COL GAUCHE */
+#col-l{
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+  padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+}
+/* COL CENTRE */
+#col-c{
+  overflow-y:auto;
+  padding:14px 16px;
+  display:flex;flex-direction:column;gap:10px;
+}
+/* COL DROITE */
+#col-r{
+  border-left:1px solid var(--border);
+  overflow-y:auto;
+  padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+}
+
+/* ─ TOPBAR ─ */
+.logo{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:.1em;color:var(--cyan);text-shadow:0 0 20px rgba(0,255,224,.4);cursor:pointer;user-select:none;white-space:nowrap}
+.logo span{color:var(--muted)}
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blink 1.6s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-#ws-st{font-family:var(--font-mono);font-size:8px;letter-spacing:.15em;color:var(--green)}
-.eye-btn{background:none;border:1px solid var(--glass-border);border-radius:8px;padding:5px 10px;color:var(--txt-muted);cursor:pointer;font-size:14px;transition:.15s}
-.eye-btn:hover{border-color:rgba(0,255,224,.3);color:var(--cyan)}
-
-/* ─── TICKER ─── */
-#tick-wrap{background:var(--bg2);border:1px solid var(--glass-border);border-radius:10px;padding:0 8px;overflow:hidden;margin-bottom:12px;display:flex;gap:0}
-#tbar{display:flex;gap:0;overflow-x:auto;width:100%;padding:4px 0}
-#tbar::-webkit-scrollbar{display:none}
-.titem{flex-shrink:0;padding:8px 12px;border-radius:8px;cursor:pointer;text-align:center;transition:.15s;border:1px solid transparent;min-width:64px}
+#ws-st{font-family:var(--mono);font-size:8px;letter-spacing:.15em;color:var(--green)}
+.topbar-mid{flex:1;display:flex;align-items:center;gap:6px;overflow-x:auto}
+.topbar-mid::-webkit-scrollbar{display:none}
+.titem{flex-shrink:0;padding:5px 12px;border-radius:8px;cursor:pointer;transition:.15s;border:1px solid transparent;text-align:center;min-width:70px}
 .titem:hover{background:rgba(0,255,224,.05)}
 .titem.on{background:rgba(0,255,224,.08);border-color:rgba(0,255,224,.2)}
+.topbar-r{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.hbtn{font-family:var(--mono);font-size:8px;letter-spacing:.08em;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--glass);color:var(--muted);cursor:pointer;transition:.15s;text-transform:uppercase;white-space:nowrap}
+.hbtn:hover{border-color:rgba(0,255,224,.3);color:var(--cyan)}
+.hbtn.c{color:var(--cyan);border-color:rgba(0,255,224,.3)}
+.hbtn.g{color:var(--gold);border-color:rgba(255,216,77,.3)}
+.hbtn.api-ok{color:var(--green)!important;border-color:rgba(0,255,102,.3)!important}
+.hbtn.api-no{color:var(--red)!important;border-color:rgba(255,42,85,.3)!important}
 
-/* ─── CARDS ─── */
-.card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:16px;padding:16px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-.clbl{font-family:var(--font-mono);font-size:7px;letter-spacing:.28em;color:var(--txt-dark);text-transform:uppercase;margin-bottom:12px}
+/* ─ CARDS ─ */
+.card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:14px}
+.clbl{font-family:var(--mono);font-size:7px;letter-spacing:.28em;color:var(--dark);text-transform:uppercase;margin-bottom:10px}
 
-/* ─── PRIX PRINCIPAL ─── */
-#main-price{font-family:var(--font-mono);font-size:36px;font-weight:700;letter-spacing:-.02em;line-height:1;transition:color .3s}
-#pair-badge{font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;color:var(--txt-muted);margin-bottom:8px}
-.stat-row{display:flex;gap:8px;margin-top:10px}
-.stat-b{flex:1;background:rgba(255,255,255,.02);border:1px solid var(--glass-border);border-radius:8px;padding:7px;text-align:center}
-.stat-b div:first-child{font-family:var(--font-mono);font-size:7px;color:var(--txt-dark);letter-spacing:.1em;text-transform:uppercase}
-.stat-b div:last-child{font-family:var(--font-mono);font-size:11px;margin-top:3px}
+/* ─ PRIX ─ */
+#main-price{font-family:var(--mono);font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1;transition:color .3s}
+#pair-badge{font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--muted);margin-bottom:6px}
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+.stat-b{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:7px;text-align:center}
+.stat-b .sl{font-family:var(--mono);font-size:7px;color:var(--dark);letter-spacing:.1em;text-transform:uppercase}
+.stat-b .sv{font-family:var(--mono);font-size:11px;margin-top:3px}
 
-/* ─── BADGE ─── */
-.badge{display:inline-block;font-family:var(--font-mono);font-size:9px;padding:3px 9px;border-radius:6px;letter-spacing:.08em;font-weight:700;text-transform:uppercase}
-.badge.green{background:rgba(0,255,102,.12);color:var(--green);border:1px solid rgba(0,255,102,.25)}
-.badge.red{background:rgba(255,42,85,.12);color:var(--red);border:1px solid rgba(255,42,85,.25)}
-.badge.gold{background:rgba(255,216,77,.12);color:var(--gold);border:1px solid rgba(255,216,77,.25)}
+/* ─ BADGES ─ */
+.badge{display:inline-block;font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:6px;letter-spacing:.08em;font-weight:700;text-transform:uppercase}
+.badge.green{background:rgba(0,255,102,.1);color:var(--green);border:1px solid rgba(0,255,102,.2)}
+.badge.red{background:rgba(255,42,85,.1);color:var(--red);border:1px solid rgba(255,42,85,.2)}
+.badge.gold{background:rgba(255,216,77,.1);color:var(--gold);border:1px solid rgba(255,216,77,.2)}
+.badge.cyan{background:rgba(0,255,224,.08);color:var(--cyan);border:1px solid rgba(0,255,224,.2)}
 
-/* ─── WALLET ─── */
-.w-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+/* ─ WALLET ─ */
+.w-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
 .w-row:last-child{border-bottom:none}
-.w-lbl{font-family:var(--font-mono);font-size:8px;letter-spacing:.15em;color:var(--txt-dark);text-transform:uppercase}
-.w-val{font-family:var(--font-mono);font-size:15px;font-weight:700}
-.goal-bar-wrap{margin-top:10px}
-.goal-bar-bg{height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden}
+.w-lbl{font-family:var(--mono);font-size:7px;letter-spacing:.15em;color:var(--dark);text-transform:uppercase}
+.w-val{font-family:var(--mono);font-size:14px;font-weight:700}
+.goal-bar-bg{height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-top:10px}
 .goal-bar-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:2px;transition:width .8s}
-.goal-meta{display:flex;justify-content:space-between;margin-top:5px}
-.mono{font-family:var(--font-mono)}
-.font-bold{font-weight:700}
+.goal-meta{display:flex;justify-content:space-between;margin-top:5px;font-family:var(--mono);font-size:8px;color:var(--dark)}
 
-/* ─── BOUTONS ─── */
-.brow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
-.btn{font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;padding:8px 12px;border-radius:9px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--txt-muted);cursor:pointer;transition:.15s;text-transform:uppercase;white-space:nowrap}
-.btn:hover{background:rgba(0,255,224,.06);border-color:rgba(0,255,224,.25);color:var(--cyan)}
-.btn-c{background:rgba(0,255,224,.08);border-color:rgba(0,255,224,.3);color:var(--cyan)}
-.btn-gold{background:rgba(255,216,77,.08);border-color:rgba(255,216,77,.3);color:var(--gold)}
-.btn-red{background:rgba(255,42,85,.08);border-color:rgba(255,42,85,.3);color:var(--red)}
-.btn-api-ok{color:var(--green)!important;border-color:rgba(0,255,102,.3)!important}
-.btn-api-no{color:var(--red)!important;border-color:rgba(255,42,85,.3)!important}
+/* ─ OPP ─ */
+.ocard{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:.2s}
+.ocard:hover{background:rgba(0,255,224,.04);border-color:rgba(0,255,224,.2);transform:translateY(-1px)}
+#opp-list{display:flex;flex-direction:column;gap:8px}
 
-/* ─── CHAT ─── */
-#chat{max-height:280px;overflow-y:auto;padding:2px 0 8px;display:flex;flex-direction:column;gap:8px}
-.cmsg-ai{background:rgba(0,255,224,.04);border:1px solid rgba(0,255,224,.12);border-radius:13px 13px 13px 4px;padding:12px 14px;font-size:13px;line-height:1.6;animation:fadein .25s ease}
-.cmsg-user{background:rgba(255,216,77,.04);border:1px solid rgba(255,216,77,.14);border-radius:13px 13px 4px 13px;padding:12px 14px;font-size:13px;line-height:1.6;margin-left:auto;max-width:85%;animation:fadein .25s ease}
-@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.dot-typing{display:flex;gap:5px;align-items:center;padding:4px 0}
+/* ─ CHAT ─ */
+#chat{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:0;padding-bottom:4px}
+.cmsg-ai{background:rgba(0,255,224,.04);border:1px solid rgba(0,255,224,.1);border-radius:12px 12px 12px 4px;padding:11px 13px;font-size:13px;line-height:1.6;animation:fi .2s ease}
+.cmsg-user{background:rgba(255,216,77,.04);border:1px solid rgba(255,216,77,.12);border-radius:12px 12px 4px 12px;padding:11px 13px;font-size:13px;line-height:1.6;margin-left:15%;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.dot-typing{display:flex;gap:5px;align-items:center;padding:2px 0}
 .dot-typing span{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:dt 1.4s infinite}
 .dot-typing span:nth-child(2){animation-delay:.2s}
 .dot-typing span:nth-child(3){animation-delay:.4s}
 @keyframes dt{0%,80%,100%{opacity:.15;transform:scale(.5)}40%{opacity:1;transform:scale(1)}}
-.cin-row{display:flex;gap:6px;margin-top:10px}
-.cin{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--glass-border);border-radius:11px;padding:11px 14px;color:var(--txt-main);font-family:var(--font-main);font-size:13px;outline:none;transition:.2s}
-.cin:focus{border-color:rgba(0,255,224,.3);background:rgba(0,255,224,.03)}
-.csend{background:linear-gradient(135deg,rgba(0,255,224,.8),rgba(0,255,102,.8));border:none;border-radius:11px;padding:0 16px;cursor:pointer;font-size:16px;font-weight:700;transition:.15s;color:#000}
-.csend:hover{opacity:.85}
-.csend:disabled{opacity:.4;cursor:not-allowed}
-#ai-st{font-family:var(--font-mono);font-size:8px;letter-spacing:.15em;color:var(--green);margin-top:6px}
-.qrow{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-.qbtn{font-family:var(--font-mono);font-size:8px;padding:5px 10px;border:1px solid var(--glass-border);border-radius:7px;background:var(--glass-bg);color:var(--txt-muted);cursor:pointer;transition:.15s;letter-spacing:.05em;text-transform:uppercase}
+.cin-row{display:flex;gap:6px;margin-top:8px;flex-shrink:0}
+.cin{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--txt);font-family:var(--sans);font-size:13px;outline:none;transition:.2s}
+.cin:focus{border-color:rgba(0,255,224,.3)}
+.csend{background:linear-gradient(135deg,rgba(0,255,224,.85),rgba(0,255,102,.85));border:none;border-radius:10px;padding:0 16px;cursor:pointer;font-size:16px;color:#000;transition:.15s}
+.csend:hover{opacity:.8}
+.csend:disabled{opacity:.3;cursor:not-allowed}
+#ai-st{font-family:var(--mono);font-size:8px;letter-spacing:.15em;color:var(--green);margin-top:5px}
+.qrow{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;flex-shrink:0}
+.qbtn{font-family:var(--mono);font-size:8px;padding:5px 10px;border:1px solid var(--border);border-radius:7px;background:var(--glass);color:var(--muted);cursor:pointer;transition:.15s;letter-spacing:.05em;text-transform:uppercase}
 .qbtn:hover{border-color:rgba(0,255,224,.3);color:var(--cyan)}
 
-/* ─── OPP CARDS ─── */
-.ocard{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:13px;padding:14px;cursor:pointer;transition:.2s}
-.ocard:hover{background:rgba(0,255,224,.04);border-color:rgba(0,255,224,.2);transform:translateY(-1px)}
-#opp-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+/* ─ TOAST ─ */
+.tst{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-70px);background:var(--bg3);font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding:10px 20px;border-radius:12px;z-index:999;transition:.3s;opacity:0;pointer-events:none;max-width:340px;text-align:center}
 
-/* ─── TOAST ─── */
-.tst{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-70px);background:var(--bg3);font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;padding:10px 20px;border-radius:12px;z-index:999;transition:.3s;opacity:0;pointer-events:none;max-width:320px;text-align:center}
-
-/* ─── OVERLAYS ─── */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(10px)}
-.sheet{background:var(--bg2);border:1px solid var(--glass-border);border-radius:22px 22px 0 0;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;padding:14px 14px calc(28px + env(safe-area-inset-bottom))}
+/* ─ OVERLAYS ─ */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.sheet{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:92%;max-width:480px;max-height:88vh;overflow-y:auto;padding:22px 20px}
 .sheet::-webkit-scrollbar{width:3px}
-.handle{width:36px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin:0 auto 16px}
 .ov-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.close-btn{background:none;border:1px solid var(--glass-border);border-radius:8px;padding:5px 11px;color:var(--txt-muted);cursor:pointer;font-family:var(--font-mono);font-size:10px;transition:.15s}
+.close-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 11px;color:var(--muted);cursor:pointer;font-family:var(--mono);font-size:9px;transition:.15s}
 .close-btn:hover{border-color:rgba(255,42,85,.4);color:var(--red)}
 
-/* ─── TRADE MODAL ─── */
+/* ─ TRADE MODAL ─ */
 .tm-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
 .tm-row:last-child{border-bottom:none}
-.tm-lbl{font-family:var(--font-mono);font-size:8px;letter-spacing:.15em;color:var(--txt-dark);text-transform:uppercase}
-.tm-val{font-family:var(--font-mono);font-size:14px;font-weight:700}
-input[type=range]{width:100%;accent-color:var(--cyan);margin:10px 0}
+.tm-lbl{font-family:var(--mono);font-size:7px;letter-spacing:.15em;color:var(--dark);text-transform:uppercase}
+.tm-val{font-family:var(--mono);font-size:14px;font-weight:700}
+input[type=range]{width:100%;accent-color:var(--cyan);margin:8px 0}
 
-/* ─── PIN ─── */
-.pin-dots{display:flex;gap:12px;justify-content:center;margin:20px 0}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--glass-border);background:transparent;transition:.2s}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:240px;margin:0 auto}
-.key{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:16px;font-family:var(--font-mono);font-size:18px;font-weight:700;cursor:pointer;text-align:center;transition:.15s;color:var(--txt-main)}
+/* ─ PIN ─ */
+.pin-dots{display:flex;gap:12px;justify-content:center;margin:18px 0}
+.pin-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:.2s}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:220px;margin:0 auto}
+.key{background:var(--glass);border:1px solid var(--border);border-radius:11px;padding:14px;font-family:var(--mono);font-size:17px;font-weight:700;cursor:pointer;text-align:center;transition:.15s;color:var(--txt)}
 .key:hover{background:rgba(0,255,224,.08);border-color:rgba(0,255,224,.3);color:var(--cyan)}
 .key.del{color:var(--red)}
-.key.clr{color:var(--txt-muted);font-size:11px}
+.key.clr{color:var(--muted);font-size:10px}
 
-/* ─── SETTINGS ─── */
-.st-field{background:rgba(255,255,255,.03);border:1px solid var(--glass-border);border-radius:10px;padding:11px 14px;color:var(--txt-main);font-family:var(--font-mono);font-size:12px;width:100%;outline:none;transition:.2s}
+/* ─ SETTINGS ─ */
+.st-field{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--txt);font-family:var(--mono);font-size:12px;width:100%;outline:none;transition:.2s}
 .st-field:focus{border-color:rgba(0,255,224,.3)}
-.st-lbl{font-family:var(--font-mono);font-size:8px;letter-spacing:.2em;color:var(--txt-dark);text-transform:uppercase;margin-bottom:6px}
-.st-section{margin-bottom:18px}
+.st-lbl{font-family:var(--mono);font-size:7px;letter-spacing:.2em;color:var(--dark);text-transform:uppercase;margin-bottom:6px}
+.st-sec{margin-bottom:16px}
 
-/* ─── JOURNAL ─── */
-#jr-full{display:flex;flex-direction:column;gap:8px}
-
-/* ─── SIG BANNER ─── */
-#sig-banner{position:fixed;top:0;left:0;right:0;z-index:150;background:linear-gradient(135deg,rgba(0,255,102,.12),rgba(0,255,224,.08));border-bottom:1px solid rgba(0,255,102,.2);padding:12px 16px;display:none;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);max-width:430px;margin:0 auto}
+/* ─ SIG BANNER ─ */
+#sig-banner{position:fixed;bottom:16px;right:16px;z-index:150;background:rgba(0,255,102,.08);border:1px solid rgba(0,255,102,.25);border-radius:14px;padding:12px 16px;display:none;align-items:center;gap:12px;backdrop-filter:blur(20px)}
 </style>
 </head>
 <body>
 
-<!-- SIGNAL BANNER -->
+<!-- ══ TOPBAR ══ -->
+<div id="topbar">
+  <div class="logo" onclick="titleClick()">SNIPER<span> TRADE</span></div>
+  <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+    <div class="live-dot"></div>
+    <span id="ws-st">CONNECT...</span>
+  </div>
+
+  <!-- TICKER -->
+  <div class="topbar-mid" id="tbar"></div>
+
+  <!-- ACTIONS -->
+  <div class="topbar-r">
+    <button class="hbtn c" onclick="doAiScan()">⚡ Scan</button>
+    <button class="hbtn g" onclick="doAiOpps()">🎯 Setup</button>
+    <button class="hbtn" onclick="openJournal()">📓 Journal</button>
+    <button class="hbtn" onclick="openWallet()">💰 Capital</button>
+    <button class="hbtn" id="api-btn" onclick="titleClick()">⚙️ PIN</button>
+    <button class="hbtn" onclick="toggleBlur()">👁</button>
+  </div>
+</div>
+
+<!-- ══ MAIN GRID ══ -->
+<div id="main">
+
+  <!-- ── COLONNE GAUCHE ── -->
+  <div id="col-l">
+
+    <!-- PRIX LIVE -->
+    <div class="card">
+      <div id="pair-badge" class="clbl">BTC / USDT</div>
+      <div id="main-price" class="blur-target" style="font-family:var(--mono);font-size:30px;font-weight:700;color:var(--cyan);line-height:1">—</div>
+      <div style="margin-top:7px"><span id="chg-badge" class="badge green">+0.00%</span></div>
+      <div class="stat-row">
+        <div class="stat-b"><div class="sl">HIGH</div><div class="sv blur-target" id="hi-v" style="color:var(--green)">—</div></div>
+        <div class="stat-b"><div class="sl">LOW</div><div class="sv blur-target" id="lo-v" style="color:var(--red)">—</div></div>
+        <div class="stat-b"><div class="sl">VOL</div><div class="sv blur-target" id="vo-v" style="color:var(--gold)">—</div></div>
+      </div>
+    </div>
+
+    <!-- WALLET -->
+    <div class="card">
+      <div class="clbl">Portefeuille</div>
+      <div class="w-row">
+        <span class="w-lbl">Capital</span>
+        <span class="w-val blur-target" id="cap-v" style="color:var(--cyan)">—</span>
+      </div>
+      <div class="w-row">
+        <span class="w-lbl">Objectif</span>
+        <span class="w-val blur-target" id="goal-pct" style="color:var(--gold)">0%</span>
+      </div>
+      <div class="w-row">
+        <span class="w-lbl">Trades</span>
+        <span class="w-val" id="trade-cnt" style="color:var(--muted)">0</span>
+      </div>
+      <div class="goal-bar-bg"><div class="goal-bar-fill" id="goal-bar" style="width:0%"></div></div>
+      <div class="goal-meta">
+        <span>PROGRESSION</span>
+        <span id="goal-lbl">/ $ 50.00</span>
+      </div>
+    </div>
+
+    <!-- OPPORTUNITÉS -->
+    <div class="card" style="flex:1">
+      <div class="clbl">Opportunités</div>
+      <div id="opp-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ── COLONNE CENTRE (CHART PLACEHOLDER + STATS) ── -->
+  <div id="col-c">
+
+    <!-- CHART ZONE -->
+    <div class="card" style="flex:1;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,rgba(0,255,224,.04) 0%,transparent 70%)"></div>
+      <div style="font-family:var(--mono);font-size:7px;letter-spacing:.25em;color:var(--dark);margin-bottom:18px">CHART · <span id="chart-pair">BTC</span>/USDT LIVE</div>
+      <div id="chart-price-big" class="blur-target" style="font-family:var(--mono);font-size:52px;font-weight:700;color:var(--cyan);text-shadow:0 0 40px rgba(0,255,224,.3);line-height:1">—</div>
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+        <span id="chart-chg" class="badge green">+0.00%</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--dark)">24H</span>
+      </div>
+      <!-- Mini sparkline simulée -->
+      <canvas id="sparkline" width="400" height="80" style="margin-top:20px;opacity:.7"></canvas>
+    </div>
+
+    <!-- STATS ROW -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div class="card" style="text-align:center">
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dark);letter-spacing:.15em">MARKET</div>
+        <div id="mkt-feel" style="font-family:var(--mono);font-size:13px;font-weight:700;margin-top:6px;color:var(--gold)">—</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dark);letter-spacing:.15em">BTC DOM.</div>
+        <div id="btc-dom" style="font-family:var(--mono);font-size:13px;font-weight:700;margin-top:6px;color:var(--cyan)">—</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dark);letter-spacing:.15em">FEAR/GREED</div>
+        <div id="fg-val" style="font-family:var(--mono);font-size:13px;font-weight:700;margin-top:6px">—</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-family:var(--mono);font-size:7px;color:var(--dark);letter-spacing:.15em">ACTIF</div>
+        <div id="active-pair-lbl" style="font-family:var(--mono);font-size:13px;font-weight:700;margin-top:6px;color:var(--cyan)">BTC</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── COLONNE DROITE (CHAT IA) ── -->
+  <div id="col-r" style="display:flex;flex-direction:column">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-shrink:0;margin-bottom:6px">
+      <div style="font-family:var(--mono);font-size:7px;letter-spacing:.25em;color:var(--dark);text-transform:uppercase">Cerveau IA · Gemini Flash</div>
+      <div id="ai-st" style="font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--green)">● EN ATTENTE</div>
+    </div>
+
+    <div id="chat"></div>
+
+    <div class="qrow">
+      <button class="qbtn" onclick="qi('Analyse rapide du marché')">📊 Marché</button>
+      <button class="qbtn" onclick="qi('Setup BTC levier optimal')">₿ BTC</button>
+      <button class="qbtn" onclick="qi('Setup SOL x12 entry TP SL précis')">◎ SOL</button>
+      <button class="qbtn" onclick="qi('Risque global du marché')">⚠️ Risque</button>
+      <button class="qbtn" onclick="qi('Meilleur long du moment')">🎯 Long</button>
+    </div>
+
+    <div class="cin-row">
+      <input class="cin" id="ci" placeholder="Analyse SOL x12, signal BTC..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="csend" id="sb" onclick="sendChat()">➤</button>
+    </div>
+
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══ SIGNAL BANNER ══ -->
 <div id="sig-banner">
   <div>
-    <div style="font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:.15em">⚡ SIGNAL DÉTECTÉ</div>
-    <div style="font-size:12px;margin-top:2px">Setup haute probabilité détecté sur le marché</div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:.15em">⚡ SIGNAL DÉTECTÉ</div>
+    <div style="font-size:12px;margin-top:2px">Setup haute probabilité disponible</div>
   </div>
   <div style="display:flex;align-items:center;gap:8px">
-    <span style="font-family:var(--font-mono);font-size:11px;color:var(--gold)" id="sig-timer">10s</span>
+    <span style="font-family:var(--mono);font-size:11px;color:var(--gold)" id="sig-timer">10s</span>
     <button class="close-btn" onclick="closeSig()">✕</button>
   </div>
 </div>
 
-<div id="app">
-
-<!-- HEADER -->
-<div id="hdr">
-  <div>
-    <div class="logo" onclick="titleClick()">SNIPER<span> TRADE</span></div>
-    <div style="font-family:var(--font-mono);font-size:7px;letter-spacing:.25em;color:var(--txt-dark);margin-top:2px">AI TRADING · BINANCE LIVE</div>
-  </div>
-  <div class="hdr-r">
-    <button class="eye-btn" onclick="toggleBlur()">👁</button>
-    <div class="live-dot"></div>
-    <span id="ws-st" style="font-family:var(--font-mono);font-size:8px;letter-spacing:.15em;color:var(--txt-muted)">CONNECT...</span>
-  </div>
-</div>
-
-<!-- BOUTONS -->
-<div class="brow">
-  <button class="btn btn-c" onclick="doAiScan()">⚡ Scan IA</button>
-  <button class="btn btn-gold" onclick="doAiOpps()">🎯 Setup</button>
-  <button class="btn" onclick="openJournal()">📓 Journal</button>
-  <button class="btn" onclick="openWallet()">💰 Capital</button>
-  <button class="btn" id="api-btn" onclick="titleClick()">⚙️ PIN</button>
-</div>
-
-<!-- TICKER -->
-<div id="tick-wrap"><div id="tbar"></div></div>
-
-<!-- GRID PRINCIPAL -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-
-  <!-- PRIX -->
-  <div class="card">
-    <div id="pair-badge" class="clbl blur-target">BTC / USDT</div>
-    <div id="main-price" class="blur-target" style="font-family:var(--font-mono);font-size:32px;font-weight:700;color:var(--cyan);line-height:1">—</div>
-    <div style="margin-top:6px"><span id="chg-badge" class="badge green">+0.00%</span></div>
-    <div class="stat-row">
-      <div class="stat-b"><div>HIGH</div><div id="hi-v" class="blur-target" style="color:var(--green)">—</div></div>
-      <div class="stat-b"><div>LOW</div><div id="lo-v" class="blur-target" style="color:var(--red)">—</div></div>
-      <div class="stat-b"><div>VOL</div><div id="vo-v" class="blur-target" style="color:var(--gold)">—</div></div>
-    </div>
-  </div>
-
-  <!-- WALLET -->
-  <div class="card">
-    <div class="clbl">Portefeuille</div>
-    <div class="w-row">
-      <span class="w-lbl">Capital</span>
-      <span class="w-val blur-target" id="cap-v" style="color:var(--cyan)">0.00</span>
-    </div>
-    <div class="w-row">
-      <span class="w-lbl">Objectif</span>
-      <span class="w-val blur-target" id="goal-pct" style="color:var(--gold)">0%</span>
-    </div>
-    <div class="w-row">
-      <span class="w-lbl">Trades</span>
-      <span class="w-val" id="trade-cnt" style="color:var(--txt-muted)">0</span>
-    </div>
-    <div class="goal-bar-wrap">
-      <div class="goal-bar-bg"><div class="goal-bar-fill" id="goal-bar" style="width:0%"></div></div>
-      <div class="goal-meta">
-        <span style="font-family:var(--font-mono);font-size:8px;color:var(--txt-dark)">PROGRESSION</span>
-        <span style="font-family:var(--font-mono);font-size:8px;color:var(--txt-dark)" id="goal-lbl">/$50.00</span>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- OPPORTUNITÉS -->
-<div class="card" style="margin-bottom:10px">
-  <div class="clbl">Opportunités · Tap pour trader</div>
-  <div id="opp-grid"></div>
-</div>
-
-<!-- CHAT IA -->
-<div class="card" style="margin-bottom:10px">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-    <div class="clbl" style="margin-bottom:0">Cerveau IA · Gemini Flash</div>
-    <div id="ai-st">● EN ATTENTE</div>
-  </div>
-  <div id="chat"></div>
-  <div class="cin-row">
-    <input class="cin" id="ci" placeholder="Ex : Setup SOL x13, analyse BTC, risque marché..." onkeydown="if(event.key==='Enter')sendChat()">
-    <button class="csend" id="sb" onclick="sendChat()">➤</button>
-  </div>
-  <div class="qrow">
-    <button class="qbtn" onclick="qi('Analyse rapide du marché maintenant')">📊 Marché</button>
-    <button class="qbtn" onclick="qi('Setup BTC avec levier optimal')">₿ BTC</button>
-    <button class="qbtn" onclick="qi('Setup SOL x12 — entry, TP, SL précis')">◎ SOL</button>
-    <button class="qbtn" onclick="qi('Évalue le risque global du marché')">⚠️ Risque</button>
-    <button class="qbtn" onclick="qi('Meilleur long du moment sur toutes les paires')">🎯 Long</button>
-  </div>
-</div>
-
-</div><!-- /app -->
-
 <!-- ══ OVERLAY TRADE ══ -->
 <div class="ov" id="tm-ov">
   <div class="sheet">
-    <div class="handle"></div>
     <div class="ov-hdr">
-      <div>
-        <span id="tm-asset" style="font-family:var(--font-mono);font-size:18px;font-weight:700"></span>
-        <span id="tm-dir" class="badge green" style="margin-left:8px"></span>
-        <span id="tm-lev" class="badge gold" style="margin-left:6px"></span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="tm-asset" style="font-family:var(--mono);font-size:18px;font-weight:700"></span>
+        <span id="tm-dir" class="badge green"></span>
+        <span id="tm-lev" class="badge gold"></span>
       </div>
-      <span id="tm-conf-b" class="badge gold"></span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="tm-conf-b" class="badge cyan"></span>
+        <button class="close-btn" onclick="closeTrade()">✕</button>
+      </div>
     </div>
-    <div class="card" style="margin-bottom:12px">
-      <div id="tm-reason" style="font-size:13px;color:var(--txt-muted);line-height:1.6"></div>
-    </div>
+    <div class="card" style="margin-bottom:12px"><div id="tm-reason" style="font-size:13px;color:var(--muted);line-height:1.6"></div></div>
     <div class="card" style="margin-bottom:12px">
       <div class="tm-row"><span class="tm-lbl">Entry</span><span class="tm-val" id="tm-entry" style="color:var(--cyan)">—</span></div>
       <div class="tm-row"><span class="tm-lbl">Take Profit</span><span class="tm-val" id="tm-tp" style="color:var(--green)">—</span></div>
       <div class="tm-row"><span class="tm-lbl">Stop Loss</span><span class="tm-val" id="tm-sl" style="color:var(--red)">—</span></div>
     </div>
-    <div class="card" style="margin-bottom:16px">
+    <div class="card" style="margin-bottom:14px">
       <div class="clbl">Levier</div>
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-family:var(--font-mono);font-size:9px;color:var(--txt-dark)">x1</span>
-        <span id="lev-display" style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--gold)">x10</span>
-        <span style="font-family:var(--font-mono);font-size:9px;color:var(--txt-dark)">x20</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--dark)">x1</span>
+        <span id="lev-display" style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--gold)">x10</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--dark)">x20</span>
       </div>
       <input type="range" id="lev-slider" min="1" max="20" value="10" oninput="updateLevSlider(this.value)">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <button class="btn btn-red" style="padding:14px;font-size:11px" onclick="refuseTrade()">✕ Ignorer</button>
-      <button class="btn btn-c" style="padding:14px;font-size:11px" onclick="acceptTrade()">✓ Ouvrir Position</button>
+      <button class="hbtn" style="padding:13px;font-size:11px;color:var(--red);border-color:rgba(255,42,85,.3)" onclick="refuseTrade()">✕ Ignorer</button>
+      <button class="hbtn c" style="padding:13px;font-size:11px" onclick="acceptTrade()">✓ Ouvrir Position</button>
     </div>
   </div>
 </div>
 
 <!-- ══ OVERLAY WALLET ══ -->
 <div class="ov" id="wl-ov">
-  <div class="sheet">
-    <div class="handle"></div>
+  <div class="sheet" style="max-width:360px">
     <div class="ov-hdr">
-      <span style="font-family:var(--font-mono);font-size:14px;font-weight:700">Capital</span>
-      <button class="close-btn" onclick="closeWallet()">✕ Fermer</button>
+      <span style="font-family:var(--mono);font-size:14px;font-weight:700">💰 Capital</span>
+      <button class="close-btn" onclick="closeWallet()">✕</button>
     </div>
-    <div class="st-section">
-      <div class="st-lbl">Capital actuel ($)</div>
-      <input class="st-field" id="w-cap" type="number" step="0.01">
-    </div>
-    <div class="st-section">
-      <div class="st-lbl">Objectif ($)</div>
-      <input class="st-field" id="w-goal" type="number" step="0.01">
-    </div>
-    <button class="btn btn-c" style="width:100%;padding:14px;font-size:11px" onclick="saveWallet()">✓ Enregistrer</button>
+    <div class="st-sec"><div class="st-lbl">Capital actuel ( $ )</div><input class="st-field" id="w-cap" type="number" step="0.01"></div>
+    <div class="st-sec"><div class="st-lbl">Objectif ( $ )</div><input class="st-field" id="w-goal" type="number" step="0.01"></div>
+    <button class="hbtn c" style="width:100%;padding:13px;font-size:11px" onclick="saveWallet()">✓ Enregistrer</button>
   </div>
 </div>
 
 <!-- ══ OVERLAY JOURNAL ══ -->
 <div class="ov" id="jr-ov">
   <div class="sheet">
-    <div class="handle"></div>
     <div class="ov-hdr">
-      <span style="font-family:var(--font-mono);font-size:14px;font-weight:700">Journal des Trades</span>
-      <button class="close-btn" onclick="closeJournal()">✕ Fermer</button>
+      <span style="font-family:var(--mono);font-size:14px;font-weight:700">📓 Journal des Trades</span>
+      <button class="close-btn" onclick="closeJournal()">✕</button>
     </div>
-    <div id="jr-full"></div>
+    <div id="jr-full" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
 </div>
 
 <!-- ══ OVERLAY PIN ══ -->
-<div class="ov" id="pin-ov" style="align-items:center">
-  <div style="background:var(--bg2);border:1px solid var(--glass-border);border-radius:22px;width:92%;max-width:340px;padding:28px 20px">
-    <div style="text-align:center;margin-bottom:6px">
-      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.25em;color:var(--txt-dark)">ACCÈS SÉCURISÉ</div>
-      <div style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--cyan);margin-top:6px">⚙️ PARAMÈTRES</div>
-    </div>
+<div class="ov" id="pin-ov">
+  <div class="sheet" style="max-width:320px;text-align:center">
+    <div style="font-family:var(--mono);font-size:8px;letter-spacing:.25em;color:var(--dark)">ACCÈS SÉCURISÉ</div>
+    <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--cyan);margin-top:8px">⚙️ PARAMÈTRES</div>
     <div class="pin-dots">
       <div class="pin-dot" id="pd0"></div>
       <div class="pin-dot" id="pd1"></div>
@@ -366,35 +415,36 @@ input[type=range]{width:100%;accent-color:var(--cyan);margin:10px 0}
       <button class="key" onclick="pk('0')">0</button>
       <button class="key del" onclick="pk('D')">⌫</button>
     </div>
-    <button class="btn btn-red" style="width:100%;margin-top:14px;padding:12px" onclick="closePIN()">Annuler</button>
+    <button class="close-btn" style="margin-top:14px" onclick="closePIN()">Annuler</button>
   </div>
 </div>
 
 <!-- ══ OVERLAY SETTINGS ══ -->
-<div class="ov" id="st-ov" style="align-items:center">
-  <div style="background:var(--bg2);border:1px solid var(--glass-border);border-radius:22px;width:92%;max-width:360px;padding:24px 20px">
-    <div style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--cyan);margin-bottom:20px;text-align:center">⚙️ PARAMÈTRES</div>
-    <div class="st-section">
+<div class="ov" id="st-ov">
+  <div class="sheet" style="max-width:420px">
+    <div class="ov-hdr">
+      <span style="font-family:var(--mono);font-size:14px;font-weight:700">⚙️ Paramètres</span>
+      <button class="close-btn" onclick="closeST()">✕</button>
+    </div>
+    <div class="st-sec">
       <div class="st-lbl">Clé API Gemini</div>
-      <input class="st-field" id="api-in" type="password" placeholder="AIza...">
-      <div style="font-family:var(--font-mono);font-size:8px;color:var(--txt-dark);margin-top:5px;letter-spacing:.08em">aistudio.google.com → Obtenir une clé API</div>
+      <input class="st-field" id="api-in" type="password" placeholder="AIzaSy...">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--dark);margin-top:6px;line-height:1.5">
+        Obtiens ta clé sur <span style="color:var(--cyan)">aistudio.google.com</span>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <button class="btn btn-red" style="padding:12px" onclick="closeST()">✕ Annuler</button>
-      <button class="btn btn-c" style="padding:12px" onclick="saveKey()">✓ Sauvegarder</button>
-    </div>
+    <button class="hbtn c" style="width:100%;padding:13px;font-size:11px" onclick="saveKey()">✓ Sauvegarder la clé</button>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  ÉTAT GLOBAL
-// ═══════════════════════════════════════════════════════
-const PIN_CODE = '1704';
-const PAIRS = ['BTC','ETH','SOL','PEPE','WIF','BONK'];
-
-let capital      = parseFloat(localStorage.getItem('cap')   ?? '20.57');
-let capitalGoal  = parseFloat(localStorage.getItem('goal')  ?? '50');
+// ═══════════════════════════════════════════════════
+const PIN_CODE   = '1704';
+const PAIRS      = ['BTC','ETH','SOL','PEPE','WIF','BONK'];
+let capital      = parseFloat(localStorage.getItem('cap')    ?? '20.57');
+let capitalGoal  = parseFloat(localStorage.getItem('goal')   ?? '50');
 let apiKey       = localStorage.getItem('gemKey') || '';
 let curPair      = 'BTC';
 let prices       = {};
@@ -407,465 +457,369 @@ let curOpp       = null;
 let selectedLever= 10;
 let sigTimer     = null;
 let activeModel  = null;
+let sparkData    = [];
 
-// ═══════════════════════════════════════════════════════
-//  UTILITAIRES
-// ═══════════════════════════════════════════════════════
 const ls  = (k,v) => localStorage.setItem(k,v);
 const fp  = n    => parseFloat(n).toFixed(2);
 const fdt = ts   => new Date(ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
 
-function toast(msg, type='ok'){
-  const t = document.createElement('div');
-  t.className = 'tst';
-  t.innerHTML = msg;
-  const cols = {ok:'var(--cyan)', err:'var(--red)', warn:'var(--gold)'};
-  t.style.border = '1px solid '+(cols[type]||cols.ok);
+function toast(msg,type='ok'){
+  const t=document.createElement('div'); t.className='tst'; t.innerHTML=msg;
+  const c={ok:'var(--cyan)',err:'var(--red)',warn:'var(--gold)'};
+  t.style.border='1px solid '+(c[type]||c.ok);
   document.body.appendChild(t);
-  requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(10px)'; setTimeout(()=>t.remove(),300); },2600);
+  requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';setTimeout(()=>t.remove(),300);},2600);
 }
+function qi(txt){document.getElementById('ci').value=txt;sendChat();}
 
-function qi(txt){ document.getElementById('ci').value = txt; sendChat(); }
-
-// ═══════════════════════════════════════════════════════
-//  WEBSOCKET BINANCE (LES YEUX)
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  WEBSOCKET BINANCE
+// ═══════════════════════════════════════════════════
 function connectWS(){
-  if(ws) try{ ws.close(); }catch(e){}
-  const streams = PAIRS.map(p => p.toLowerCase()+'usdt@ticker').join('/');
-  ws = new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
-
-  ws.onopen = () => {
-    document.getElementById('ws-st').textContent = 'LIVE';
-    document.getElementById('ws-st').style.color = 'var(--green)';
-    document.querySelector('.live-dot').style.background = 'var(--green)';
-    document.querySelector('.live-dot').style.boxShadow = '0 0 10px var(--green)';
+  if(ws) try{ws.close();}catch(e){}
+  const streams=PAIRS.map(p=>p.toLowerCase()+'usdt@ticker').join('/');
+  ws=new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
+  ws.onopen=()=>{
+    document.getElementById('ws-st').textContent='LIVE';
+    document.getElementById('ws-st').style.color='var(--green)';
+    document.querySelector('.live-dot').style.background='var(--green)';
+    document.querySelector('.live-dot').style.boxShadow='0 0 10px var(--green)';
   };
-  ws.onclose = () => {
-    document.getElementById('ws-st').textContent = 'OFF';
-    document.getElementById('ws-st').style.color = 'var(--red)';
-    document.querySelector('.live-dot').style.background = 'var(--red)';
-    setTimeout(connectWS, 3000);
+  ws.onclose=()=>{
+    document.getElementById('ws-st').textContent='OFF';
+    document.getElementById('ws-st').style.color='var(--red)';
+    document.querySelector('.live-dot').style.background='var(--red)';
+    setTimeout(connectWS,3000);
   };
-  ws.onerror = () => { document.getElementById('ws-st').textContent = 'ERR'; };
-
-  ws.onmessage = e => {
+  ws.onmessage=e=>{
     try{
-      const d = JSON.parse(e.data).data;
-      if(!d?.s) return;
-      const sym = d.s.replace('USDT','');
+      const d=JSON.parse(e.data).data; if(!d?.s) return;
+      const sym=d.s.replace('USDT','');
       if(!PAIRS.includes(sym)) return;
-      prices[sym] = {
-        price : parseFloat(d.c),
-        change: parseFloat(d.P),
-        high  : parseFloat(d.h),
-        low   : parseFloat(d.l),
-        vol   : parseFloat(d.q)
-      };
+      prices[sym]={price:parseFloat(d.c),change:parseFloat(d.P),high:parseFloat(d.h),low:parseFloat(d.l),vol:parseFloat(d.q)};
       updateTickerItem(sym);
-      if(sym === curPair) updateMainPrice();
+      if(sym===curPair){updateMainPrice();updateCenterPrice();pushSparkle(prices[sym].price);}
     }catch(e){}
   };
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  TICKER
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function buildTicker(){
-  document.getElementById('tbar').innerHTML =
-    PAIRS.map(p=>`<div class="titem" id="ti-${p}" onclick="switchPair('${p}')"></div>`).join('');
+  document.getElementById('tbar').innerHTML=
+    PAIRS.map(p=>`<div class="titem" id="ti- $ {p}" onclick="switchPair('${p}')"></div>`).join('');
 }
-
 function updateTickerItem(sym){
-  const el = document.getElementById('ti-'+sym);
-  if(!el) return;
-  const d   = prices[sym];
-  const col = d.change >= 0 ? 'var(--green)' : 'var(--red)';
-  el.innerHTML =
-    `<span style="font-size:9px;font-weight:700;color:var(--txt-main);font-family:var(--font-mono)">${sym}</span>`+
-    `<span style="display:block;margin-top:3px;font-size:11px;color:${col};font-family:var(--font-mono)">${fp(d.price)}</span>`;
+  const el=document.getElementById('ti-'+sym); if(!el) return;
+  const d=prices[sym]; const col=d.change>=0?'var(--green)':'var(--red)';
+  el.innerHTML=`<span style="font-size:9px;font-weight:700;color:var(--txt);font-family:var(--mono)">${sym}</span><span style="display:block;margin-top:2px;font-size:11px;color:${col};font-family:var(--mono)">$${fp(d.price)}</span>`;
 }
-
 function switchPair(p){
-  curPair = p;
-  document.getElementById('pair-badge').textContent = p+' / USDT';
+  curPair=p; sparkData=[];
+  document.getElementById('pair-badge').textContent=p+' / USDT';
+  document.getElementById('chart-pair').textContent=p;
+  document.getElementById('active-pair-lbl').textContent=p;
   document.querySelectorAll('.titem').forEach(e=>e.classList.remove('on'));
-  const el = document.getElementById('ti-'+p);
-  if(el) el.classList.add('on');
-  updateMainPrice();
+  const el=document.getElementById('ti-'+p); if(el) el.classList.add('on');
+  updateMainPrice(); updateCenterPrice();
 }
-
 function updateMainPrice(){
-  const d = prices[curPair]; if(!d) return;
-  const mp = document.getElementById('main-price');
-  mp.textContent = '$'+fp(d.price);
-  mp.style.color = d.change >= 0 ? 'var(--cyan)' : 'var(--red)';
-  const cb = document.getElementById('chg-badge');
-  cb.textContent = (d.change>=0?'+':'')+d.change.toFixed(2)+'%';
-  cb.className = 'badge '+(d.change>=0?'green':'red');
-  document.getElementById('hi-v').textContent = '$'+fp(d.high);
-  document.getElementById('lo-v').textContent = '$'+fp(d.low);
-  document.getElementById('vo-v').textContent = (d.vol/1000).toFixed(1)+'K';
+  const d=prices[curPair]; if(!d) return;
+  const mp=document.getElementById('main-price');
+  mp.textContent=' $ '+fp(d.price);
+  mp.style.color=d.change>=0?'var(--cyan)':'var(--red)';
+  const cb=document.getElementById('chg-badge');
+  cb.textContent=(d.change>=0?'+':'')+d.change.toFixed(2)+'%';
+  cb.className='badge '+(d.change>=0?'green':'red');
+  document.getElementById('hi-v').textContent=' $ '+fp(d.high);
+  document.getElementById('lo-v').textContent=' $ '+fp(d.low);
+  document.getElementById('vo-v').textContent=(d.vol/1000).toFixed(1)+'K';
+}
+function updateCenterPrice(){
+  const d=prices[curPair]; if(!d) return;
+  document.getElementById('chart-price-big').textContent=' $ '+fp(d.price);
+  const cc=document.getElementById('chart-chg');
+  cc.textContent=(d.change>=0?'+':'')+d.change.toFixed(2)+'%';
+  cc.className='badge '+(d.change>=0?'green':'red');
 }
 
-// ═══════════════════════════════════════════════════════
-//  WALLET (LES POCHES)
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  SPARKLINE
+// ═══════════════════════════════════════════════════
+function pushSparkle(price){
+  sparkData.push(price);
+  if(sparkData.length>80) sparkData.shift();
+  drawSparkline();
+}
+function drawSparkline(){
+  const c=document.getElementById('sparkline');
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  if(sparkData.length<2) return;
+  const mn=Math.min(...sparkData), mx=Math.max(...sparkData), range=mx-mn||1;
+  const w=c.width, h=c.height, pad=4;
+  const pts=sparkData.map((v,i)=>({
+    x:pad+(i/(sparkData.length-1))*(w-pad*2),
+    y:h-pad-((v-mn)/range)*(h-pad*2)
+  }));
+  const isUp=sparkData[sparkData.length-1]>=sparkData[0];
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,isUp?'rgba(0,255,102,.5)':'rgba(255,42,85,.5)');
+  grad.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
+  pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=isUp?'rgba(0,255,102,.9)':'rgba(255,42,85,.9)';
+  ctx.lineWidth=1.5; ctx.stroke();
+  ctx.lineTo(pts[pts.length-1].x,h); ctx.lineTo(pts[0].x,h); ctx.closePath();
+  ctx.fillStyle=grad; ctx.fill();
+}
+
+// ═══════════════════════════════════════════════════
+//  WALLET
+// ═══════════════════════════════════════════════════
 function updateWallet(){
-  document.getElementById('cap-v').textContent    = capital.toFixed(2);
-  document.getElementById('trade-cnt').textContent = tradeHistory.length;
-  document.getElementById('goal-lbl').textContent  = '/$'+capitalGoal.toFixed(2);
-  const pct = capitalGoal > 0 ? Math.min((capital/capitalGoal)*100, 100) : 0;
-  document.getElementById('goal-bar').style.width  = pct+'%';
-  document.getElementById('goal-pct').textContent  = pct.toFixed(1)+'%';
+  document.getElementById('cap-v').textContent=' $ '+fp(capital);
+  document.getElementById('trade-cnt').textContent=tradeHistory.length;
+  document.getElementById('goal-lbl').textContent='/ $ '+fp(capitalGoal);
+  const pct=capitalGoal>0?Math.min((capital/capitalGoal)*100,100):0;
+  document.getElementById('goal-bar').style.width=pct+'%';
+  document.getElementById('goal-pct').textContent=pct.toFixed(1)+'%';
 }
-
 function openWallet(){
-  document.getElementById('w-cap').value  = capital;
-  document.getElementById('w-goal').value = capitalGoal;
-  document.getElementById('wl-ov').style.display = 'flex';
+  document.getElementById('w-cap').value=capital;
+  document.getElementById('w-goal').value=capitalGoal;
+  document.getElementById('wl-ov').style.display='flex';
 }
-function closeWallet(){ document.getElementById('wl-ov').style.display='none'; }
+function closeWallet(){document.getElementById('wl-ov').style.display='none';}
 function saveWallet(){
-  capital     = parseFloat(document.getElementById('w-cap').value)  || capital;
-  capitalGoal = parseFloat(document.getElementById('w-goal').value) || capitalGoal;
-  ls('cap', capital); ls('goal', capitalGoal);
-  updateWallet(); closeWallet(); toast('💰 Capital mis à jour');
+  capital=parseFloat(document.getElementById('w-cap').value)||capital;
+  capitalGoal=parseFloat(document.getElementById('w-goal').value)||capitalGoal;
+  ls('cap',capital);ls('goal',capitalGoal);
+  updateWallet();closeWallet();toast('💰 Capital mis à jour');
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  FEAR & GREED
+// ═══════════════════════════════════════════════════
+async function fetchFG(){
+  try{
+    const r=await fetch('https://api.alternative.me/fng/?limit=1');
+    const d=await r.json();
+    const v=parseInt(d.data[0].value_classification?d.data[0].value:'50');
+    const lbl=d.data[0].value_classification;
+    const el=document.getElementById('fg-val');
+    el.textContent=d.data[0].value;
+    el.style.color=v>50?'var(--green)':v<30?'var(--red)':'var(--gold)';
+    document.getElementById('mkt-feel').textContent=lbl?.split(' ').map(w=>w[0]).join('')||'—';
+  }catch(e){}
+}
+
+// ═══════════════════════════════════════════════════
 //  OPPORTUNITÉS
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function buildOpps(){
-  const ops = [
-    {asset:'SOL', dir:'LONG',  conf:91, lever:13, reason:'Breakout majeur validé — RSI 1H haussier.'},
-    {asset:'BTC', dir:'SHORT', conf:84, lever:10, reason:'Rejet résistance institutionnelle 4H.'},
-    {asset:'ETH', dir:'LONG',  conf:78, lever:8,  reason:'Support clé tenu + volume acheteur.'},
-    {asset:'WIF', dir:'LONG',  conf:72, lever:15, reason:'Momentum meme fort, trend daily haussier.'}
+  const ops=[
+    {asset:'SOL',dir:'LONG', conf:91,lever:13,reason:'Breakout RSI 1H + volume haussier.'},
+    {asset:'BTC',dir:'SHORT',conf:84,lever:10,reason:'Rejet résistance institutionnelle 4H.'},
+    {asset:'ETH',dir:'LONG', conf:78,lever:8, reason:'Support clé tenu + acheteurs forts.'},
+    {asset:'WIF',dir:'LONG', conf:72,lever:15,reason:'Momentum meme — daily trend up.'}
   ];
-  document.getElementById('opp-grid').innerHTML = ops.map(o=>{
-    const col   = o.dir==='LONG' ? 'var(--green)' : 'var(--red)';
-    const badge = o.dir==='LONG' ? 'green' : 'red';
+  document.getElementById('opp-list').innerHTML=ops.map(o=>{
+    const col=o.dir==='LONG'?'var(--green)':'var(--red)';
+    const bdg=o.dir==='LONG'?'green':'red';
     return `<div class="ocard" onclick="openTrade('${o.asset}','${o.dir}',${o.lever},${o.conf},'${o.reason}')">
-      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
-        <span class="mono font-bold" style="font-size:15px">${o.asset}</span>
-        <span class="badge ${badge}">${o.dir}</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-family:var(--mono);font-weight:700;font-size:14px">${o.asset}</span>
+        <span class="badge ${bdg}">${o.dir}</span>
       </div>
-      <div class="mono" style="font-size:22px;font-weight:700;color:${o.conf>85?'var(--cyan)':'var(--gold)'}">${o.conf}%</div>
-      <div class="mono" style="font-size:9px;color:var(--txt-dark);margin-top:4px;letter-spacing:.08em">x${o.lever} · TAP →</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:var(--mono);font-size:20px;font-weight:700;color:${o.conf>85?'var(--cyan)':'var(--gold)'}">${o.conf}%</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--dark)">x${o.lever}</span>
+      </div>
     </div>`;
   }).join('');
 }
 
-function openTrade(asset, dir, lev, conf, reason){
-  curOpp = {asset, dir, lever:lev, conf, reason};
-  selectedLever = lev;
-  const p = prices[asset]?.price || 0;
-  document.getElementById('tm-asset').textContent  = asset+'/USDT';
-  document.getElementById('tm-dir').textContent    = dir;
-  document.getElementById('tm-dir').className      = 'badge '+(dir==='LONG'?'green':'red');
-  document.getElementById('tm-lev').textContent    = 'x'+lev;
-  document.getElementById('tm-conf-b').textContent = conf+'% CONF.';
-  document.getElementById('tm-reason').textContent = reason;
-  document.getElementById('lev-slider').value      = lev;
-  document.getElementById('lev-display').textContent = 'x'+lev;
-  if(p > 0){
-    const mult = dir==='LONG';
-    document.getElementById('tm-entry').textContent = '$'+fp(p);
-    document.getElementById('tm-tp').textContent    = '$'+fp(mult ? p*1.04 : p*0.96);
-    document.getElementById('tm-sl').textContent    = '$'+fp(mult ? p*0.985 : p*1.015);
-  } else {
-    document.getElementById('tm-entry').textContent = 'Market';
-    document.getElementById('tm-tp').textContent    = '+4%';
-    document.getElementById('tm-sl').textContent    = '-1.5%';
+function openTrade(asset,dir,lev,conf,reason){
+  curOpp={asset,dir,lever:lev,conf,reason}; selectedLever=lev;
+  const p=prices[asset]?.price||0;
+  document.getElementById('tm-asset').textContent=asset+'/USDT';
+  document.getElementById('tm-dir').textContent=dir;
+  document.getElementById('tm-dir').className='badge '+(dir==='LONG'?'green':'red');
+  document.getElementById('tm-lev').textContent='x'+lev;
+  document.getElementById('tm-conf-b').textContent=conf+'% CONF.';
+  document.getElementById('tm-reason').textContent=reason;
+  document.getElementById('lev-slider').value=lev;
+  document.getElementById('lev-display').textContent='x'+lev;
+  if(p>0){
+    const m=dir==='LONG';
+    document.getElementById('tm-entry').textContent=' $ '+fp(p);
+    document.getElementById('tm-tp').textContent=' $ '+fp(m?p*1.04:p*0.96);
+    document.getElementById('tm-sl').textContent='$'+fp(m?p*0.985:p*1.015);
+  }else{
+    document.getElementById('tm-entry').textContent='Market';
+    document.getElementById('tm-tp').textContent='+4%';
+    document.getElementById('tm-sl').textContent='-1.5%';
   }
-  document.getElementById('tm-ov').style.display = 'flex';
+  document.getElementById('tm-ov').style.display='flex';
 }
-
-function updateLevSlider(v){
-  selectedLever = parseInt(v);
-  document.getElementById('lev-display').textContent = 'x'+v;
-  document.getElementById('tm-lev').textContent      = 'x'+v;
-}
-function closeTrade()  { document.getElementById('tm-ov').style.display='none'; }
-function refuseTrade() { closeTrade(); toast('Opportunité ignorée','warn'); }
-function acceptTrade() {
+function updateLevSlider(v){selectedLever=parseInt(v);document.getElementById('lev-display').textContent='x'+v;document.getElementById('tm-lev').textContent='x'+v;}
+function closeTrade(){document.getElementById('tm-ov').style.display='none';}
+function refuseTrade(){closeTrade();toast('Ignoré','warn');}
+function acceptTrade(){
   if(!curOpp) return;
-  const trade = {id:Date.now(), asset:curOpp.asset, dir:curOpp.dir, lever:selectedLever, ts:Date.now()};
-  tradeHistory.push(trade); ls('trades', JSON.stringify(tradeHistory));
-  updateWallet(); closeTrade();
-  toast(`✅ Position ${curOpp.asset} x${selectedLever} ouverte !`);
+  tradeHistory.push({id:Date.now(),asset:curOpp.asset,dir:curOpp.dir,lever:selectedLever,ts:Date.now()});
+  ls('trades',JSON.stringify(tradeHistory));
+  updateWallet();closeTrade();
+  toast('✅ Position '+curOpp.asset+' x'+selectedLever+' ouverte !');
 }
 
-// ═══════════════════════════════════════════════════════
-//  JOURNAL (LES POCHES — MÉMOIRE)
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  JOURNAL
+// ═══════════════════════════════════════════════════
 function openJournal(){
-  const wrap = document.getElementById('jr-full');
+  const w=document.getElementById('jr-full');
   if(!tradeHistory.length){
-    wrap.innerHTML = '<div style="text-align:center;color:var(--txt-muted);padding:28px;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em">AUCUN HISTORIQUE</div>';
-  } else {
-    wrap.innerHTML = [...tradeHistory].reverse().map(t=>{
-      const col  = t.dir==='LONG' ? 'var(--green)' : 'var(--red)';
-      const bg   = t.dir==='LONG' ? 'rgba(0,255,102,.08)' : 'rgba(255,42,85,.08)';
-      return `<div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-left:3px solid ${col};border-radius:12px;padding:14px;display:flex;align-items:center;gap:10px">
-        <div class="mono font-bold" style="font-size:15px;min-width:44px">${t.asset}</div>
-        <div class="badge" style="background:${bg};color:${col};border-color:${col}">${t.dir}</div>
-        <div class="mono" style="font-size:11px;color:var(--txt-muted)">x${t.lever}</div>
-        <div style="margin-left:auto;font-size:11px;color:var(--txt-dark);font-family:var(--font-mono)">${fdt(t.ts)}</div>
+    w.innerHTML='<div style="text-align:center;color:var(--muted);padding:28px;font-family:var(--mono);font-size:11px;letter-spacing:.1em">AUCUN HISTORIQUE</div>';
+  }else{
+    w.innerHTML=[...tradeHistory].reverse().map(t=>{
+      const col=t.dir==='LONG'?'var(--green)':'var(--red)';
+      return `<div style="background:var(--glass);border:1px solid var(--border);border-left:3px solid ${col};border-radius:11px;padding:12px;display:flex;align-items:center;gap:10px">
+        <span style="font-family:var(--mono);font-weight:700;font-size:14px;min-width:40px">${t.asset}</span>
+        <span class="badge ${t.dir==='LONG'?'green':'red'}">${t.dir}</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--muted)">x${t.lever}</span>
+        <span style="margin-left:auto;font-size:10px;color:var(--dark);font-family:var(--mono)">${fdt(t.ts)}</span>
       </div>`;
     }).join('');
   }
   document.getElementById('jr-ov').style.display='flex';
 }
-function closeJournal(){ document.getElementById('jr-ov').style.display='none'; }
+function closeJournal(){document.getElementById('jr-ov').style.display='none';}
 
-// ═══════════════════════════════════════════════════════
-//  PIN & SETTINGS (LE CADENAS)
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  PIN & SETTINGS
+// ═══════════════════════════════════════════════════
 function titleClick(){
-  tcnt++;
-  clearTimeout(ttmr);
-  ttmr = setTimeout(()=>tcnt=0, 1500);
-  if(tcnt >= 5){ tcnt=0; document.getElementById('pin-ov').style.display='flex'; }
+  tcnt++; clearTimeout(ttmr); ttmr=setTimeout(()=>tcnt=0,1500);
+  if(tcnt>=5){tcnt=0;document.getElementById('pin-ov').style.display='flex';}
 }
-
-function closePIN(){
-  document.getElementById('pin-ov').style.display='none';
-  pinBuf = ''; updatePinDots();
-}
-
+function closePIN(){document.getElementById('pin-ov').style.display='none';pinBuf='';updatePinDots();}
 function pk(v){
-  if(v==='C')      pinBuf = '';
-  else if(v==='D') pinBuf = pinBuf.slice(0,-1);
-  else if(pinBuf.length < 4) pinBuf += v;
+  if(v==='C') pinBuf='';
+  else if(v==='D') pinBuf=pinBuf.slice(0,-1);
+  else if(pinBuf.length<4) pinBuf+=v;
   updatePinDots();
-  if(pinBuf.length === 4){
-    if(pinBuf === PIN_CODE){
+  if(pinBuf.length===4){
+    if(pinBuf===PIN_CODE){
       closePIN();
-      document.getElementById('api-in').value = apiKey;
-      document.getElementById('st-ov').style.display = 'flex';
-    } else {
-      toast('⛔ Code PIN erroné','err');
-      pinBuf = ''; updatePinDots();
+      document.getElementById('api-in').value=apiKey;
+      document.getElementById('st-ov').style.display='flex';
+    }else{
+      toast('⛔ PIN incorrect','err');
+      pinBuf='';updatePinDots();
     }
   }
 }
-
 function updatePinDots(){
-  for(let i=0;i<4;i++){
-    const el = document.getElementById('pd'+i);
-    if(el) el.style.background = i < pinBuf.length ? 'var(--cyan)' : 'transparent';
-  }
+  for(let i=0;i<4;i++){const e=document.getElementById('pd'+i);if(e)e.style.background=i<pinBuf.length?'var(--cyan)':'transparent';}
 }
-
-function closeST(){ document.getElementById('st-ov').style.display='none'; }
+function closeST(){document.getElementById('st-ov').style.display='none';}
 function saveKey(){
-  const k = document.getElementById('api-in').value.trim();
-  if(!k){ toast('Clé vide','warn'); return; }
-  if(!k.startsWith('AIza')){ toast('⚠️ Clé invalide — doit commencer par AIza','err'); return; }
-  apiKey = k; ls('gemKey', apiKey); closeST();
-  updateApiBtn();
-  toast('✅ Clé API enregistrée — IA activée');
-  addAIMsg('Clé configurée ✓ — Je suis ton sniper Maestro. Demande-moi une analyse ou un setup 🎯');
+  const k=document.getElementById('api-in').value.trim();
+  if(!k){toast('Clé vide','warn');return;}
+  if(!k.startsWith('AIza')){toast('⚠️ Clé invalide','err');return;}
+  apiKey=k;ls('gemKey',apiKey);closeST();updateApiBtn();
+  toast('✅ Clé API enregistrée');
+  addAIMsg('Clé configurée ✓ — Prêt à analyser Maestro 🎯');
 }
-
 function updateApiBtn(){
-  const b = document.getElementById('api-btn');
-  b.classList.toggle('btn-api-ok', !!apiKey);
-  b.classList.toggle('btn-api-no', !apiKey);
+  const b=document.getElementById('api-btn');
+  b.className=apiKey?'hbtn api-ok':'hbtn api-no';
 }
-
 function toggleBlur(){
-  blurOn = !blurOn;
-  document.body.classList.toggle('blured', blurOn);
-  toast(blurOn ? '👁 Données masquées' : '👁 Données visibles');
+  blurOn=!blurOn;
+  document.body.classList.toggle('blured',blurOn);
+  toast(blurOn?'👁 Masqué':'👁 Visible');
 }
+function closeSig(){document.getElementById('sig-banner').style.display='none';clearInterval(sigTimer);}
 
-function closeSig(){
-  document.getElementById('sig-banner').style.display='none';
-  clearInterval(sigTimer);
-}
-
-// ═══════════════════════════════════════════════════════
-//  CERVEAU IA — GEMINI (AVEC FORÇAGE DES PRIX)
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  GEMINI IA
+// ═══════════════════════════════════════════════════
 function buildSystemPrompt(){
-  return `Tu es SNIPER, un trader pro et mentor crypto d'élite.
-Ton style est chill, naturel, humain — comme un pote expert en trading.
-Réponses concises et percutantes. Pas de listes à rallonge sauf pour un setup précis.
-Appelle l'utilisateur "Maestro".`;
+  return `Tu es SNIPER, trader pro et mentor crypto d'élite. Style chill, naturel, humain — comme un pote expert. Réponses concises et percutantes. Appelle l'utilisateur "Maestro".`;
 }
-
 function buildForcedContext(){
-  // ⚡ TOUR DE MAGIE : injection silencieuse des prix Binance live
-  // L'IA ne peut pas halluciner — elle lit les vrais prix ici
-  const allPrices = Object.keys(prices)
-    .map(p => `${p}=${prices[p]?.price ? '$'+fp(prices[p].price) : 'N/A'} (${prices[p]?.change>=0?'+':''}${fp(prices[p]?.change)}%)`)
-    .join(' | ');
-
-  return `\n\n---\n[PRIX BINANCE TEMPS RÉEL — ${new Date().toLocaleTimeString('fr-FR')}]\n${allPrices}\nCapital Maestro : $${fp(capital)}\nPaire active : ${curPair}/USDT\nRÈGLE ABSOLUE : Utilise EXACTEMENT ces prix. N'invente rien.\n---`;
+  const allPrices=Object.keys(prices).map(p=>`${p}=$${fp(prices[p]?.price)} (${prices[p]?.change>=0?'+':''}${fp(prices[p]?.change)}%)`).join(' | ');
+  return `\n\n---\n[PRIX BINANCE LIVE — ${new Date().toLocaleTimeString('fr-FR')}]\n${allPrices}\nCapital: $${fp(capital)} | Paire active: ${curPair}/USDT\nRÈGLE: Utilise EXACTEMENT ces prix. N'invente rien.\n---`;
 }
-
 async function callGemini(userMsg){
-  if(!apiKey) throw new Error('Clé API non configurée. Clique 5× sur le titre puis entre le PIN.');
-  if(Object.keys(prices).length === 0) throw new Error('Connexion Binance en cours. Réessaie dans 2 secondes.');
-
-  // Auto-discovery du meilleur modèle disponible
+  if(!apiKey) throw new Error('Configure ta clé API — 5× clic sur le titre puis PIN');
+  if(!Object.keys(prices).length) throw new Error('Connexion Binance en cours...');
   if(!activeModel){
     try{
-      const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models',
-        {headers:{'x-goog-api-key':apiKey}});
-      const d = await r.json();
+      const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models',{headers:{'x-goog-api-key':apiKey}});
+      const d=await r.json();
       if(d.models){
-        const valid = d.models.filter(m => m.supportedGenerationMethods?.includes('generateContent'));
-        const best  = valid.find(m=>m.name.includes('flash')) ||
-                      valid.find(m=>m.name.includes('pro'))   ||
-                      valid[0];
-        if(best) activeModel = best.name.replace('models/','');
+        const v=d.models.filter(m=>m.supportedGenerationMethods?.includes('generateContent'));
+        const b=v.find(m=>m.name.includes('flash'))||v.find(m=>m.name.includes('pro'))||v[0];
+        if(b) activeModel=b.name.replace('models/','');
       }
-    }catch(e){ console.warn('Model discovery fallback'); }
-    if(!activeModel) activeModel = 'gemini-1.5-flash';
+    }catch(e){}
+    if(!activeModel) activeModel='gemini-1.5-flash';
   }
-
-  const url     = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent`;
-  const fullMsg = buildSystemPrompt() + '\n\nMessage Maestro : ' + userMsg + buildForcedContext();
-
-  const payload = {
-    contents        : [{role:'user', parts:[{text:fullMsg}]}],
-    generationConfig: {temperature:0.6, maxOutputTokens:1500}
-  };
-
-  const resp = await fetch(url, {
-    method :'POST',
-    headers:{'Content-Type':'application/json','x-goog-api-key':apiKey},
-    body   :JSON.stringify(payload)
-  });
-  const data = await resp.json();
-  if(!resp.ok){ activeModel = null; throw new Error(data.error?.message || 'Erreur API Gemini'); }
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Silence réseau.';
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent`;
+  const payload={contents:[{role:'user',parts:[{text:buildSystemPrompt()+'\n\nMessage: '+userMsg+buildForcedContext()}]}],generationConfig:{temperature:0.6,maxOutputTokens:1500}};
+  const resp=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':apiKey},body:JSON.stringify(payload)});
+  const data=await resp.json();
+  if(!resp.ok){activeModel=null;throw new Error(data.error?.message||'Erreur API');}
+  return data.candidates?.[0]?.content?.parts?.[0]?.text||'Silence réseau.';
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  CHAT
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function addAIMsg(text){
-  const chat = document.getElementById('chat');
-  const div  = document.createElement('div');
-  div.className = 'cmsg-ai';
-  const formatted = text
-    .replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\n/g,'<br>')
-    .replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')
-    .replace(/\*(.*?)\*/g,'<i>$1</i>');
-  div.innerHTML = `<div style="font-size:9px;color:var(--cyan);margin-bottom:6px;font-weight:700;font-family:var(--font-mono);letter-spacing:.15em">SNIPER IA ✦</div>${formatted}`;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+  const chat=document.getElementById('chat');
+  const div=document.createElement('div'); div.className='cmsg-ai';
+  const fmt=text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b> $ 1</b>').replace(/\*(.*?)\*/g,'<i> $ 1</i>');
+  div.innerHTML=`<div style="font-size:8px;color:var(--cyan);margin-bottom:5px;font-weight:700;font-family:var(--mono);letter-spacing:.15em">SNIPER IA ✦</div>${fmt}`;
+  chat.appendChild(div); chat.scrollTop=chat.scrollHeight;
 }
-
 async function sendChat(){
-  const inp = document.getElementById('ci');
-  const msg = inp.value.trim();
-  if(!msg) return;
-
-  if(!apiKey){
-    toast('⚙️ Configure ta clé API — 5× clic sur le titre','warn');
-    return;
-  }
-  if(!prices[curPair]?.price){
-    toast('⏳ Attente connexion Binance...','warn'); return;
-  }
-
-  inp.value = '';
-  const chat = document.getElementById('chat');
-
-  // Message utilisateur
-  const ud = document.createElement('div');
-  ud.className = 'cmsg-user';
-  ud.textContent = msg;
-  chat.appendChild(ud);
-  chat.scrollTop = chat.scrollHeight;
-
-  // Typing indicator
-  const td = document.createElement('div');
-  td.className = 'cmsg-ai';
-  td.innerHTML = '<div class="dot-typing"><span></span><span></span><span></span></div>';
-  chat.appendChild(td);
-  chat.scrollTop = chat.scrollHeight;
-
-  const sb = document.getElementById('sb');
-  const st = document.getElementById('ai-st');
-  sb.disabled   = true;
-  st.textContent = '● ANALYSE EN COURS...';
-  st.style.color = 'var(--gold)';
-
+  const inp=document.getElementById('ci'); const msg=inp.value.trim(); if(!msg) return;
+  if(!apiKey){toast('⚙️ Configure ta clé API d\'abord','warn');return;}
+  if(!prices[curPair]?.price){toast('⏳ Attente Binance...','warn');return;}
+  inp.value='';
+  const chat=document.getElementById('chat');
+  const ud=document.createElement('div'); ud.className='cmsg-user'; ud.textContent=msg; chat.appendChild(ud); chat.scrollTop=chat.scrollHeight;
+  const td=document.createElement('div'); td.className='cmsg-ai'; td.innerHTML='<div class="dot-typing"><span></span><span></span><span></span></div>'; chat.appendChild(td); chat.scrollTop=chat.scrollHeight;
+  const sb=document.getElementById('sb'); const st=document.getElementById('ai-st');
+  sb.disabled=true; st.textContent='● ANALYSE...'; st.style.color='var(--gold)';
   try{
-    const reply = await callGemini(msg);
-    chat.removeChild(td);
-    addAIMsg(reply);
-  }catch(e){
-    chat.removeChild(td);
-    addAIMsg('❌ Erreur : '+e.message);
-  }finally{
-    sb.disabled   = false;
-    st.textContent = '● CONNECTÉ';
-    st.style.color = 'var(--green)';
-  }
+    const reply=await callGemini(msg); chat.removeChild(td); addAIMsg(reply);
+  }catch(e){chat.removeChild(td);addAIMsg('❌ '+e.message);}
+  finally{sb.disabled=false;st.textContent='● CONNECTÉ';st.style.color='var(--green)';}
 }
+async function doAiScan(){document.getElementById('ci').value=`Analyse rapide du marché sur ${curPair}`;await sendChat();}
+async function doAiOpps(){document.getElementById('ci').value=`Setup précis pour ${curPair} — entry, TP, SL, levier`;await sendChat();}
 
-async function doAiScan(){
-  document.getElementById('ci').value = `Analyse rapide du marché sur ${curPair} — donne-moi le sentiment global et si c'est le bon moment pour entrer.`;
-  await sendChat();
-}
+// overlays backdrop
+document.querySelectorAll('.ov').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)ov.style.display='none';}));
 
-async function doAiOpps(){
-  document.getElementById('ci').value = `Setup de trading précis pour ${curPair} — entry exact, TP, SL et levier recommandé.`;
-  await sendChat();
-}
-
-// ═══════════════════════════════════════════════════════
-//  FERMETURE OVERLAYS AU CLIC BACKDROP
-// ═══════════════════════════════════════════════════════
-document.querySelectorAll('.ov').forEach(ov=>{
-  ov.addEventListener('click', e=>{ if(e.target===ov) ov.style.display='none'; });
-});
-
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  INIT
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function init(){
-  buildTicker();
-  switchPair('BTC');
-  buildOpps();
-  updateWallet();
-  updateApiBtn();
-  connectWS();
-
-  // Message de bienvenue
+  buildTicker(); switchPair('BTC'); buildOpps(); updateWallet(); updateApiBtn(); connectWS(); fetchFG();
+  setInterval(fetchFG,300000);
   setTimeout(()=>{
-    if(!apiKey){
-      addAIMsg('Bienvenue Maestro 👋\n\nPour activer mon cerveau :\n**1.** Clique **5×** sur le titre "SNIPER TRADE"\n**2.** Entre le PIN\n**3.** Colle ta clé API Gemini\n\nLes prix Binance sont déjà live ⚡');
-    } else {
-      addAIMsg('Sniper V4 opérationnel ⚡ — Prix Binance live, IA Gemini prête. Dis-moi ce que tu veux analyser Maestro.');
-    }
-  }, 900);
-
-  // Signal banner après 4s
+    if(!apiKey) addAIMsg('Bienvenue Maestro 👋\n\nClique **5×** sur le titre → entre le PIN → colle ta clé Gemini.\nLes prix Binance sont déjà live ⚡');
+    else addAIMsg('Sniper V4 opérationnel ⚡\nPrix Binance live + IA Gemini prête. Dis-moi Maestro 🎯');
+  },900);
   setTimeout(()=>{
-    const ban = document.getElementById('sig-banner');
-    ban.style.display = 'flex';
-    let t = 10;
-    document.getElementById('sig-timer').textContent = '10s';
-    sigTimer = setInterval(()=>{
-      t--;
-      document.getElementById('sig-timer').textContent = t+'s';
-      if(t <= 0) closeSig();
-    }, 1000);
-  }, 4000);
-}
-
-document.addEventListener('DOMContentLoaded', init);
-</script>
-</body>
-</html>
+    const ban=document.getElementById('sig-banner'); ban.style.display='flex';
+    let t=10; document.getElementById('sig-timer').textContent='10s';
+    sigTimer=setInterval(()=>{t--;document.getElementById('sig
