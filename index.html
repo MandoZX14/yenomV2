@@ -1,680 +1,331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNIPER V4 - AI Trading Terminal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;600&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0}
+        body { background: #0d0f1a; }
+        .sn{
+            font-family:'Inter',sans-serif;
+            color:#e8eaf6;
+            background:#0d0f1a;
+            min-height:100vh;
+            padding:18px;
+            position:relative;
+            overflow-x:hidden;
+        }
+        .orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;}
+        .orb1{width:400px;height:400px;top:-120px;left:-100px;background:radial-gradient(circle,rgba(167,139,250,.15),transparent 65%);}
+        .orb2{width:300px;height:300px;bottom:-80px;right:-80px;background:radial-gradient(circle,rgba(125,211,252,.1),transparent 65%);}
+        .orb3{width:250px;height:250px;top:45%;left:35%;background:radial-gradient(circle,rgba(249,168,212,.07),transparent 65%);}
+        .g{position:relative;z-index:1;max-width:1200px;margin:0 auto;}
+        
+        /* HEADER */
+        .hdr{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:18px;}
+        .logo{font-family:'Sora',sans-serif;font-size:17px;font-weight:600;background:linear-gradient(135deg,#fff 30%,#c4b5fd 65%,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .sub-hdr{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;color:#3d4563;margin-top:4px;display:flex;align-items:center;gap:7px;}
+        .dot-pulse{width:5px;height:5px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 7px rgba(110,231,183,.6);animation:dp 2s infinite;}
+        @keyframes dp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
+        
+        .hdr-btns{display:flex;gap:6px;flex-wrap:wrap;}
+        .btn{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:7px 12px;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;transition:all .18s;line-height:1;}
+        .btn-v{border-color:rgba(167,139,250,.3);color:#c4b5fd;background:rgba(167,139,250,.08);}
+        .btn-v:hover{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.5);}
+        .btn-n{border-color:rgba(255,255,255,.1);color:#9198b3;background:rgba(255,255,255,.03);}
+        .btn-n:hover{border-color:rgba(255,255,255,.2);color:#e8eaf6;background:rgba(255,255,255,.06);}
+        .btn-g{border-color:rgba(110,231,183,.25);color:#6ee7b7;background:rgba(110,231,183,.07);}
+        .btn-r{border-color:rgba(252,165,165,.25);color:#fca5a5;background:rgba(252,165,165,.07);}
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;600&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-.sn{
-  font-family:'Inter',sans-serif;
-  color:#e8eaf6;
-  background:#0d0f1a;
-  min-height:600px;
-  padding:18px;
-  position:relative;
-  overflow:hidden;
-  border-radius:0;
-}
-.orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;}
-.orb1{width:400px;height:400px;top:-120px;left:-100px;background:radial-gradient(circle,rgba(167,139,250,.15),transparent 65%);}
-.orb2{width:300px;height:300px;bottom:-80px;right:-80px;background:radial-gradient(circle,rgba(125,211,252,.1),transparent 65%);}
-.orb3{width:250px;height:250px;top:45%;left:35%;background:radial-gradient(circle,rgba(249,168,212,.07),transparent 65%);}
-.g{position:relative;z-index:1;}
-.hdr{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:18px;}
-.logo{font-family:'Sora',sans-serif;font-size:17px;font-weight:600;background:linear-gradient(135deg,#fff 30%,#c4b5fd 65%,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.sub-hdr{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;color:#3d4563;margin-top:4px;display:flex;align-items:center;gap:7px;}
-.dot-pulse{width:5px;height:5px;border-radius:50%;background:#6ee7b7;box-shadow:0 0 7px rgba(110,231,183,.6);animation:dp 2s infinite;flex-shrink:0;}
-@keyframes dp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.5)}}
-.hdr-btns{display:flex;gap:6px;flex-wrap:wrap;}
-.btn{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:7px 12px;border:1px solid;border-radius:8px;cursor:pointer;background:transparent;transition:all .18s;line-height:1;}
-.btn-v{border-color:rgba(167,139,250,.3);color:#c4b5fd;background:rgba(167,139,250,.08);}
-.btn-v:hover{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.5);}
-.btn-n{border-color:rgba(255,255,255,.1);color:#9198b3;background:rgba(255,255,255,.03);}
-.btn-n:hover{border-color:rgba(255,255,255,.2);color:#e8eaf6;background:rgba(255,255,255,.06);}
-.btn-g{border-color:rgba(110,231,183,.25);color:#6ee7b7;background:rgba(110,231,183,.07);}
-.btn-g:hover{background:rgba(110,231,183,.15);}
-.btn-r{border-color:rgba(252,165,165,.25);color:#fca5a5;background:rgba(252,165,165,.07);}
-.btn-r:hover{background:rgba(252,165,165,.15);}
-.ticker{display:flex;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;margin-bottom:16px;}
-.ti{flex:1;padding:11px 12px;border-right:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);cursor:pointer;transition:.2s;}
-.ti:last-child{border-right:none;}
-.ti.on{background:rgba(167,139,250,.09);border-bottom:2px solid #a78bfa;}
-.ti:hover{background:rgba(255,255,255,.05);}
-.ti-sym{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;color:#3d4563;}
-.ti-price{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;margin-top:3px;}
-.ti-chg{font-family:'DM Mono',monospace;font-size:8px;margin-top:2px;}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:20px 18px;position:relative;overflow:hidden;transition:.25s;}
-.card:hover{border-color:rgba(255,255,255,.13);background:rgba(255,255,255,.05);}
-.card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);}
-.clbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;color:#3d4563;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.clbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.07),transparent);}
-.price-big{font-family:'Sora',sans-serif;font-size:38px;font-weight:300;letter-spacing:-.03em;color:#e8eaf6;line-height:1;margin:8px 0 8px;}
-.pill{font-family:'DM Mono',monospace;font-size:9px;padding:3px 9px;border-radius:7px;border:1px solid;display:inline-block;}
-.pill-g{color:#6ee7b7;border-color:rgba(110,231,183,.25);background:rgba(110,231,183,.08);}
-.pill-r{color:#fca5a5;border-color:rgba(252,165,165,.25);background:rgba(252,165,165,.08);}
-.pill-v{color:#c4b5fd;border-color:rgba(167,139,250,.25);background:rgba(167,139,250,.08);}
-.metas{display:flex;gap:12px;margin-top:6px;}
-.meta{font-family:'DM Mono',monospace;font-size:9px;color:#3d4563;}
-.meta span{color:#7880a0;}
-.wallet-cap{font-family:'Sora',sans-serif;font-size:30px;font-weight:300;color:#fcd34d;line-height:1;margin:8px 0 5px;}
-.prog-track{height:2px;background:rgba(255,255,255,.05);border-radius:2px;margin:10px 0 5px;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,#a78bfa,#f9a8d4);border-radius:2px;}
-.wstats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
-.wst{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:8px 10px;}
-.wst-l{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.12em;color:#3d4563;text-transform:uppercase;margin-bottom:3px;}
-.wst-v{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
-.minibar{display:flex;align-items:flex-end;gap:2px;height:30px;margin-top:12px;}
-.mb{border-radius:2px;min-height:2px;width:4px;}
-.sec-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;color:#3d4563;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin:16px 0 10px;}
-.sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.07),transparent);}
-.opp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.ocard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:15px 13px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;}
-.ocard:hover{border-color:rgba(167,139,250,.3);transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.4);}
-.ocard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;}
-.ocard-sym{font-family:'Sora',sans-serif;font-size:15px;font-weight:600;color:#e8eaf6;}
-.ocard-conf{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;}
-.ocard-bar{height:2px;background:rgba(255,255,255,.05);border-radius:2px;margin:5px 0;}
-.ocard-fill{height:100%;border-radius:2px;transition:width 1s ease;}
-.ocard-why{font-size:10px;color:#3d4563;line-height:1.5;margin-top:5px;}
-.ocard-signal{display:flex;align-items:center;gap:5px;margin-top:8px;}
-.dir-l{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.08em;padding:3px 7px;border:1px solid rgba(110,231,183,.3);border-radius:6px;color:#6ee7b7;background:rgba(110,231,183,.07);}
-.dir-s{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.08em;padding:3px 7px;border:1px solid rgba(252,165,165,.3);border-radius:6px;color:#fca5a5;background:rgba(252,165,165,.07);}
-.lev-tag{font-family:'DM Mono',monospace;font-size:8px;color:#fcd34d;border:1px solid rgba(252,211,77,.2);padding:3px 6px;border-radius:6px;background:rgba(252,211,77,.06);}
-.trade-panel{display:none;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:16px;padding:20px;margin-bottom:12px;animation:fadeIn .25s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.entry3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:12px 0;}
-.ebox{border:1px solid;border-radius:9px;padding:10px;text-align:center;}
-.ebox-v{border-color:rgba(167,139,250,.2);background:rgba(167,139,250,.05);}
-.ebox-g{border-color:rgba(110,231,183,.2);background:rgba(110,231,183,.05);}
-.ebox-r{border-color:rgba(252,165,165,.2);background:rgba(252,165,165,.05);}
-.ebox-lbl{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.12em;color:#3d4563;text-transform:uppercase;margin-bottom:3px;}
-.ebox-val{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
-.chat-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;}
-.chat-hdr{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;}
-.chat-name{font-family:'Sora',sans-serif;font-size:15px;font-weight:600;background:linear-gradient(135deg,#e8eaf6,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.chat-sub{font-family:'DM Mono',monospace;font-size:8px;color:#3d4563;letter-spacing:.1em;margin-top:2px;}
-.quick-row{display:flex;gap:5px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap;}
-.qbtn{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.06em;padding:5px 10px;border:1px solid rgba(255,255,255,.08);border-radius:7px;cursor:pointer;background:rgba(255,255,255,.02);color:#3d4563;transition:.15s;text-transform:uppercase;}
-.qbtn:hover{border-color:rgba(167,139,250,.3);color:#c4b5fd;background:rgba(167,139,250,.07);}
-.chat-msgs{padding:14px;display:flex;flex-direction:column;gap:9px;max-height:220px;overflow-y:auto;}
-.chat-msgs::-webkit-scrollbar{width:2px;}
-.chat-msgs::-webkit-scrollbar-thumb{background:rgba(167,139,250,.2);border-radius:2px;}
-.msg-ai{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-left:2px solid #a78bfa;border-radius:11px 11px 11px 3px;padding:10px 13px;font-size:11px;line-height:1.7;color:#7880a0;max-width:92%;}
-.msg-ai b{color:#c4b5fd;font-weight:500;}
-.msg-ai-lbl{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.15em;color:#a78bfa;margin-bottom:4px;text-transform:uppercase;}
-.msg-u{align-self:flex-end;background:rgba(167,139,250,.09);border:1px solid rgba(167,139,250,.18);border-radius:11px 11px 3px 11px;padding:9px 13px;font-size:11px;color:#e8eaf6;max-width:75%;}
-.chat-inp-row{display:flex;gap:7px;padding:9px;border-top:1px solid rgba(255,255,255,.07);}
-.chat-inp{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 13px;color:#e8eaf6;font-size:11px;font-family:'Inter',sans-serif;outline:none;transition:.2s;}
-.chat-inp::placeholder{color:#3d4563;}
-.chat-inp:focus{border-color:rgba(167,139,250,.35);background:rgba(255,255,255,.06);}
-.send-btn{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.28);border-radius:9px;width:38px;height:38px;cursor:pointer;color:#c4b5fd;font-size:13px;display:flex;align-items:center;justify-content:center;transition:.18s;flex-shrink:0;}
-.send-btn:hover{background:rgba(167,139,250,.25);}
-.send-btn:disabled{opacity:.3;cursor:not-allowed;}
-.signal-banner{display:none;background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.2);border-radius:12px;padding:12px 16px;margin-bottom:12px;animation:fadeIn .3s ease;}
-.signal-banner.show{display:flex;align-items:center;gap:12px;}
-.tdot{display:inline-block;width:4px;height:4px;background:#a78bfa;border-radius:50%;margin:0 2px;animation:td 1.2s infinite;}
-.tdot:nth-child(2){animation-delay:.2s;}
-.tdot:nth-child(3){animation-delay:.4s;}
-@keyframes td{0%,80%,100%{opacity:.15;transform:scale(.6)}40%{opacity:1;transform:scale(1)}}
-.mkt-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
-.mkt-c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:7px 8px;cursor:pointer;transition:.15s;}
-.mkt-c:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.13);}
-.mkt-sym{font-family:'DM Mono',monospace;font-size:7px;color:#3d4563;letter-spacing:.1em;}
-.mkt-pct{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;margin-top:3px;}
-.scan-result{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;margin-bottom:12px;}
-.scan-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);}
-.scan-item:last-child{border-bottom:none;}
-.filt-row{display:flex;gap:5px;margin-bottom:10px;}
-.filt-btn{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.08em;padding:5px 11px;border:1px solid rgba(255,255,255,.08);border-radius:7px;cursor:pointer;background:rgba(255,255,255,.02);color:#3d4563;transition:.15s;text-transform:uppercase;}
-.filt-btn.on{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3);color:#c4b5fd;}
-</style>
+        /* MODAL */
+        #settings-modal {
+            display:none; position:fixed; inset:0; background:rgba(13,15,26,.98); z-index:1000; 
+            align-items:center; justify-content:center;
+        }
+        .modal-content {
+            background:rgba(255,255,255,.03); border:1px solid rgba(167,139,250,.3); 
+            padding:30px; border-radius:20px; width:90%; max-width:400px;
+        }
+
+        /* TICKER */
+        .ticker{display:flex;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+        .ti{flex:1;padding:11px 12px;border-right:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);cursor:pointer;transition:.2s;}
+        .ti.on{background:rgba(167,139,250,.09);border-bottom:2px solid #a78bfa;}
+        .ti-sym{font-family:'DM Mono',monospace;font-size:8px;color:#3d4563;}
+        .ti-price{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;margin-top:3px;}
+
+        /* CARDS & GRID */
+        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+        .card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:20px 18px;position:relative;overflow:hidden;}
+        .clbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;color:#3d4563;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+        .clbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.07),transparent);}
+        .price-big{font-family:'Sora',sans-serif;font-size:38px;font-weight:300;color:#e8eaf6;line-height:1;margin:8px 0;}
+        .pill{font-family:'DM Mono',monospace;font-size:9px;padding:3px 9px;border-radius:7px;border:1px solid;}
+        .pill-g{color:#6ee7b7;border-color:rgba(110,231,183,.25);background:rgba(110,231,183,.08);}
+        .pill-r{color:#fca5a5;border-color:rgba(252,165,165,.25);background:rgba(252,165,165,.08);}
+
+        /* OPPORTUNITIES */
+        .sec-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;color:#3d4563;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin:16px 0 10px;}
+        .sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.07),transparent);}
+        .opp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+        .ocard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:15px 13px;cursor:pointer;transition:.22s;}
+        .ocard:hover{border-color:rgba(167,139,250,.3);transform:translateY(-2px);}
+        .ocard-sym{font-family:'Sora',sans-serif;font-size:15px;font-weight:600;}
+        .ocard-why{font-size:10px;color:#3d4563;line-height:1.5;margin-top:5px;}
+
+        /* CHAT */
+        .chat-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;}
+        .chat-hdr{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;}
+        .chat-msgs{padding:14px;display:flex;flex-direction:column;gap:9px;max-height:250px;overflow-y:auto;}
+        .msg-ai{background:rgba(255,255,255,.04);border-left:2px solid #a78bfa;border-radius:4px 12px 12px 12px;padding:10px 13px;font-size:11px;color:#7880a0;}
+        .msg-u{align-self:flex-end;background:rgba(167,139,250,.09);border-radius:12px 12px 4px 12px;padding:9px 13px;font-size:11px;color:#e8eaf6;}
+        .chat-inp-row{display:flex;gap:7px;padding:9px;border-top:1px solid rgba(255,255,255,.07);}
+        .chat-inp{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 13px;color:#fff;font-size:11px;outline:none;}
+        
+        .tdot{display:inline-block;width:4px;height:4px;background:#a78bfa;border-radius:50%;margin:0 2px;animation:td 1.2s infinite;}
+        @keyframes td{0%,80%,100%{opacity:.2}40%{opacity:1}}
+        .mkt-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
+        .mkt-c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:7px 8px;text-align:center;}
+        
+        @media (max-width: 768px) { .opp-grid { grid-template-columns: 1fr; } .grid2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
 
 <div class="sn">
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
+    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
 
-  <div class="g">
-
-    <!-- HEADER -->
-    <div class="hdr">
-      <div>
-        <div class="logo">SNIPER V4</div>
-        <div class="sub-hdr">
-          <div class="dot-pulse"></div>
-          <span id="ws-st">CONNEXION...</span>
-          <span style="color:#1e2235">·</span>
-          <span id="sent-b" style="color:#6ee7b7;">BULL</span>
+    <div class="g">
+        <div class="hdr">
+            <div>
+                <div class="logo">SNIPER V4</div>
+                <div class="sub-hdr">
+                    <div class="dot-pulse"></div>
+                    <span id="ws-st">INITIALISATION...</span>
+                </div>
+            </div>
+            <div class="hdr-btns">
+                <button class="btn btn-v" id="scan-btn" onclick="doFullScan()">⚡ Scan IA</button>
+                <button class="btn btn-n" onclick="toggleSettings()" style="font-size: 14px;">⚙</button>
+            </div>
         </div>
-      </div>
-      <div class="hdr-btns">
-        <button class="btn btn-v" id="scan-btn" onclick="doFullScan()">⚡ Scan IA</button>
-        <button class="btn btn-n" onclick="toggleSettings()" style="font-size: 14px; padding: 5px 10px;">⚙</button>
-      </div>
-      <div id="settings-modal" style="display:none; position:fixed; inset:0; background:rgba(13,15,26,.95); z-index:100; padding:40px 20px;">
-      <div class="card" style="max-width:400px; margin:0 auto; border:1px solid rgba(167,139,250,.3);">
-        <div class="clbl">Configuration</div>
-        <h3 style="font-family:'Sora'; margin-bottom:15px; font-size:18px;">Clé API Gemini</h3>
-        <p style="font-size:10px; color:#7880a0; margin-bottom:15px; line-height:1.5;">
-          Ta clé est stockée localement dans ton navigateur. <br>
-          Obtiens-en une sur : <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#a78bfa;">Google AI Studio</a>
-        </p>
-        <input type="password" id="api-key-input" class="chat-inp" placeholder="AIzaSy..." style="width:100%; margin-bottom:20px;">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <button class="btn btn-n" onclick="toggleSettings()">Annuler</button>
-          <button class="btn btn-v" onclick="saveSettings()">Sauvegarder</button>
+
+        <div id="settings-modal">
+            <div class="modal-content">
+                <div class="clbl">Configuration</div>
+                <h3 style="font-family:'Sora'; margin-bottom:10px;">Clé API Gemini</h3>
+                <p style="font-size:10px; color:#3d4563; margin-bottom:15px;">La clé est stockée uniquement dans votre navigateur.</p>
+                <input type="password" id="api-key-input" class="chat-inp" style="width:100%; margin-bottom:20px;" placeholder="AIzaSy...">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <button class="btn btn-n" onclick="toggleSettings()">Fermer</button>
+                    <button class="btn btn-v" onclick="saveSettings()">Sauvegarder</button>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    </div>
 
-    <!-- SIGNAL BANNER -->
-    <div class="signal-banner" id="sig-banner">
-      <div style="font-size:1.2rem;">🎯</div>
-      <div style="flex:1;">
-        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;color:#6ee7b7;margin-bottom:2px;">SIGNAL DÉTECTÉ</div>
-        <div style="font-size:11px;color:#9198b3;" id="sig-txt">—</div>
-      </div>
-      <button class="btn btn-n" style="font-size:7px;padding:4px 8px;" onclick="document.getElementById('sig-banner').classList.remove('show')">✕</button>
-    </div>
-
-    <!-- TICKER -->
-    <div class="ticker" id="ticker-wrap">
-      <div class="ti on" onclick="sw('BTC',this)"><div class="ti-sym">BTC</div><div class="ti-price" id="p-BTC">—</div><div class="ti-chg" id="c-BTC" style="color:#3d4563;">—</div></div>
-      <div class="ti" onclick="sw('ETH',this)"><div class="ti-sym">ETH</div><div class="ti-price" id="p-ETH">—</div><div class="ti-chg" id="c-ETH" style="color:#3d4563;">—</div></div>
-      <div class="ti" onclick="sw('SOL',this)"><div class="ti-sym">SOL</div><div class="ti-price" id="p-SOL">—</div><div class="ti-chg" id="c-SOL" style="color:#3d4563;">—</div></div>
-      <div class="ti" onclick="sw('PEPE',this)"><div class="ti-sym">PEPE</div><div class="ti-price" id="p-PEPE">—</div><div class="ti-chg" id="c-PEPE" style="color:#3d4563;">—</div></div>
-      <div class="ti" onclick="sw('WIF',this)"><div class="ti-sym">WIF</div><div class="ti-price" id="p-WIF">—</div><div class="ti-chg" id="c-WIF" style="color:#3d4563;">—</div></div>
-    </div>
-
-    <!-- ROW 1 : PRIX + WALLET -->
-    <div class="grid2">
-      <div class="card">
-        <div class="clbl">Prix live</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.15em;color:#a78bfa;border:1px solid rgba(167,139,250,.2);padding:3px 8px;border-radius:6px;background:rgba(167,139,250,.06);" id="pair-lbl">BTC / USDT</div>
-          <div class="pill pill-g" id="chg-pill">—</div>
+        <div class="ticker" id="ticker-wrap">
+            <div class="ti on" onclick="sw('BTC',this)"><div class="ti-sym">BTC</div><div class="ti-price" id="p-BTC">—</div></div>
+            <div class="ti" onclick="sw('ETH',this)"><div class="ti-sym">ETH</div><div class="ti-price" id="p-ETH">—</div></div>
+            <div class="ti" onclick="sw('SOL',this)"><div class="ti-sym">SOL</div><div class="ti-price" id="p-SOL">—</div></div>
+            <div class="ti" onclick="sw('PEPE',this)"><div class="ti-sym">PEPE</div><div class="ti-price" id="p-PEPE">—</div></div>
+            <div class="ti" onclick="sw('WIF',this)"><div class="ti-sym">WIF</div><div class="ti-price" id="p-WIF">—</div></div>
         </div>
-        <div class="price-big" id="main-price">—</div>
-        <div class="metas">
-          <div class="meta">H <span id="hi-v">—</span></div>
-          <div class="meta">L <span id="lo-v">—</span></div>
-          <div class="meta">V <span id="vo-v">—</span></div>
+
+        <div class="grid2">
+            <div class="card">
+                <div class="clbl">Prix live <span id="pair-lbl">BTC / USDT</span></div>
+                <div class="price-big" id="main-price">—</div>
+                <div class="pill pill-g" id="chg-pill">0.00%</div>
+            </div>
+            <div class="card">
+                <div class="clbl">Portefeuille</div>
+                <div style="font-family:'Sora'; font-size:24px; color:#fcd34d;">$20.57</div>
+                <div style="font-family:'DM Mono'; font-size:9px; color:#3d4563; margin-top:5px;">Objectif: $50.00 (41%)</div>
+            </div>
         </div>
-        <div class="minibar" id="mchart"></div>
-      </div>
-      <div class="card">
-        <div class="clbl">Portefeuille</div>
-        <div class="wallet-cap">$<span id="cap-v">20.57</span></div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:#3d4563;line-height:1.8;">Objectif <span style="color:#7880a0;">$50.00</span><br>Exposition x10 → <span style="color:#fcd34d;">$205.70</span></div>
-        <div class="prog-track"><div class="prog-fill" style="width:41%;"></div></div>
-        <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:8px;"><span style="color:#3d4563;">41.1%</span><span style="color:#6ee7b7;">+$0.00</span></div>
-        <div class="wstats">
-          <div class="wst"><div class="wst-l">Trades</div><div class="wst-v" style="color:#fcd34d;">0</div></div>
-          <div class="wst"><div class="wst-l">Win %</div><div class="wst-v" style="color:#6ee7b7;">—</div></div>
-          <div class="wst"><div class="wst-l">P&L</div><div class="wst-v" style="color:#6ee7b7;">$0.00</div></div>
-          <div class="wst"><div class="wst-l">Streak</div><div class="wst-v" style="color:#3d4563;">—</div></div>
+
+        <div class="card" style="margin-bottom:12px;">
+            <div class="clbl">Marché Express</div>
+            <div class="mkt-grid" id="mkt-grid"></div>
         </div>
-      </div>
+
+        <div class="sec-lbl">Signaux IA Détectés</div>
+        <div id="scan-status" style="display:none; font-family:'DM Mono'; font-size:9px; color:#a78bfa; text-align:center; padding:10px;">
+            <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span> Analyse des flux binance...
+        </div>
+        <div class="opp-grid" id="opp-grid"></div>
+
+        <div class="sec-lbl">Terminal IA</div>
+        <div class="chat-box">
+            <div class="chat-hdr">
+                <div style="font-family:'Sora'; font-size:13px; font-weight:600;">Sniper Assistant</div>
+                <div id="ai-st" style="font-size:8px; color:#3d4563;">● VEILLE ACTIVE</div>
+            </div>
+            <div class="chat-msgs" id="chat">
+                <div class="msg-ai">Bienvenue Maestro. Configure ta clé ⚙ pour activer l'analyse prédictive.</div>
+            </div>
+            <div class="chat-inp-row">
+                <input class="chat-inp" id="ci" placeholder="Pose une question technique..." onkeydown="if(event.key==='Enter')sendMsg()">
+                <button class="btn btn-v" onclick="sendMsg()">➤</button>
+            </div>
+        </div>
     </div>
-
-    <!-- ROW 2 : F&G + MARCHÉ -->
-    <div style="display:grid;grid-template-columns:110px 1fr;gap:12px;margin-bottom:12px;">
-      <div class="card" style="padding:16px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
-        <div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.2em;color:#3d4563;text-transform:uppercase;">F&G</div>
-        <div style="position:relative;width:68px;height:68px;">
-          <svg width="68" height="68" viewBox="0 0 68 68">
-            <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="5"/>
-            <circle cx="34" cy="34" r="28" fill="none" id="fg-ring" stroke="#fcd34d" stroke-width="5" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" style="transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1s;"/>
-          </svg>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-            <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:300;color:#fcd34d;" id="fg-val">65</div>
-          </div>
-        </div>
-        <div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.15em;color:#3d4563;" id="fg-lbl">GREED</div>
-      </div>
-      <div class="card" style="padding:16px;">
-        <div class="clbl">Marché</div>
-        <div class="mkt-grid" id="mkt-grid"></div>
-      </div>
-    </div>
-
-    <!-- OPPORTUNITÉS IA -->
-    <div class="sec-lbl">Opportunités — Analyse IA</div>
-
-    <!-- Filtres -->
-    <div class="filt-row">
-      <button class="filt-btn on" id="f-all" onclick="setFilt('ALL')">Tous</button>
-      <button class="filt-btn" id="f-long" onclick="setFilt('LONG')">Long</button>
-      <button class="filt-btn" id="f-short" onclick="setFilt('SHORT')">Short</button>
-      <button class="btn btn-v" style="margin-left:auto;font-size:7px;padding:5px 10px;" onclick="doFullScan()">↻ Actualiser</button>
-    </div>
-
-    <div id="scan-status" style="display:none;font-family:'DM Mono',monospace;font-size:9px;color:#3d4563;padding:8px;text-align:center;letter-spacing:.1em;">
-      <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span> Analyse des graphiques en cours...
-    </div>
-
-    <div class="opp-grid" id="opp-grid">
-      <!-- rempli par JS -->
-    </div>
-
-    <!-- TRADE PANEL -->
-    <div class="trade-panel" id="trade-panel">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <div>
-          <div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:600;color:#e8eaf6;" id="tm-asset">—</div>
-          <div style="display:flex;gap:6px;margin-top:5px;" id="tm-tags"></div>
-        </div>
-        <button class="btn btn-n" onclick="closeTrade()">✕ Fermer</button>
-      </div>
-      <div id="tm-reason" style="font-size:10px;color:#3d4563;line-height:1.6;padding:9px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-left:2px solid #a78bfa;border-radius:8px;margin-bottom:12px;"></div>
-      <div class="entry3">
-        <div class="ebox ebox-v"><div class="ebox-lbl">Entrée</div><div class="ebox-val" id="tm-entry" style="color:#c4b5fd;">—</div></div>
-        <div class="ebox ebox-g"><div class="ebox-lbl">Take Profit</div><div class="ebox-val" id="tm-tp" style="color:#6ee7b7;">—</div></div>
-        <div class="ebox ebox-r"><div class="ebox-lbl">Stop Loss</div><div class="ebox-val" id="tm-sl" style="color:#fca5a5;">—</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px;">
-        <div class="wst"><div class="wst-l">Profit pot.</div><div class="wst-v" id="tm-profit" style="color:#6ee7b7;">—</div></div>
-        <div class="wst"><div class="wst-l">Risque max</div><div class="wst-v" id="tm-risk" style="color:#fca5a5;">—</div></div>
-        <div class="wst"><div class="wst-l">R:R</div><div class="wst-v" id="tm-rr" style="color:#fcd34d;">—</div></div>
-      </div>
-      <div style="margin-bottom:12px;">
-        <div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.15em;color:#3d4563;text-transform:uppercase;margin-bottom:6px;">Levier</div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <input type="range" id="lev-sl" min="1" max="20" value="10" style="flex:1;accent-color:#a78bfa;" oninput="updLev(this.value)"/>
-          <span id="lev-d" style="font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:#fcd34d;min-width:28px;">x10</span>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button class="btn btn-r" style="padding:11px;text-align:center;" onclick="closeTrade()">✕ Ignorer</button>
-        <button class="btn btn-g" style="padding:11px;text-align:center;" onclick="acceptTrade()">⚡ Ouvrir</button>
-      </div>
-    </div>
-
-    <!-- CHAT IA -->
-    <div class="sec-lbl">Intelligence IA — Gemini Flash</div>
-    <div class="chat-box">
-      <div class="chat-hdr">
-        <div>
-          <div class="chat-name">Sniper IA</div>
-          <div class="chat-sub" id="ai-st">● EN ATTENTE</div>
-        </div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn-n" style="font-size:7px;padding:4px 8px;" onclick="clearChat()">⌫</button>
-        </div>
-      </div>
-      <div class="quick-row">
-        <button class="qbtn" onclick="qm('Analyse technique rapide sur '+curPair)">TA</button>
-        <button class="qbtn" onclick="qm('Donne-moi un setup trade complet pour $20 de capital')">Setup</button>
-        <button class="qbtn" onclick="qm('Risk management anti-FOMO')">Risk</button>
-        <button class="qbtn" onclick="qm('Corrélations BTC altcoins en ce moment')">Corr</button>
-        <button class="qbtn" onclick="qm('Scanne toutes les cryptos et donne les meilleurs long/short')">⚡ Full scan</button>
-      </div>
-      <div class="chat-msgs" id="chat">
-        <div class="msg-ai">
-          <div class="msg-ai-lbl">SNIPER V4 ✦</div>
-          Bienvenue <b>Maestro</b>. Flux Binance actif. Capital <b>$20.57</b> en attente d'une composition pixel-perfect vers <b>$50</b>.<br>Clique <b>⚡ Scan IA</b> pour analyser tous les graphiques et générer des opportunités long/short.
-        </div>
-      </div>
-      <div class="chat-inp-row">
-        <input class="chat-inp" id="ci" placeholder="Pose une question ou demande un setup…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"/>
-        <button class="send-btn" id="sb" onclick="sendMsg()">➤</button>
-      </div>
-    </div>
-
-  </div>
 </div>
 
 <script>
-// ══ CONFIG — CHANGE TA CLÉ ICI ══
-var GEMINI_KEY = 'AIzaSyBoEfNqxB1fwDA-NCODNx6Gk1cVEc7Qi-4';
-var GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+    // ══ CONFIG DYNAMIQUE ══
+    let GEMINI_KEY = localStorage.getItem('SNIPER_API_KEY') || '';
+    const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
-var PAIRS = ['BTC','ETH','SOL','PEPE','WIF'];
-var prices = {};
-var phist = {};
-var curPair = 'BTC';
-var ws = null;
-var curOpp = null;
-var curLev = 10;
-var oppFilt = 'ALL';
-var allOpps = [];
+    const PAIRS = ['BTC','ETH','SOL','PEPE','WIF'];
+    let prices = {};
+    let curPair = 'BTC';
+    let allOpps = [];
 
-// ── Helpers ──
-function fp(n){
-  n=parseFloat(n);if(isNaN(n))return'—';
-  if(n>=10000)return n.toFixed(0);
-  if(n>=100)return n.toFixed(2);
-  if(n>=1)return n.toFixed(3);
-  if(n>=.0001)return n.toFixed(5);
-  return n.toFixed(7);
-}
-function fv(n){
-  if(n>=1e9)return(n/1e9).toFixed(1)+'B';
-  if(n>=1e6)return(n/1e6).toFixed(1)+'M';
-  if(n>=1e3)return(n/1e3).toFixed(0)+'K';
-  return n.toFixed(0);
-}
+    // -- Fonctions de base --
+    function fp(n){ return parseFloat(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 5}); }
 
-// ── WebSocket Binance ──
-function connectWS(){
-  var streams = PAIRS.map(function(p){return p.toLowerCase()+'usdt@ticker';}).join('/');
-  ws = new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
-  ws.onopen = function(){
-    document.getElementById('ws-st').textContent = 'LIVE';
-    document.getElementById('ws-st').style.color = '#6ee7b7';
-  };
-  ws.onmessage = function(e){
-    try{
-      var d = JSON.parse(e.data).data;
-      if(!d||!d.s) return;
-      var sym = d.s.replace('USDT','');
-      var price=parseFloat(d.c), change=parseFloat(d.P), high=parseFloat(d.h), low=parseFloat(d.l), vol=parseFloat(d.q);
-      if(isNaN(price)||price<=0) return;
-      prices[sym]={price:price,change:change,high:high,low:low,vol:vol};
-      if(!phist[sym]) phist[sym]=[];
-      phist[sym].push(price);
-      if(phist[sym].length>40) phist[sym].shift();
-      updateTicker(sym);
-      if(sym===curPair){updateMainPrice();updateMiniChart();}
-      updateMktGrid();
-      updateSentiment();
-      updateFG();
-    }catch(err){}
-  };
-  ws.onclose = function(){
-    document.getElementById('ws-st').textContent='RECONNECT';
-    setTimeout(connectWS,3000);
-  };
-}
-
-function updateTicker(sym){
-  var d=prices[sym]; if(!d) return;
-  var col=d.change>=0?'#6ee7b7':'#fca5a5';
-  var arr=d.change>=0?'▲':'▼';
-  var pe=document.getElementById('p-'+sym);
-  var ce=document.getElementById('c-'+sym);
-  if(pe){pe.textContent=fp(d.price); pe.style.color=col;}
-  if(ce){ce.textContent=arr+Math.abs(d.change).toFixed(2)+'%'; ce.style.color=col;}
-}
-
-function sw(p, el){
-  curPair=p;
-  document.querySelectorAll('.ti').forEach(function(t){t.classList.remove('on');});
-  el.classList.add('on');
-  document.getElementById('pair-lbl').textContent=p+' / USDT';
-  if(prices[p]) updateMainPrice();
-  updateMiniChart();
-}
-
-function updateMainPrice(){
-  var d=prices[curPair]; if(!d) return;
-  document.getElementById('main-price').textContent='$'+fp(d.price);
-  var up=d.change>=0;
-  var cp=document.getElementById('chg-pill');
-  cp.textContent=(up?'+':'')+d.change.toFixed(2)+'%';
-  cp.className='pill '+(up?'pill-g':'pill-r');
-  document.getElementById('hi-v').textContent='$'+fp(d.high);
-  document.getElementById('lo-v').textContent='$'+fp(d.low);
-  document.getElementById('vo-v').textContent=fv(d.vol);
-}
-
-function updateMiniChart(){
-  var h=phist[curPair]; var w=document.getElementById('mchart');
-  if(!h||h.length<2){w.innerHTML=''; return;}
-  var mn=Math.min.apply(null,h), mx=Math.max.apply(null,h), rng=mx-mn||1;
-  w.innerHTML=h.map(function(v,i){
-    var ht=Math.max(2,Math.round(((v-mn)/rng)*28));
-    var up=i===0||v>=h[i-1];
-    return '<div class="mb" style="height:'+ht+'px;background:'+(up?'rgba(110,231,183,.55)':'rgba(252,165,165,.55)')+'"></div>';
-  }).join('');
-}
-
-function updateMktGrid(){
-  var g=document.getElementById('mkt-grid'); if(!g) return;
-  g.innerHTML=PAIRS.map(function(p){
-    var d=prices[p]; if(!d) return '';
-    var col=d.change>=0?'#6ee7b7':'#fca5a5';
-    return '<div class="mkt-c" onclick="sw(\''+p+'\',document.querySelectorAll(\'.ti\')['+PAIRS.indexOf(p)+'])">'
-      +'<div class="mkt-sym">'+p+'</div>'
-      +'<div class="mkt-pct" style="color:'+col+';">'+(d.change>=0?'+':'')+d.change.toFixed(2)+'%</div>'
-      +'</div>';
-  }).join('');
-}
-
-function updateSentiment(){
-  var bull=PAIRS.filter(function(p){return prices[p]&&prices[p].change>0;}).length;
-  var pct=Math.round((bull/PAIRS.length)*100);
-  var sb=document.getElementById('sent-b');
-  if(sb){
-    sb.textContent=pct>=60?'BULL':pct<=40?'BEAR':'NEUTRE';
-    sb.style.color=pct>=60?'#6ee7b7':pct<=40?'#fca5a5':'#fcd34d';
-  }
-}
-
-function updateFG(){
-  var btc=prices.BTC; if(!btc) return;
-  var v=Math.max(5,Math.min(95,Math.round(50+btc.change*2)));
-  var ring=document.getElementById('fg-ring');
-  var circ=2*Math.PI*28;
-  ring.style.strokeDashoffset=circ-(v/100)*circ;
-  var col=v<30?'#fca5a5':v<50?'#fcd34d':v<75?'#6ee7b7':'#c4b5fd';
-  ring.style.stroke=col;
-  document.getElementById('fg-val').textContent=v;
-  document.getElementById('fg-val').style.color=col;
-  document.getElementById('fg-lbl').textContent=v<20?'EXTR. FEAR':v<40?'FEAR':v<60?'NEUTRAL':v<80?'GREED':'EXTR. GREED';
-}
-
-// ── Opportunités statiques de base ──
-var STATIC_OPPS=[
-  {asset:'BTC',dir:'LONG',conf:82,lev:10,reason:'Support 200EMA retesté. Accumulation visible côté achat. Golden Ratio respecté.',tp_pct:4,sl_pct:1.5},
-  {asset:'SOL',dir:'LONG',conf:88,lev:13,reason:'Breakout canal haussier + spike de volume. RSI 58, momentum pixel-perfect.',tp_pct:5,sl_pct:2},
-  {asset:'ETH',dir:'SHORT',conf:76,lev:10,reason:'Double top H4. Rejet résistance clé. Short scalp serré, RR optimal.',tp_pct:3.5,sl_pct:1.5},
-  {asset:'PEPE',dir:'LONG',conf:68,lev:8,reason:'Volume x4 en 4h. Cassure résistance avec micro-momentum explosif.',tp_pct:6,sl_pct:2.5},
-  {asset:'WIF',dir:'SHORT',conf:72,lev:10,reason:'Divergence baissière MACD. Corrélation BTC négatif. Rejet propre.',tp_pct:4,sl_pct:1.8},
-  {asset:'SOL',dir:'SHORT',conf:74,lev:12,reason:'Over-extension RSI 78. Structure bearish H1. Liquidité au-dessous.',tp_pct:3,sl_pct:1.5}
-];
-
-function setFilt(f){
-  oppFilt=f;
-  ['all','long','short'].forEach(function(x){
-    var b=document.getElementById('f-'+x);
-    if(b) b.className='filt-btn'+(x===f.toLowerCase()?' on':'');
-  });
-  renderOpps();
-}
-
-function renderOpps(){
-  var g=document.getElementById('opp-grid');
-  var list=oppFilt==='ALL'?allOpps:allOpps.filter(function(o){return o.dir===oppFilt;});
-  if(!list.length){
-    g.innerHTML='<div style="color:#3d4563;font-size:10px;padding:16px;text-align:center;font-family:\'DM Mono\',monospace;grid-column:span 3;">Aucun signal — clique ⚡ Scan IA</div>';
-    return;
-  }
-  g.innerHTML=list.map(function(o,i){
-    var isL=o.dir==='LONG';
-    var col=o.conf>=85?'#6ee7b7':o.conf>=75?'#fcd34d':'#c4b5fd';
-    var ps=prices[o.asset]?('$'+fp(prices[o.asset].price)):'—';
-    return '<div class="ocard" onclick="openTrade(allOpps['+allOpps.indexOf(o)+'])">'
-      +'<div class="ocard-top"><div class="ocard-sym">'+o.asset+'</div><div class="'+(isL?'dir-l':'dir-s')+'">'+o.dir+'</div></div>'
-      +'<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:2px;">'
-      +'<div class="ocard-conf" style="color:'+col+';">'+o.conf+'<span style="font-size:9px;font-family:\'DM Mono\',monospace;">%</span></div>'
-      +'<div class="lev-tag" style="margin-left:auto;">x'+o.lev+'</div>'
-      +'</div>'
-      +'<div class="ocard-bar"><div class="ocard-fill" style="width:'+o.conf+'%;background:'+col+';"></div></div>'
-      +'<div class="ocard-why">'+o.reason+'</div>'
-      +'<div style="font-family:\'DM Mono\',monospace;font-size:8px;color:#3d4563;margin-top:6px;">'+ps+'</div>'
-      +'</div>';
-  }).join('');
-}
-
-// ── Trade panel ──
-function openTrade(o){
-  curOpp=o; curLev=o.lev;
-  document.getElementById('tm-asset').textContent=o.asset+' / USDT';
-  var tags=document.getElementById('tm-tags');
-  tags.innerHTML='<span class="'+(o.dir==='LONG'?'dir-l':'dir-s')+'">'+o.dir+'</span>'
-    +'<span class="lev-tag" id="tm-lev-tag">x'+o.lev+'</span>'
-    +'<span style="font-family:\'DM Mono\',monospace;font-size:8px;color:#3d4563;">'+o.conf+'% conf.</span>';
-  document.getElementById('tm-reason').textContent=o.reason;
-  document.getElementById('lev-sl').value=o.lev;
-  document.getElementById('lev-d').textContent='x'+o.lev;
-  var p=prices[o.asset]?prices[o.asset].price:null;
-  if(p){
-    var isL=o.dir==='LONG';
-    var tp=isL?p*(1+o.tp_pct/100):p*(1-o.tp_pct/100);
-    var sl=isL?p*(1-o.sl_pct/100):p*(1+o.sl_pct/100);
-    document.getElementById('tm-entry').textContent='$'+fp(p);
-    document.getElementById('tm-tp').textContent='$'+fp(tp);
-    document.getElementById('tm-sl').textContent='$'+fp(sl);
-  }else{
-    document.getElementById('tm-entry').textContent='Marché';
-    document.getElementById('tm-tp').textContent='+'+o.tp_pct+'%';
-    document.getElementById('tm-sl').textContent='-'+o.sl_pct+'%';
-  }
-  updLev(curLev);
-  document.getElementById('trade-panel').style.display='block';
-  document.getElementById('trade-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-
-function updLev(v){
-  curLev=parseInt(v);
-  document.getElementById('lev-d').textContent='x'+v;
-  var tl=document.getElementById('tm-lev-tag'); if(tl) tl.textContent='x'+v;
-  if(!curOpp) return;
-  var cap=20.57;
-  var profit=(cap*curLev*(curOpp.tp_pct/100)).toFixed(2);
-  var risk=(cap*curLev*(curOpp.sl_pct/100)).toFixed(2);
-  var rr=(curOpp.tp_pct/curOpp.sl_pct).toFixed(1);
-  document.getElementById('tm-profit').textContent='+$'+profit;
-  document.getElementById('tm-risk').textContent='-$'+risk;
-  document.getElementById('tm-rr').textContent='1:'+rr;
-}
-
-function closeTrade(){document.getElementById('trade-panel').style.display='none';}
-
-function acceptTrade(){
-  if(!curOpp) return;
-  closeTrade();
-  addMsg('ai','<b>Position ouverte</b> — '+curOpp.asset+' '+curOpp.dir+' x'+curLev+'<br>SL -'+curOpp.sl_pct+'% · TP +'+curOpp.tp_pct+'% · R:R 1:'+(curOpp.tp_pct/curOpp.sl_pct).toFixed(1)+'<br>Wireframe mentale activée, <b>Maestro</b>. Surveille ton SL comme un art director son kerning.');
-}
-
-// ── Scan IA complet ──
-async function doFullScan(){
-  document.getElementById('scan-status').style.display='block';
-  document.getElementById('opp-grid').innerHTML='';
-  var btn=document.getElementById('scan-btn');
-  btn.disabled=true; btn.textContent='⏳ Scan...';
-  var px=PAIRS.map(function(p){
-    var d=prices[p];
-    return p+':$'+fp(d?d.price:0)+(d?' ('+d.change.toFixed(2)+'%, H:$'+fp(d.high)+' L:$'+fp(d.low)+')':'');
-  }).join(' | ');
-  var prompt='Tu es SNIPER V4, trader d\'élite et Directeur Artistique UI/UX. Analyse ces cryptos et génère exactement 6 opportunités de trading (mix long/short).\n\nPrix live actuels:\n'+px+'\n\nRègle: Réponds UNIQUEMENT avec un JSON valide, rien d\'autre. Format exact:\n[\n  {"asset":"BTC","dir":"LONG","conf":85,"lev":10,"reason":"Explication courte max 12 mots","tp_pct":4,"sl_pct":1.5},\n  ...\n]\n\nCritères d\'analyse:\n- Tendance momentum (positif = LONG, négatif = SHORT)\n- Distance high/low du prix actuel\n- Volume relatif\n- Cohérence inter-crypto (corrélation BTC)\n- Maximum 2 SHORT, minimum 2 LONG\n- conf entre 60 et 95\n- lev entre 5 et 15\n- tp_pct entre 2 et 8\n- sl_pct entre 1 et 3\n- asset uniquement parmi: BTC ETH SOL PEPE WIF';
-  try{
-    var r=await fetch(GEMINI_URL+'?key='+GEMINI_KEY,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:[{role:'user',parts:[{text:prompt}]}],
-        generationConfig:{maxOutputTokens:800,temperature:.6}
-      })
-    });
-    var data=await r.json();
-    var txt=data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts[0]?data.candidates[0].content.parts[0].text:'';
-    txt=txt.replace(/```json/g,'').replace(/```/g,'').trim();
-    var opps=JSON.parse(txt);
-    if(Array.isArray(opps)&&opps.length){
-      allOpps=opps;
-      var best=opps.sort(function(a,b){return b.conf-a.conf;})[0];
-      showSignal(best.asset+' '+best.dir+' — '+best.conf+'% confiance · x'+best.lev+' · '+best.reason);
-      addMsg('ai','<b>Scan complet terminé</b> — '+opps.length+' opportunités détectées. Meilleur setup : <b>'+best.asset+' '+best.dir+'</b> avec '+best.conf+'% de confiance — pixel-perfect, Maestro.');
-    }else{
-      allOpps=STATIC_OPPS;
+    function toggleSettings() {
+        const m = document.getElementById('settings-modal');
+        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        if(m.style.display === 'flex') document.getElementById('api-key-input').value = GEMINI_KEY;
     }
-  }catch(err){
-    allOpps=STATIC_OPPS;
-    addMsg('ai','Erreur analyse IA — signaux statiques chargés. Vérifie ta clé Gemini dans le code.');
-  }
-  document.getElementById('scan-status').style.display='none';
-  btn.disabled=false; btn.textContent='⚡ Scan IA';
-  renderOpps();
-}
 
-function showSignal(txt){
-  document.getElementById('sig-txt').textContent=txt;
-  document.getElementById('sig-banner').classList.add('show');
-  setTimeout(function(){document.getElementById('sig-banner').classList.remove('show');},8000);
-}
+    function saveSettings() {
+        const val = document.getElementById('api-key-input').value.trim();
+        if(val) {
+            localStorage.setItem('SNIPER_API_KEY', val);
+            GEMINI_KEY = val;
+            toggleSettings();
+            addMsg('ai', '<b>Système prêt.</b> Clé API enregistrée. Prêt pour le scan, Maestro.');
+        }
+    }
 
-async function doSignalIA(){
-  qm('Donne-moi le meilleur setup trade maintenant avec Wireframe mentale (Entrée, TP, SL, RR). Capital $20.57, style ultra-concis.');
-}
+    // -- WebSocket Binance --
+    function connectWS(){
+        const streams = PAIRS.map(p => p.toLowerCase()+'usdt@ticker').join('/');
+        const ws = new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
+        
+        ws.onopen = () => { document.getElementById('ws-st').textContent = 'LIVE'; document.getElementById('ws-st').style.color='#6ee7b7'; };
+        
+        ws.onmessage = (e) => {
+            const d = JSON.parse(e.data).data;
+            const sym = d.s.replace('USDT','');
+            prices[sym] = { price: d.c, change: d.P };
+            
+            // UI Updates
+            const pe = document.getElementById('p-'+sym);
+            if(pe) pe.textContent = '$' + fp(d.c);
+            
+            if(sym === curPair) {
+                document.getElementById('main-price').textContent = '$' + fp(d.c);
+                const cp = document.getElementById('chg-pill');
+                cp.textContent = (d.P >= 0 ? '+' : '') + d.P + '%';
+                cp.className = 'pill ' + (d.P >= 0 ? 'pill-g' : 'pill-r');
+            }
+            updateMktGrid();
+        };
+    }
 
-// ── Chat IA ──
-function addMsg(type,html){
-  var c=document.getElementById('chat');
-  var d=document.createElement('div');
-  if(type==='ai'){
-    d.className='msg-ai';
-    d.innerHTML='<div class="msg-ai-lbl">SNIPER V4 ✦</div>'+html;
-  }else{
-    d.className='msg-u';
-    d.textContent=html;
-  }
-  c.appendChild(d);
-  c.scrollTop=c.scrollHeight;
-  return d;
-}
+    function sw(p, el) {
+        curPair = p;
+        document.querySelectorAll('.ti').forEach(t => t.classList.remove('on'));
+        el.classList.add('on');
+        document.getElementById('pair-lbl').textContent = p + ' / USDT';
+    }
 
-function clearChat(){
-  document.getElementById('chat').innerHTML='';
-  addMsg('ai','Canvas réinitialisé, <b>Maestro</b>. Prêt pour une nouvelle composition.');
-}
+    function updateMktGrid() {
+        const g = document.getElementById('mkt-grid');
+        g.innerHTML = PAIRS.map(p => {
+            const d = prices[p] || {change:0};
+            return `<div class="mkt-c">
+                <div style="font-size:7px; color:#3d4563;">${p}</div>
+                <div style="font-size:9px; color:${d.change >= 0 ? '#6ee7b7':'#fca5a5'}">${d.change}%</div>
+            </div>`;
+        }).join('');
+    }
 
-function buildSysPrompt(){
-  var px=PAIRS.map(function(p){
-    var d=prices[p];
-    return d?p+':$'+fp(d.price)+'('+d.change.toFixed(2)+'%)':'';
-  }).filter(Boolean).join(' ');
-  return 'Tu es SNIPER V4, Directeur Artistique UI/UX croisé trader Wall Street. Français, style chill-premium. Tu appelles l\'utilisateur "Maestro". Vocabulaire: pixel-perfect, Golden Ratio, whitespace, micro-interactions, glassmorphism, wireframe. Trade perdant = "faute de goût UX". Breakout = "libération du whitespace". Vrais conseils de trading, concis. Capital: $20.57. Paire active: '+curPair+'/USDT. Prix: '+px+'. Réponses max 5 phrases.';
-}
+    // -- IA Logic --
+    async function doFullScan() {
+        if(!GEMINI_KEY) { addMsg('ai', 'Maestro, configure ta clé API d\'abord (⚙).'); toggleSettings(); return; }
+        
+        const btn = document.getElementById('scan-btn');
+        const status = document.getElementById('scan-status');
+        btn.disabled = true; status.style.display = 'block';
 
-async function sendMsg(){
-  var inp=document.getElementById('ci');
-  var msg=inp.value.trim(); if(!msg) return;
-  inp.value='';
-  addMsg('u',msg);
-  var sb=document.getElementById('sb'); sb.disabled=true;
-  var st=document.getElementById('ai-st');
-  st.textContent='● ANALYSE...'; st.style.color='#fcd34d';
-  var ty=addMsg('ai','<span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>');
-  try{
-    var r=await fetch(GEMINI_URL+'?key='+GEMINI_KEY,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:[{role:'user',parts:[{text:buildSysPrompt()+'\n\nMessage: '+msg}]}],
-        generationConfig:{maxOutputTokens:500,temperature:.72}
-      })
-    });
-    var data=await r.json();
-    var txt=data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts[0]?data.candidates[0].content.parts[0].text:'Erreur de réponse.';
-    var fmt=txt.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\*(.*?)\*/g,'<i>$1</i>').replace(/\n/g,'<br>');
-    ty.innerHTML='<div class="msg-ai-lbl">SNIPER V4 ✦</div>'+fmt;
-  }catch(err){
-    ty.innerHTML='<div class="msg-ai-lbl">SNIPER V4 ✦</div>Erreur connexion IA. Vérifie ta clé Gemini.';
-  }
-  sb.disabled=false;
-  st.textContent='● CONNECTÉ'; st.style.color='#6ee7b7';
-  document.getElementById('chat').scrollTop=99999;
-}
+        const prompt = `En tant que SNIPER V4, expert trading, analyse ces prix: ${JSON.stringify(prices)}. 
+        Génère 3 opportunités (LONG ou SHORT). 
+        Réponds UNIQUEMENT en JSON: [{"asset":"BTC","dir":"LONG","conf":85,"reason":"texte court"}]`;
 
-function qm(m){document.getElementById('ci').value=m; sendMsg();}
+        try {
+            const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await r.json();
+            let txt = data.candidates[0].content.parts[0].text;
+            const json = JSON.parse(txt.replace(/```json|```/g, ''));
+            
+            renderOpps(json);
+            addMsg('ai', '<b>Scan terminé.</b> 3 vecteurs haute probabilité identifiés.');
+        } catch(e) {
+            addMsg('ai', 'Erreur de scan. Vérifie ta clé ou ta connexion.');
+        } finally {
+            btn.disabled = false; status.style.display = 'none';
+        }
+    }
 
-// ── Init ──
-allOpps=STATIC_OPPS;
-renderOpps();
-connectWS();
-// Auto-scan après 4s si prix chargés
-setTimeout(function(){
-  if(Object.keys(prices).length>=3) doFullScan();
-},4000);
+    function renderOpps(list) {
+        const g = document.getElementById('opp-grid');
+        g.innerHTML = list.map(o => `
+            <div class="ocard">
+                <div style="display:flex; justify-content:space-between;">
+                    <span class="ocard-sym">${o.asset}</span>
+                    <span style="color:${o.dir === 'LONG' ? '#6ee7b7':'#fca5a5'}">${o.dir}</span>
+                </div>
+                <div style="font-size:18px; font-family:'DM Mono'; margin:5px 0;">${o.conf}%</div>
+                <div class="ocard-why">${o.reason}</div>
+            </div>
+        `).join('');
+    }
+
+    async function sendMsg() {
+        const inp = document.getElementById('ci');
+        const msg = inp.value.trim(); if(!msg || !GEMINI_KEY) return;
+        
+        addMsg('u', msg);
+        inp.value = '';
+        const st = document.getElementById('ai-st'); st.textContent = '● RÉFLEXION...';
+
+        try {
+            const r = await fetch(`${GEMINI_URL}?key=${GEMINI_KEY}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ contents: [{ parts: [{ text: `Tu es Sniper V4, assistant trading. Style chill, pro, appelle-moi Maestro. Réponse courte. Question: ${msg}` }] }] })
+            });
+            const data = await r.json();
+            addMsg('ai', data.candidates[0].content.parts[0].text);
+        } catch(e) {
+            addMsg('ai', 'Erreur terminal.');
+        } finally { st.textContent = '● VEILLE ACTIVE'; }
+    }
+
+    function addMsg(type, html) {
+        const c = document.getElementById('chat');
+        const d = document.createElement('div');
+        d.className = type === 'ai' ? 'msg-ai' : 'msg-u';
+        d.innerHTML = html;
+        c.appendChild(d);
+        c.scrollTop = c.scrollHeight;
+    }
+
+    // Init
+    connectWS();
+    if(!GEMINI_KEY) setTimeout(() => toggleSettings(), 1500);
 </script>
+
+</body>
+</html>
