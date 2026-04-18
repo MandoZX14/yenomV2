@@ -122,7 +122,6 @@ input[type=range] { -webkit-appearance: none; width: 100%; background: transpare
 input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--cyan); cursor: pointer; margin-top: -8px; box-shadow: 0 0 10px var(--cyan); }
 input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
 
-/* Grid specific */
 @media(max-width:768px){ .g-col-2 { grid-template-columns: 1fr !important; } }
 </style>
 </head>
@@ -388,6 +387,7 @@ let curOpp = null;
 let selectedLever = 10;
 let isSystemOn = true;
 let trackerInterval = null;
+let activeGeminiModel = null;
 
 function fp(n){ return parseFloat(n).toFixed(2); }
 const ls = (k,v) => localStorage.setItem(k,v);
@@ -525,7 +525,6 @@ function acceptTrade(){
   tradeHistory.push(trade); ls('trades', JSON.stringify(tradeHistory));
   closeTrade(); toast(`Position ${curOpp.asset} x${selectedLever} ouverte à $${fp(entryPrice)} !`);
   
-  // Update tracker if open
   if(document.getElementById('trk-ov').style.display === 'flex') updateTrackerData();
 }
 
@@ -552,7 +551,7 @@ function closeJournal(){ document.getElementById('jr-ov').style.display='none'; 
 function openTracker() {
   document.getElementById('trk-ov').style.display = 'flex';
   updateTrackerData();
-  trackerInterval = setInterval(updateTrackerData, 1000); // Update every second
+  trackerInterval = setInterval(updateTrackerData, 1000); 
 }
 function closeTracker() {
   document.getElementById('trk-ov').style.display = 'none';
@@ -578,12 +577,10 @@ function updateTrackerData() {
       activeCount++;
       const currentPrice = prices[t.asset]?.price;
       if(currentPrice) {
-        // PNL Calculation: (Difference / Entry) * 100 * Lever
         let pnlPct = 0;
         if(t.dir === 'LONG') pnlPct = ((currentPrice - t.entry) / t.entry) * 100 * t.lever;
         else pnlPct = ((t.entry - currentPrice) / t.entry) * 100 * t.lever;
         
-        // Assume position size is $10 for simulation logic
         const posSize = 10; 
         const pnlUsd = posSize * (pnlPct / 100);
         totalPnlUsd += pnlUsd;
@@ -607,7 +604,6 @@ function updateTrackerData() {
     });
   }
 
-  // Update UI Total PNL
   const pnlEl = document.getElementById('trk-pnl-val');
   const pctEl = document.getElementById('trk-pnl-pct');
   pnlEl.textContent = (totalPnlUsd >= 0 ? '+' : '') + '$' + totalPnlUsd.toFixed(2);
@@ -616,7 +612,6 @@ function updateTrackerData() {
 
   document.getElementById('trk-list').innerHTML = activeTradesHTML;
 
-  // AI Prediction Logic (Based on current selected pair trend)
   const curData = prices[curPair];
   if(curData) {
     document.getElementById('trk-pred-asset').textContent = curPair + '/USDT';
@@ -655,22 +650,38 @@ function updatePinDots(){ for(let i=0;i<4;i++){ document.getElementById('pd'+i).
 function closeST(){ document.getElementById('st-ov').style.display='none'; }
 function saveKey(){ apiKey=document.getElementById('api-in').value.trim(); ls('gemKey',apiKey); closeST(); toast('Clé API enregistrée'); }
 
-// --- IA GEMINI ---
+// --- IA GEMINI (CORRECTION DU MODÈLE AUTOMATIQUE) ---
 function buildSystemPrompt() { 
   return `Tu es SNIPER V5, une IA de trading d'élite.
-Ton identité : Tu es un pro de Wall Street, arrogant mais protecteur. Tu tutoies l'utilisateur ("Maestro").
-Vocabulaire : Utilise le jargon crypto (Smart Money, Sweep, Liquidations, Order Blocks).
-Mission : Analyse précise et setups lethals.`; 
+Ton identité : Tu es un pro de Wall Street, chill, arrogant mais protecteur. Tu tutoies l'utilisateur ("Maestro").
+Vocabulaire : Utilise le jargon crypto.
+Mission : Fournir une analyse concise, chirurgicale et pertinente.`; 
 }
 
 async function callGemini(userMsg) {
   if (!apiKey) throw new Error("Clé API absente. Impossible d'analyser le marché.");
   if (Object.keys(prices).length === 0) throw new Error("Connexion Binance en cours...");
 
+  // Détection auto du modèle pour éviter l'erreur "v1beta"
+  if (!activeGeminiModel) {
+    try {
+      const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models`, { headers: { 'x-goog-api-key': apiKey } });
+      const listData = await listResp.json();
+      if (listData.models) {
+        const validModels = listData.models.filter(m => m.supportedGenerationMethods?.includes("generateContent"));
+        const bestModel = validModels.find(m => m.name.includes("flash")) || validModels.find(m => m.name.includes("pro")) || validModels[0];
+        if (bestModel) activeGeminiModel = bestModel.name.replace('models/', '');
+      }
+    } catch (e) { console.warn("Recherche de modèle échouée."); }
+  }
+
+  const useModel = activeGeminiModel || "gemini-pro"; 
+
+  // Prix en temps réel invisibles ajoutés de force
   const allPrices = Object.keys(prices).map(p => `${p}=$${prices[p]?.price?.toFixed(2)}`).join(' | ');
   const forcedContext = `\n\n[SYSTÈME : PRIX RÉELS OBLIGATOIRES -> ${allPrices}. UTILISE CES PRIX EXACTS.]`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${useModel}:generateContent`;
   const payload = {
     contents: [{ role: "user", parts: [{ text: buildSystemPrompt() + "\n\nMessage : " + userMsg + forcedContext }] }],
     generationConfig: { temperature: 0.5, maxOutputTokens: 2000 }
@@ -678,7 +689,11 @@ async function callGemini(userMsg) {
 
   const resp = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey }, body: JSON.stringify(payload) });
   const data = await resp.json();
-  if (!resp.ok) throw new Error(data.error?.message || "Erreur réseau de l'IA.");
+  
+  if (!resp.ok) {
+    activeGeminiModel = null; 
+    throw new Error(data.error?.message || "Erreur réseau de l'IA.");
+  }
   return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Silence réseau.';
 }
 
@@ -691,9 +706,9 @@ function addAIMsg(text){
 }
 
 async function sendChat(){
-  if(!isSystemOn){ toast('Allumez le système (Bouton IA en pause) pour discuter.', 'err'); return; }
+  if(!isSystemOn){ toast('Allumez le système pour discuter.', 'err'); return; }
   const inp = document.getElementById('ci'); const msg = inp.value.trim(); if(!msg) return;
-  if(!apiKey){ toast('Authentification requise','err'); return; }
+  if(!apiKey){ toast('Authentification API requise','err'); return; }
   
   inp.value = '';
   const chat = document.getElementById('chat');
