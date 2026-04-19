@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>⚡ SNIPER TRADE V5 - PRO EDITION</title>
+<title>⚡ SNIPER TRADE V6 - ALGO PREDICTOR</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet"/>
 <style>
 /* ═══════════════════════════════════════════════════
@@ -13,361 +13,136 @@
   --bg-deep: #030407;
   --bg-grad: radial-gradient(circle at 50% 0%, #0d1424 0%, #030407 100%);
   --glass-bg: rgba(13, 17, 26, 0.55);
-  --glass-bg-hover: rgba(20, 25, 38, 0.75);
   --glass-border: rgba(255, 255, 255, 0.06);
   --glass-border-light: rgba(255, 255, 255, 0.12);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  
   --cyan: #00F0FF; --cyan-dim: rgba(0, 240, 255, 0.15);
   --magenta: #B026FF;
   --green: #00FF66; --green-dim: rgba(0, 255, 102, 0.15);
   --red: #FF2A55; --red-dim: rgba(255, 42, 85, 0.15);
   --gold: #FFC800; --gold-dim: rgba(255, 200, 0, 0.15);
-  
   --txt-pure: #FFFFFF; --txt-main: #E2E8F0;
-  --txt-muted: #8492A6; --txt-dark: #3F4C6B;
-  
+  --txt-muted: #8492A6;
   --font-ui: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  
-  --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --transition-fast: all 0.15s ease;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow-x: hidden; }
+html, body { height: 100%; overflow-x: hidden; background: var(--bg-deep); background-image: var(--bg-grad); color: var(--txt-main); font-family: var(--font-ui); }
 
-body {
-  background: var(--bg-deep); background-image: var(--bg-grad); background-attachment: fixed;
-  color: var(--txt-main); font-family: var(--font-ui); font-size: 14px;
-  -webkit-font-smoothing: antialiased;
-}
+body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--glass-border) 1px, transparent 1px), linear-gradient(90deg, var(--glass-border) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.2; pointer-events: none; z-index: -1; }
 
-body::before {
-  content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background-image: linear-gradient(var(--glass-border) 1px, transparent 1px), linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
-  background-size: 40px 40px; opacity: 0.3; pointer-events: none; z-index: -1;
-}
+.glass { background: var(--glass-bg); backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden; }
+.mono { font-family: var(--font-mono); }
+.text-glow-cyan { color: var(--cyan); text-shadow: 0 0 10px var(--cyan-dim); }
+.badge { display: inline-flex; padding: 4px 10px; border-radius: 8px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; }
+.badge.cyan { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(0,240,255,0.3); }
+.badge.green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,255,102,0.3); }
+.badge.red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,42,85,0.3); }
+.badge.gold { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(255,200,0,0.3); }
 
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+.slabel { font-size: 9px; color: var(--txt-muted); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
 
-.glass {
-  background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-border); border-top: 1px solid var(--glass-border-light);
-  border-radius: 20px; box-shadow: var(--glass-shadow); position: relative; overflow: hidden;
-}
+button { cursor: pointer; border: none; font-family: var(--font-ui); transition: 0.2s; }
+.btn-sm { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: var(--txt-main); padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.btn-sm.green { background: var(--green-dim); color: var(--green); border-color: rgba(0,255,102,0.3); }
+.btn-sm.red { background: var(--red-dim); color: var(--red); border-color: rgba(255,42,85,0.3); }
+.btn-primary { background: linear-gradient(135deg, var(--cyan), var(--magenta)); color: #000; font-weight: 800; padding: 14px; border-radius: 12px; width: 100%; box-shadow: 0 0 15px var(--cyan-dim); }
 
-.mono { font-family: var(--font-mono); } .font-bold { font-weight: 700; }
-.text-glow-cyan { color: var(--cyan); text-shadow: 0 0 12px rgba(0, 240, 255, 0.6); }
-.text-glow-green { color: var(--green); text-shadow: 0 0 12px rgba(0, 255, 102, 0.6); }
-.text-glow-red { color: var(--red); text-shadow: 0 0 12px rgba(255, 42, 85, 0.6); }
-.text-glow-gold { color: var(--gold); text-shadow: 0 0 12px rgba(255, 200, 0, 0.6); }
-
-.badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 4px 10px; border-radius: 8px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
-}
-.badge.cyan { background: var(--cyan-dim); border: 1px solid rgba(0,240,255,0.3); color: var(--cyan); }
-.badge.green { background: var(--green-dim); border: 1px solid rgba(0,255,102,0.3); color: var(--green); }
-.badge.red { background: var(--red-dim); border: 1px solid rgba(255,42,85,0.3); color: var(--red); }
-.badge.gold { background: var(--gold-dim); border: 1px solid rgba(255,200,0,0.3); color: var(--gold); }
-.badge.gray { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--txt-muted); }
-
-.slabel { font-size: 10px; color: var(--txt-muted); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-
-button { font-family: var(--font-ui); outline: none; border: none; cursor: pointer; transition: var(--transition-fast); }
-button:active { transform: scale(0.96); }
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--cyan), var(--magenta)); color: #000; font-weight: 800; padding: 12px 20px; border-radius: 12px;
-  font-size: 14px; width: 100%; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0, 240, 255, 0.3);
-}
-.btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,42,85,0.4); font-weight: 700; padding: 12px 20px; border-radius: 12px; font-size: 14px; width: 100%; }
-.btn-sm { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: var(--txt-main); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
-.btn-sm:hover { background: rgba(255,255,255,0.08); }
-.btn-sm.gold { background: var(--gold-dim); border-color: rgba(255,200,0,0.4); color: var(--gold); }
-.btn-sm.green { background: var(--green-dim); border-color: rgba(0,255,102,0.4); color: var(--green); }
-.btn-sm.red { background: var(--red-dim); border-color: rgba(255,42,85,0.4); color: var(--red); }
-
-.ldot { display: inline-block; width: 8px; height: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 10px var(--green); position: relative; }
-.ldot::after { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; border: 1px solid var(--green); animation: ping 2s infinite; }
-.ldot.off { background: var(--red); box-shadow: 0 0 10px var(--red); } .ldot.off::after { display:none; }
+.ldot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--green); box-shadow: 0 0 10px var(--green); position: relative; }
+.ldot::after { content: ''; position: absolute; inset: -4px; border: 1px solid var(--green); border-radius: 50%; animation: ping 2s infinite; }
 @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
 
-.tbar { display: flex; gap: 8px; overflow-x: auto; padding: 12px 16px; scrollbar-width: none; }
-.titem { flex-shrink: 0; min-width: 90px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; transition: var(--transition-smooth); }
-.titem.on { background: var(--cyan-dim); border-color: rgba(0,240,255,0.4); }
+.tbar { display: flex; gap: 10px; overflow-x: auto; padding: 15px; scrollbar-width: none; }
+.titem { flex-shrink: 0; min-width: 100px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 14px; padding: 12px; text-align: center; }
+.titem.on { background: var(--cyan-dim); border-color: var(--cyan); }
 
-.ocard { background: rgba(10, 15, 26, 0.8); border: 1px solid var(--glass-border); border-radius: 16px; padding: 16px; cursor: pointer; transition: var(--transition-smooth); }
-.ocard:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
+.ocard { background: rgba(10, 15, 26, 0.6); border: 1px solid var(--glass-border); border-radius: 18px; padding: 18px; cursor: pointer; }
+.ocard.new-signal { animation: borderFlash 2s infinite; }
+@keyframes borderFlash { 0%, 100% { border-color: var(--glass-border); } 50% { border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-dim); } }
 
-.cinput-wrap { display: flex; gap: 10px; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 14px; padding: 6px 6px 6px 16px; }
-.cinput-wrap input { flex: 1; background: transparent; border: none; outline: none; color: var(--txt-pure); font-size: 14px; font-family: var(--font-ui); }
-.cmsg-user { align-self: flex-end; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border-light); border-radius: 16px 16px 4px 16px; padding: 12px 16px; max-width: 85%; font-size: 13px; color: var(--txt-pure); }
-.cmsg-ai { align-self: flex-start; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 16px 16px 16px 4px; padding: 12px 16px; max-width: 90%; font-size: 13px; color: var(--txt-main); line-height: 1.5;}
-
-.ov { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); display: none; align-items: flex-end; justify-content: center; }
-.sheet { width: 100%; max-width: 600px; background: #0b101a; border: 1px solid var(--glass-border-light); border-bottom: none; border-radius: 24px 24px 0 0; padding: 24px; max-height: 90vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.ov { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-width: 550px; background: #0b101a; border-radius: 24px 24px 0 0; padding: 24px; animation: slideUp 0.4s ease-out; }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.handle { width: 40px; height: 4px; background: var(--glass-border-light); border-radius: 2px; margin: 0 auto 24px; }
-.finput { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; padding: 14px 16px; color: var(--txt-pure); font-size: 14px; font-family: var(--font-mono); }
-.progress-track { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--magenta), var(--cyan)); border-radius: 3px; transition: width 1s; }
 
-.tst { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(10,15,26,0.9); border: 1px solid var(--glass-border-light); border-radius: 16px; padding: 14px 24px; z-index: 10000; opacity: 0; pointer-events: none; transition: all 0.3s;}
-input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--cyan); cursor: pointer; margin-top: -8px; box-shadow: 0 0 10px var(--cyan); }
-input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+.cmsg-ai { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 16px 16px 16px 4px; padding: 15px; font-size: 13px; line-height: 1.6; }
+.cmsg-user { align-self: flex-end; background: var(--cyan-dim); border: 1px solid var(--cyan); border-radius: 16px 16px 4px 16px; padding: 12px; font-size: 13px; max-width: 80%; }
 
-@media(max-width:768px){ .g-col-2 { grid-template-columns: 1fr !important; } }
+.tst { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(10,15,26,0.95); border: 1px solid var(--cyan); padding: 15px 25px; border-radius: 15px; opacity: 0; z-index: 10001; }
 </style>
 </head>
 <body>
 
-<div style="max-width: 1080px; margin: 0 auto; padding: 24px 16px 100px;">
+<div style="max-width: 1100px; margin: 0 auto; padding: 25px 15px 100px;">
 
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
     <div>
-      <div style="display:flex; align-items:center; gap:12px;">
-        <h1 onclick="titleClick()" style="font-size:24px; font-weight:800; cursor:pointer; user-select:none; background: linear-gradient(135deg, #FFF, #8492A6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-          SNIPER TRADE <span style="color:var(--cyan); -webkit-text-fill-color:var(--cyan);">V5</span>
-        </h1>
-      </div>
-      <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+      <h1 onclick="titleClick()" style="font-size:26px; font-weight:800; letter-spacing:-1px; cursor:pointer;">SNIPER <span style="color:var(--cyan)">V6 ALGO</span></h1>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:5px;">
         <div id="status-dot" class="ldot"></div>
-        <span id="ws-st" style="font-size:11px; color:var(--green); font-family:var(--font-mono); font-weight:600;">EN LIGNE</span>
+        <span id="ws-st" style="font-size:10px; color:var(--green); font-family:var(--font-mono); font-weight:700;">ENGINE ACTIVE</span>
       </div>
     </div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-      <button id="btn-toggle" onclick="toggleSystem()" class="btn-sm green">🟢 IA ACTIVÉE</button>
-      <button onclick="openTracker()" class="btn-sm gold">📊 Live Tracker</button>
-      <button onclick="openJournal()" class="btn-sm">📓 Historique</button>
+    <div style="display:flex; gap:10px;">
+      <button id="btn-toggle" onclick="toggleSystem()" class="btn-sm green">🟢 SYSTÈME ON</button>
+      <button onclick="openTracker()" class="btn-sm" style="color:var(--gold); border-color:var(--gold-dim)">📊 PNL LIVE</button>
+      <button onclick="requestNotif()" id="btn-notif" class="btn-sm">🔔 Notifications</button>
     </div>
   </div>
 
-  <div class="glass" style="margin-bottom:20px; padding:4px;">
-    <div class="tbar" id="tbar"></div>
-  </div>
+  <div class="glass" style="margin-bottom:20px;"><div class="tbar" id="tbar"></div></div>
 
-  <div class="g-col-2" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
-    <div class="glass" style="padding:24px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-        <div class="slabel">Flux de marché</div>
-        <div id="pair-badge" class="badge cyan" style="font-size: 12px; padding: 6px 12px;">BTC/USDT</div>
+  <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:20px; margin-bottom:20px;" class="g-col-2">
+    <div class="glass" style="padding:25px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+        <span class="slabel">Analyse Technique Live</span>
+        <span id="pair-badge" class="badge cyan">BTC/USDT</span>
       </div>
-      <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 16px;">
-        <div id="main-price" class="mono text-glow-cyan" style="font-size:48px; font-weight:800; letter-spacing:-2px; line-height:1;">—</div>
-        <div id="chg-badge" class="badge" style="font-size:14px; padding: 6px 12px;">—</div>
+      <div style="display:flex; align-items:baseline; gap:15px; margin-bottom:20px;">
+        <div id="main-price" class="mono text-glow-cyan" style="font-size:52px; font-weight:800; letter-spacing:-3px;">—</div>
+        <div id="chg-badge" class="badge">—</div>
       </div>
-      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px;">
-        <div><div class="slabel" style="font-size:8px; margin-bottom:2px;">24H HAUT</div><div id="hi-v" class="mono text-glow-cyan" style="font-size:12px;">—</div></div>
-        <div><div class="slabel" style="font-size:8px; margin-bottom:2px;">24H BAS</div><div id="lo-v" class="mono text-glow-red" style="font-size:12px;">—</div></div>
-        <div><div class="slabel" style="font-size:8px; margin-bottom:2px;">VOLUME</div><div id="vo-v" class="mono text-main" style="font-size:12px;">—</div></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:15px; background:rgba(0,0,0,0.2); border-radius:15px;">
+        <div><div class="slabel" style="font-size:8px;">RSI (14)</div><div id="v-rsi" class="mono font-bold">—</div></div>
+        <div><div class="slabel" style="font-size:8px;">EMA (20)</div><div id="v-ema" class="mono font-bold">—</div></div>
+        <div><div class="slabel" style="font-size:8px;">TENDANCE</div><div id="v-trend" class="mono font-bold">—</div></div>
       </div>
     </div>
 
-    <div class="glass" style="padding:24px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-        <div class="slabel">Gestion du Capital</div>
-        <button onclick="openWallet()" class="btn-sm" style="font-size:10px;">⚙️ Gérer</button>
+    <div class="glass" style="padding:25px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+        <span class="slabel">Capital de Trading</span>
+        <button onclick="openWallet()" style="background:none; color:var(--txt-muted); font-size:12px;">⚙️ Edit</button>
       </div>
-      <div>
-        <div style="font-size: 13px; color: var(--txt-muted); margin-bottom: 4px;">Balance Actuelle</div>
-        <div class="mono" style="font-size:36px; font-weight:800; color:var(--txt-pure); line-height:1;">$<span id="cap-v">20.57</span></div>
-        <div style="font-size:12px; color:var(--txt-muted); margin-top:8px;">
-          Cible: <span id="goal-v" class="font-bold text-glow-cyan">$50.00</span>
-        </div>
-      </div>
-      <div style="margin-top:20px;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span class="slabel" style="margin:0;">Progression</span>
-          <span id="goal-pct" class="mono" style="font-size:11px; font-weight:700; color:var(--txt-main);">0.0%</span>
-        </div>
-        <div class="progress-track">
-          <div id="goal-bar" class="progress-fill" style="width:0%"></div>
-        </div>
-      </div>
+      <div class="mono" style="font-size:38px; font-weight:800; margin-bottom:5px;">$<span id="cap-v">100.00</span></div>
+      <div style="font-size:12px; color:var(--txt-muted); margin-bottom:25px;">Objectif : <span id="goal-v" style="color:var(--cyan)">$500</span></div>
+      <div class="progress-track"><div id="goal-bar" class="progress-fill" style="width:0%"></div></div>
     </div>
   </div>
 
-  <div class="glass" style="padding:24px; margin-bottom:20px;">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
-      <div>
-        <div style="font-size:16px; font-weight:700; color:var(--txt-pure);">🎯 Radar d'Opportunités</div>
-      </div>
-      <button onclick="buildOpps()" class="btn-sm">↻ Scan Rapide</button>
+  <div class="glass" style="padding:25px; margin-bottom:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <span style="font-size:18px; font-weight:800;">🎯 Signaux Algorithmiques</span>
+      <div id="scan-status" style="font-size:11px; color:var(--txt-muted); font-family:var(--font-mono);">CALCUL DES INDICATEURS...</div>
     </div>
-    <div id="opp-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px;"></div>
+    <div id="opp-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:15px;">
+      </div>
   </div>
 
-  <div class="glass" style="padding:0; display:flex; flex-direction:column; height:450px; margin-bottom:20px;">
-    <div style="padding: 16px 24px; border-bottom: 1px solid var(--glass-border-light); background: rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width:32px; height:32px; border-radius:8px; background: linear-gradient(135deg, var(--cyan), var(--magenta)); display:flex; align-items:center; justify-content:center; font-size:16px;">🤖</div>
-        <div>
-          <div style="font-weight:700; color:var(--txt-pure);">Terminal IA Sniper</div>
-          <div style="font-size:11px; color:var(--green); font-family:var(--font-mono); margin-top:2px;" id="ai-st">● CONNECTÉ</div>
-        </div>
+  <div class="glass" style="height:450px; display:flex; flex-direction:column;">
+    <div style="padding:15px 25px; border-bottom:1px solid var(--glass-border); background:rgba(0,0,0,0.2); display:flex; align-items:center; gap:12px;">
+      <div style="width:30px; height:30px; background:linear-gradient(135deg, var(--cyan), var(--magenta)); border-radius:8px;"></div>
+      <div style="font-weight:800; font-size:15px;">Assistant Sniper IA</div>
+    </div>
+    <div id="chat" style="flex:1; overflow-y:auto; padding:25px; display:flex; flex-direction:column; gap:15px;">
+      <div class="cmsg-ai"><b>SNIPER IA :</b> Moteur V6 prêt. J'analyse l'historique et le RSI en temps réel pour toi, Maestro. Pose-moi n'importe quelle question sur tes trades.</div>
+    </div>
+    <div style="padding:20px; border-top:1px solid var(--glass-border);">
+      <div style="display:flex; gap:10px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:14px; padding:8px 15px;">
+        <input id="ci" type="text" placeholder="Prompt..." style="flex:1; background:none; border:none; color:#fff; outline:none;" onkeydown="if(event.key==='Enter')sendChat()">
+        <button onclick="sendChat()" style="background:var(--cyan); width:35px; height:35px; border-radius:10px;">⚡</button>
       </div>
     </div>
-    <div id="chat" style="flex:1; overflow-y:auto; padding: 24px; display:flex; flex-direction:column; gap:16px;">
-      <div class="cmsg-ai">
-        <div style="font-size:10px; color:var(--cyan); margin-bottom:6px; font-weight:700; font-family:var(--font-mono);">SNIPER IA ✦</div>
-        Système V5 opérationnel. Je scanne le marché. Qu'est-ce qu'on trade aujourd'hui Maestro ?
-      </div>
-    </div>
-    <div style="padding: 16px 24px; border-top: 1px solid var(--glass-border-light); background: rgba(0,0,0,0.2);">
-      <div class="cinput-wrap">
-        <input id="ci" type="text" placeholder="Demande une analyse ou un setup..." onkeydown="if(event.key==='Enter')sendChat()"/>
-        <button style="background:var(--cyan); color:#000; border-radius:10px; width:40px; height:40px; display:flex; align-items:center; justify-content:center;" onclick="sendChat()" id="sb">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="trk-ov" class="ov" onclick="if(event.target===this)closeTracker()">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div style="font-size:20px; font-weight:800; margin-bottom:24px; color:var(--txt-pure); display:flex; justify-content:space-between;">
-      <span>📊 Dashboard Performance</span>
-      <span class="badge gold" style="font-size:12px;">LIVE</span>
-    </div>
-    
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:24px;">
-      <div style="background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:16px; padding:20px; text-align:center;">
-        <div class="slabel">PNL LATENT (EN COURS)</div>
-        <div id="trk-pnl-val" class="mono font-bold text-glow-gold" style="font-size:28px;">$0.00</div>
-        <div id="trk-pnl-pct" class="font-mono" style="font-size:12px; color:var(--txt-muted); margin-top:4px;">0.00%</div>
-      </div>
-      <div style="background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:16px; padding:20px; text-align:center;">
-        <div class="slabel">STATUT DU BOT</div>
-        <div id="trk-status" class="mono font-bold text-glow-cyan" style="font-size:20px; margin-top:8px;">RECHERCHE...</div>
-        <div style="font-size:12px; color:var(--txt-muted); margin-top:8px;">Actif sur <span id="trk-pairs-count" class="font-bold">6</span> paires</div>
-      </div>
-    </div>
-
-    <div style="background:linear-gradient(135deg, rgba(20,25,38,0.8), rgba(13,17,26,0.8)); border:1px solid var(--cyan-dim); border-radius:16px; padding:20px; margin-bottom:24px;">
-      <div class="slabel" style="color:var(--cyan);">🤖 PRÉDICTION IA (Moyenne 24H)</div>
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:12px;">
-        <div>
-          <div id="trk-pred-asset" class="mono font-bold" style="font-size:20px; color:var(--txt-pure);">BTC/USDT</div>
-          <div id="trk-pred-txt" style="font-size:13px; color:var(--txt-main); margin-top:4px;">Analyse de la tendance institutionnelle en cours...</div>
-        </div>
-        <div id="trk-pred-badge" class="badge" style="font-size:14px; padding:8px 16px;">—</div>
-      </div>
-    </div>
-
-    <div class="slabel">POSITIONS OUVERTES</div>
-    <div id="trk-list" style="display:flex; flex-direction:column; gap:12px; max-height:150px; overflow-y:auto; margin-bottom:24px; padding-right:8px;">
-       <div style="text-align:center; color:var(--txt-muted); padding:20px;">Aucun trade en cours</div>
-    </div>
-
-    <button class="btn-sm" onclick="closeTracker()" style="width:100%; justify-content:center; padding:12px;">Fermer le Tracker</button>
-  </div>
-</div>
-
-<div id="st-ov" class="ov">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div style="font-size:20px; font-weight:800; margin-bottom:24px;">⚙️ Paramètres IA</div>
-    <div style="margin-bottom:24px;">
-      <label class="slabel" style="display:block;">🔑 Clé API Gemini</label>
-      <input class="finput" type="password" id="api-in" placeholder="Authentification..."/>
-    </div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-      <button onclick="closeST()" class="btn-sm" style="justify-content:center;">Annuler</button>
-      <button onclick="saveKey()" class="btn-primary">Sauvegarder</button>
-    </div>
-  </div>
-</div>
-
-<div id="tm-ov" class="ov" style="display:none" onclick="if(event.target===this)closeTrade()">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div style="display:flex; justify-content:space-between; margin-bottom:24px;">
-      <div>
-        <div id="tm-asset" class="mono text-glow-cyan" style="font-size:24px; font-weight:800;">—</div>
-        <div id="tm-dir" class="badge" style="margin-top:4px;">—</div>
-      </div>
-      <div style="text-align:right;">
-        <div id="tm-lev" class="badge magenta" style="font-size:14px;">—</div>
-      </div>
-    </div>
-    <div id="tm-reason" style="background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:12px; padding:16px; font-size:13px; margin-bottom:24px;">—</div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; margin-bottom:24px;">
-      <div style="background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:12px; padding:16px; text-align:center;">
-        <div class="slabel">ENTRÉE</div><div id="tm-entry" class="mono font-bold text-glow-cyan" style="font-size:14px;">—</div>
-      </div>
-      <div style="background:var(--green-dim); border:1px solid rgba(0,255,102,0.2); border-radius:12px; padding:16px; text-align:center;">
-        <div class="slabel" style="color:var(--green)">TP</div><div id="tm-tp" class="mono font-bold text-glow-green" style="font-size:14px;">—</div>
-      </div>
-      <div style="background:var(--red-dim); border:1px solid rgba(255,42,85,0.2); border-radius:12px; padding:16px; text-align:center;">
-        <div class="slabel" style="color:var(--red)">SL</div><div id="tm-sl" class="mono font-bold text-glow-red" style="font-size:14px;">—</div>
-      </div>
-    </div>
-    <div style="margin-bottom:32px;">
-      <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-        <span class="slabel">LEVIER</span><span id="lev-display" class="mono text-glow-cyan font-bold">x10</span>
-      </div>
-      <input type="range" id="lev-slider" min="1" max="20" value="10" oninput="updateLevSlider(this.value)"/>
-    </div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-      <button class="btn-danger" onclick="refuseTrade()">Ignorer</button>
-      <button class="btn-primary" onclick="acceptTrade()">Confirmer</button>
-    </div>
-  </div>
-</div>
-
-<div id="wl-ov" class="ov">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div style="font-size:20px; font-weight:800; margin-bottom:24px;">💼 Capital</div>
-    <input class="finput" type="number" id="w-cap" step="0.01" style="margin-bottom:24px;"/>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-      <button class="btn-sm" onclick="closeWallet()" style="justify-content:center;">Annuler</button>
-      <button class="btn-primary" onclick="saveWallet()">Valider</button>
-    </div>
-  </div>
-</div>
-
-<div id="jr-ov" class="ov" onclick="if(event.target===this)closeJournal()">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div style="font-size:20px; font-weight:800; margin-bottom:24px;">📓 Historique</div>
-    <div id="jr-full" style="display:flex; flex-direction:column; gap:12px; max-height:50vh; overflow-y:auto; margin-bottom:24px;"></div>
-    <button class="btn-sm" onclick="closeJournal()" style="width:100%; justify-content:center;">Fermer</button>
-  </div>
-</div>
-
-<div id="pin-ov" class="ov" style="align-items:center;">
-  <div class="glass" style="padding: 32px 24px; width: 100%; max-width: 320px; text-align: center;">
-    <div style="font-size: 18px; font-weight: 800;">🔐 Accès Sécurisé</div>
-    <div style="display:flex; justify-content:center; gap:8px; margin: 24px 0;">
-      <div id="pd0" style="width:12px;height:12px;border-radius:50%;border:1px solid var(--cyan)"></div>
-      <div id="pd1" style="width:12px;height:12px;border-radius:50%;border:1px solid var(--cyan)"></div>
-      <div id="pd2" style="width:12px;height:12px;border-radius:50%;border:1px solid var(--cyan)"></div>
-      <div id="pd3" style="width:12px;height:12px;border-radius:50%;border:1px solid var(--cyan)"></div>
-    </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
-      <button onclick="pk('1')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">1</button>
-      <button onclick="pk('2')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">2</button>
-      <button onclick="pk('3')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">3</button>
-      <button onclick="pk('4')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">4</button>
-      <button onclick="pk('5')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">5</button>
-      <button onclick="pk('6')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">6</button>
-      <button onclick="pk('7')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">7</button>
-      <button onclick="pk('8')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">8</button>
-      <button onclick="pk('9')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">9</button>
-      <button onclick="pk('C')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:var(--txt-muted);">C</button>
-      <button onclick="pk('0')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:#fff;">0</button>
-      <button onclick="pk('D')" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; color:var(--red);">⌫</button>
-    </div>
-    <button onclick="closePIN()" style="background:none; color:var(--txt-muted); margin-top:24px; font-size:12px;">Fermer</button>
   </div>
 </div>
 
@@ -375,364 +150,224 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; bac
 const PIN_CODE = '1704';
 const PAIRS = ['BTC','ETH','SOL','PEPE','WIF','BONK'];
 let capital = parseFloat(localStorage.getItem('cap') ?? '100.00');
-let capitalGoal = parseFloat(localStorage.getItem('goal') ?? '500');
 let apiKey = localStorage.getItem('gemKey') || '';
 let curPair = 'BTC';
 let prices = {};
-let ws = null;
-let tcnt = 0, ttmr = null;
-let pinBuf = '';
+let history = {}; // Stocke les Klines pour le RSI
+let signals = {}; // Stocke les signaux calculés
 let tradeHistory = JSON.parse(localStorage.getItem('trades') ?? '[]');
-let curOpp = null;
-let selectedLever = 10;
 let isSystemOn = true;
-let trackerInterval = null;
-let activeGeminiModel = null;
+let ws = null;
+let pinBuf = '';
 
-function fp(n){ return parseFloat(n).toFixed(2); }
+const fp = n => parseFloat(n).toFixed(2);
 const ls = (k,v) => localStorage.setItem(k,v);
-const fdt = ts => new Date(ts).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 
-function toast(msg,type='ok'){
-  const t = document.createElement('div'); t.className = 'tst'; t.innerHTML = msg;
-  t.style.borderColor = type==='err' ? 'var(--red)' : type==='warn' ? 'var(--gold)' : 'var(--cyan)';
-  document.body.appendChild(t);
-  requestAnimationFrame(() => { t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
-  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(10px)'; setTimeout(()=>t.remove(),300); }, 2600);
+// --- 🔔 SYSTÈME DE NOTIFICATIONS ---
+function requestNotif() {
+  if (!("Notification" in window)) return;
+  Notification.requestPermission().then(permission => {
+    if(permission === "granted") toast("Notifications activées !");
+  });
 }
 
-// --- SYSTEM TOGGLE (ON/OFF) ---
-function toggleSystem() {
-  isSystemOn = !isSystemOn;
-  const btn = document.getElementById('btn-toggle');
-  const dot = document.getElementById('status-dot');
-  const st = document.getElementById('ws-st');
-  const sb = document.getElementById('sb');
-  const ci = document.getElementById('ci');
-  
-  if(isSystemOn) {
-    btn.className = 'btn-sm green'; btn.innerHTML = '🟢 IA ACTIVÉE';
-    dot.classList.remove('off'); st.textContent = 'EN LIGNE'; st.style.color = 'var(--green)';
-    sb.disabled = false; ci.disabled = false; ci.placeholder = "Demande une analyse ou un setup...";
-    connectWS();
-    toast('Système SNIPER activé. Reprise du flux.');
-  } else {
-    btn.className = 'btn-sm red'; btn.innerHTML = '🔴 IA EN PAUSE';
-    dot.classList.add('off'); st.textContent = 'HORS LIGNE'; st.style.color = 'var(--red)';
-    sb.disabled = true; ci.disabled = true; ci.placeholder = "Système en pause...";
-    if(ws) ws.close(); ws = null;
-    toast('Système mis en pause. Sécurité activée.', 'warn');
+function sendAlert(title, body) {
+  if (Notification.permission === "granted" && isSystemOn) {
+    new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/2533/2533000.png' });
   }
 }
 
-// --- WEBSOCKET ---
-function connectWS(){
+// --- 🧮 MOTEUR MATHÉMATIQUE (INDICATEURS) ---
+function calculateRSI(closes, period = 14) {
+  if (closes.length < period + 1) return 50;
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= period; i++) {
+    let diff = closes[closes.length - i] - closes[closes.length - i - 1];
+    if (diff > 0) gains += diff; else losses -= diff;
+  }
+  let rs = gains / (losses || 1);
+  return 100 - (100 / (1 + rs));
+}
+
+function calculateEMA(closes, period = 20) {
+  let k = 2 / (period + 1);
+  let ema = closes[0];
+  for (let i = 1; i < closes.length; i++) {
+    ema = closes[i] * k + ema * (1 - k);
+  }
+  return ema;
+}
+
+// --- 📥 ASPIRATEUR D'HISTORIQUE (BINANCE REST API) ---
+async function fetchHistory(symbol) {
+  try {
+    const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}USDT&interval=15m&limit=100`);
+    const data = await res.json();
+    return data.map(d => parseFloat(d[4])); // On ne garde que les prix de clôture
+  } catch(e) { return []; }
+}
+
+async function refreshAllSignals() {
   if(!isSystemOn) return;
+  document.getElementById('scan-status').textContent = "SCAN EN COURS...";
+  
+  for(let p of PAIRS) {
+    const closes = await fetchHistory(p);
+    if(closes.length > 20) {
+      const rsi = calculateRSI(closes);
+      const ema = calculateEMA(closes);
+      const lastPrice = closes[closes.length - 1];
+      
+      let dir = "NEUTRE";
+      let conf = 0;
+      let reason = "Consolidation latérale.";
+
+      // LOGIQUE DU CALL : RSI < 30 (Survente) = LONG | RSI > 70 (Surachat) = SHORT
+      if(rsi < 35 && lastPrice > ema * 0.99) {
+        dir = "LONG"; conf = Math.floor(100 - rsi); reason = "Survente RSI + Support EMA.";
+      } else if(rsi > 65 && lastPrice < ema * 1.01) {
+        dir = "SHORT"; conf = Math.floor(rsi); reason = "Surachat RSI + Rejet EMA.";
+      }
+
+      // Si nouveau signal détecté, on envoie une notif
+      if(dir !== "NEUTRE" && (!signals[p] || signals[p].dir !== dir)) {
+        sendAlert(`🎯 SIGNAL ${p}`, `${dir} détecté à $${lastPrice}. Confiance ${conf}%`);
+      }
+
+      signals[p] = { dir, conf, rsi, ema, reason, price: lastPrice };
+    }
+  }
+  
+  updateUI();
+  document.getElementById('scan-status').textContent = "SCAN TERMINÉ - " + new Date().toLocaleTimeString();
+}
+
+// --- 🌐 WEBSOCKET & UI ---
+function connectWS(){
   if(ws) ws.close();
   const streams = PAIRS.map(p=>p.toLowerCase()+'usdt@ticker').join('/');
   ws = new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
   ws.onmessage = e => {
-    const d = JSON.parse(e.data).data; if(!d?.s) return;
+    const d = JSON.parse(e.data).data;
     const sym = d.s.replace('USDT','');
-    prices[sym] = {price: parseFloat(d.c), change: parseFloat(d.P), high: parseFloat(d.h), low: parseFloat(d.l), vol: parseFloat(d.q)};
-    updateTickerItem(sym);
-    if(sym===curPair) updateMainPrice();
+    prices[sym] = { price: parseFloat(d.c), change: parseFloat(d.P) };
+    if(sym === curPair) updateMainDisplay();
+    updateTicker();
   };
 }
 
-function buildTicker(){ document.getElementById('tbar').innerHTML = PAIRS.map(p=>`<div class="titem" id="ti-${p}" onclick="switchPair('${p}')"></div>`).join(''); }
-function updateTickerItem(sym){
-  const el = document.getElementById('ti-'+sym); if(!el) return;
-  const col = prices[sym].change >= 0 ? 'var(--green)' : 'var(--red)';
-  el.innerHTML = `<span style="font-size:11px; font-weight:700; color:var(--txt-main); font-family:var(--font-mono);">${sym}</span><span style="display:block; margin-top:4px; font-size:12px; color:${col}; font-family:var(--font-mono);">${fp(prices[sym].price)}</span>`;
-}
-function switchPair(p){ 
-  curPair=p; document.getElementById('pair-badge').textContent=p+'/USDT'; 
-  document.querySelectorAll('.titem').forEach(e => e.classList.remove('on'));
-  const el = document.getElementById('ti-'+p); if(el) el.classList.add('on');
-  updateMainPrice(); 
-}
-function updateMainPrice(){
-  const d = prices[curPair]; if(!d) return;
-  const mp = document.getElementById('main-price');
-  mp.textContent = '$'+fp(d.price); mp.style.color = d.change >= 0 ? 'var(--cyan)' : 'var(--red)';
-  const cb = document.getElementById('chg-badge');
-  cb.textContent = (d.change>=0?'+':'') + d.change.toFixed(2)+'%'; cb.className = 'badge ' + (d.change>=0?'green':'red');
-  document.getElementById('hi-v').textContent = '$'+fp(d.high);
-  document.getElementById('lo-v').textContent = '$'+fp(d.low);
-  document.getElementById('vo-v').textContent = (d.vol / 1000).toFixed(1)+'K';
-}
-
-function updateWallet(){
-  document.getElementById('cap-v').textContent = capital.toFixed(2);
-  const pct = capitalGoal > 0 ? Math.min((capital/capitalGoal)*100, 100) : 0;
-  document.getElementById('goal-bar').style.width = pct + '%';
-  document.getElementById('goal-pct').textContent = pct.toFixed(1) + '%';
-}
-function openWallet(){ document.getElementById('w-cap').value=capital; document.getElementById('wl-ov').style.display='flex'; }
-function closeWallet(){ document.getElementById('wl-ov').style.display='none'; }
-function saveWallet(){ capital=parseFloat(document.getElementById('w-cap').value); ls('cap',capital); updateWallet(); closeWallet(); toast('Capital mis à jour');}
-
-// --- OPPS & TRADES ---
-function buildOpps(){
-  if(!isSystemOn){ toast('Allumez le système pour scanner.', 'err'); return; }
-  const dBTC = prices['BTC']?.change || 0;
-  const dSOL = prices['SOL']?.change || 0;
+function updateMainDisplay() {
+  const d = prices[curPair];
+  const sig = signals[curPair];
+  if(!d) return;
   
-  const ops = [
-    {asset:'SOL', dir: dSOL>=0?'LONG':'SHORT', conf: Math.floor(Math.random()*15 + 80), lever:15, reason: dSOL>=0?'Cassure résistance dynamique M15.':'Rejet sous VWAP, pression vendeuse.'},
-    {asset:'BTC', dir: dBTC>=0?'LONG':'SHORT', conf: Math.floor(Math.random()*15 + 80), lever:10, reason: dBTC>=0?'Sweep de liquidité validé, rebond.' :'Divergence baissière RSI.'}
-  ];
-  document.getElementById('opp-grid').innerHTML = ops.map(o=>{
-    const badge = o.dir === 'LONG' ? 'green' : 'red';
-    return `<div class="ocard" onclick="openTrade('${o.asset}', '${o.dir}', ${o.lever}, ${o.conf}, '${o.reason}')">
-              <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                <span class="mono font-bold" style="font-size:16px;">${o.asset}</span><span class="badge ${badge}">${o.dir}</span>
+  document.getElementById('main-price').textContent = '$' + fp(d.price);
+  document.getElementById('main-price').style.color = d.change >= 0 ? 'var(--cyan)' : 'var(--red)';
+  
+  const cb = document.getElementById('chg-badge');
+  cb.textContent = (d.change>=0?'+':'') + d.change.toFixed(2) + '%';
+  cb.className = 'badge ' + (d.change>=0?'green':'red');
+
+  if(sig) {
+    document.getElementById('v-rsi').textContent = sig.rsi.toFixed(1);
+    document.getElementById('v-rsi').style.color = sig.rsi < 35 ? 'var(--green)' : sig.rsi > 65 ? 'var(--red)' : '#fff';
+    document.getElementById('v-ema').textContent = '$' + fp(sig.ema);
+    document.getElementById('v-trend').textContent = sig.dir;
+    document.getElementById('v-trend').style.color = sig.dir === 'LONG' ? 'var(--green)' : sig.dir === 'SHORT' ? 'var(--red)' : 'var(--txt-muted)';
+  }
+}
+
+function updateUI() {
+  const grid = document.getElementById('opp-grid');
+  grid.innerHTML = PAIRS.map(p => {
+    const s = signals[p];
+    if(!s || s.dir === 'NEUTRE') return '';
+    const badge = s.dir === 'LONG' ? 'green' : 'red';
+    return `<div class="ocard new-signal" onclick="switchPair('${p}')">
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span class="mono font-bold">${p}</span><span class="badge ${badge}">${s.dir}</span>
               </div>
-              <div class="mono" style="font-size:24px; font-weight:800; color:${o.conf>85?'var(--cyan)':'var(--gold)'}">${o.conf}%</div>
-              <div style="font-size:11px; color:var(--txt-muted); margin-top:8px;">Clic pour ouvrir ⚡</div>
+              <div class="mono" style="font-size:22px; font-weight:800; color:var(--cyan)">${s.conf}%</div>
+              <div style="font-size:10px; color:var(--txt-muted); margin-top:8px;">${s.reason}</div>
             </div>`;
   }).join('');
 }
 
-function openTrade(asset, dir, lev, conf, reason){
-  if(!isSystemOn) return;
-  curOpp = {asset, dir, lever:lev, conf, reason};
-  selectedLever = lev;
-  const p = prices[asset]?.price || 0;
-  
-  document.getElementById('tm-asset').textContent = asset+'/USDT';
-  document.getElementById('tm-dir').textContent = dir;
-  document.getElementById('tm-dir').className = 'badge ' + (dir==='LONG'?'green':'red');
-  document.getElementById('tm-lev').textContent = 'x'+lev;
-  document.getElementById('tm-reason').textContent = reason;
-  document.getElementById('lev-slider').value = lev; document.getElementById('lev-display').textContent = 'x'+lev;
-  
-  if(p > 0){
-    document.getElementById('tm-entry').textContent = '$'+fp(p);
-    document.getElementById('tm-tp').textContent = '$'+fp(dir==='LONG' ? p*1.02 : p*0.98); // TP 2%
-    document.getElementById('tm-sl').textContent = '$'+fp(dir==='LONG' ? p*0.99 : p*1.01); // SL 1%
+function updateTicker() {
+  const bar = document.getElementById('tbar');
+  if(bar.children.length === 0) {
+    bar.innerHTML = PAIRS.map(p => `<div class="titem" id="ti-${p}" onclick="switchPair('${p}')"></div>`).join('');
   }
-  document.getElementById('tm-ov').style.display='flex';
-}
-function updateLevSlider(v){ selectedLever = parseInt(v); document.getElementById('lev-display').textContent = 'x'+v; }
-function closeTrade(){ document.getElementById('tm-ov').style.display='none'; }
-function refuseTrade(){ closeTrade(); toast('Trade ignoré'); }
-function acceptTrade(){
-  if(!curOpp || !prices[curOpp.asset]) return;
-  const entryPrice = prices[curOpp.asset].price;
-  const trade = { id:Date.now(), asset:curOpp.asset, dir:curOpp.dir, lever:selectedLever, entry:entryPrice, ts:Date.now(), status:'open' };
-  tradeHistory.push(trade); ls('trades', JSON.stringify(tradeHistory));
-  closeTrade(); toast(`Position ${curOpp.asset} x${selectedLever} ouverte à $${fp(entryPrice)} !`);
-  
-  if(document.getElementById('trk-ov').style.display === 'flex') updateTrackerData();
-}
-
-function openJournal(){
-  const wrap=document.getElementById('jr-full');
-  if(!tradeHistory.length){ wrap.innerHTML='<div style="text-align:center; color:var(--txt-muted); padding:20px;">Aucun historique</div>'; }
-  else {
-    wrap.innerHTML=[...tradeHistory].reverse().map(t=>{
-      const bg = t.dir==='LONG'?'rgba(0,255,102,0.1)':'rgba(255,42,85,0.1)';
-      const col = t.dir==='LONG'?'var(--green)':'var(--red)';
-      return `<div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; padding:16px; display:flex; align-items:center; gap:12px;">
-                <div class="mono font-bold" style="font-size:16px; min-width:40px;">${t.asset}</div>
-                <div class="badge" style="background:${bg}; color:${col};">${t.dir}</div>
-                <div class="mono" style="font-size:12px; color:var(--txt-muted);">x${t.lever}</div>
-                <div style="margin-left:auto; font-size:12px; color:var(--txt-dark);">${fdt(t.ts)}</div>
-              </div>`;
-    }).join('');
-  }
-  document.getElementById('jr-ov').style.display='flex';
-}
-function closeJournal(){ document.getElementById('jr-ov').style.display='none'; }
-
-// --- LIVE PNL TRACKER ---
-function openTracker() {
-  document.getElementById('trk-ov').style.display = 'flex';
-  updateTrackerData();
-  trackerInterval = setInterval(updateTrackerData, 1000); 
-}
-function closeTracker() {
-  document.getElementById('trk-ov').style.display = 'none';
-  clearInterval(trackerInterval);
-}
-
-function updateTrackerData() {
-  let totalPnlUsd = 0;
-  let activeTradesHTML = '';
-  let activeCount = 0;
-
-  const openTrades = tradeHistory.filter(t => t.status === 'open');
-  
-  if(openTrades.length === 0) {
-    activeTradesHTML = `<div style="text-align:center; color:var(--txt-muted); padding:20px;">Le bot est en attente d'opportunités.</div>`;
-    document.getElementById('trk-status').textContent = 'EN RECHERCHE';
-    document.getElementById('trk-status').style.color = 'var(--cyan)';
-  } else {
-    document.getElementById('trk-status').textContent = 'EN POSITION';
-    document.getElementById('trk-status').style.color = 'var(--gold)';
-    
-    openTrades.forEach(t => {
-      activeCount++;
-      const currentPrice = prices[t.asset]?.price;
-      if(currentPrice) {
-        let pnlPct = 0;
-        if(t.dir === 'LONG') pnlPct = ((currentPrice - t.entry) / t.entry) * 100 * t.lever;
-        else pnlPct = ((t.entry - currentPrice) / t.entry) * 100 * t.lever;
-        
-        const posSize = 10; 
-        const pnlUsd = posSize * (pnlPct / 100);
-        totalPnlUsd += pnlUsd;
-
-        const pnlColor = pnlPct >= 0 ? 'var(--green)' : 'var(--red)';
-        const sign = pnlPct >= 0 ? '+' : '';
-        
-        activeTradesHTML += `
-          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); border-radius:12px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <span class="mono font-bold" style="font-size:14px;">${t.asset}</span>
-              <span class="badge ${t.dir==='LONG'?'green':'red'}" style="transform:scale(0.8); margin-left:4px;">${t.dir} x${t.lever}</span>
-            </div>
-            <div style="text-align:right;">
-              <div class="mono font-bold" style="color:${pnlColor};">${sign}$${pnlUsd.toFixed(2)}</div>
-              <div class="font-mono" style="font-size:10px; color:${pnlColor};">${sign}${pnlPct.toFixed(2)}%</div>
-            </div>
-          </div>
-        `;
-      }
-    });
-  }
-
-  const pnlEl = document.getElementById('trk-pnl-val');
-  const pctEl = document.getElementById('trk-pnl-pct');
-  pnlEl.textContent = (totalPnlUsd >= 0 ? '+' : '') + '$' + totalPnlUsd.toFixed(2);
-  pnlEl.style.color = totalPnlUsd >= 0 ? 'var(--green)' : 'var(--red)';
-  pctEl.textContent = (totalPnlUsd >= 0 ? 'Profit Global Latent' : 'Perte Globale Latente');
-
-  document.getElementById('trk-list').innerHTML = activeTradesHTML;
-
-  const curData = prices[curPair];
-  if(curData) {
-    document.getElementById('trk-pred-asset').textContent = curPair + '/USDT';
-    const badge = document.getElementById('trk-pred-badge');
-    const txt = document.getElementById('trk-pred-txt');
-    
-    if(curData.change > 1.5) {
-      badge.className = 'badge green'; badge.textContent = 'FORTE HAUSSE';
-      txt.textContent = "Les acheteurs (Whales) dominent. Momentum très fort détecté.";
-    } else if (curData.change > 0) {
-      badge.className = 'badge green'; badge.textContent = 'HAUSSIER LÉGER';
-      txt.textContent = "Tendance positive lente. Attente d'un point d'entrée optimal.";
-    } else if (curData.change < -1.5) {
-      badge.className = 'badge red'; badge.textContent = 'DUMP EN COURS';
-      txt.textContent = "Pression vendeuse institutionnelle. Cherche des opportunités SHORT.";
-    } else {
-      badge.className = 'badge gray'; badge.textContent = 'NEUTRE / RANGING';
-      txt.textContent = "Le marché consolide. L'algorithme attend une cassure (breakout).";
+  PAIRS.forEach(p => {
+    const el = document.getElementById('ti-'+p);
+    if(el && prices[p]) {
+      el.classList.toggle('on', p === curPair);
+      el.innerHTML = `<div style="font-size:10px; font-weight:800;">${p}</div><div style="font-size:12px; color:${prices[p].change>=0?'var(--green)':'var(--red)'}">${fp(prices[p].price)}</div>`;
     }
-  }
+  });
 }
 
+function switchPair(p) { curPair = p; updateMainDisplay(); updateTicker(); }
 
-// --- PIN & SETTINGS ---
-function titleClick(){ tcnt++; clearTimeout(ttmr); ttmr=setTimeout(()=>tcnt=0,1500); if(tcnt>=5){ tcnt=0; document.getElementById('pin-ov').style.display='flex'; } }
-function closePIN(){ document.getElementById('pin-ov').style.display='none'; pinBuf=''; updatePinDots(); }
-function pk(v){
-  if(v==='C') pinBuf=''; else if(v==='D') pinBuf=pinBuf.slice(0,-1); else if(pinBuf.length<4) pinBuf+=v;
-  updatePinDots();
-  if(pinBuf.length===4){
-    if(pinBuf===PIN_CODE){ closePIN(); document.getElementById('api-in').value=apiKey; document.getElementById('st-ov').style.display='flex'; }
-    else { toast('Code PIN erroné', 'err'); pinBuf=''; updatePinDots(); }
-  }
-}
-function updatePinDots(){ for(let i=0;i<4;i++){ document.getElementById('pd'+i).style.background = (i<pinBuf.length) ? 'var(--cyan)' : 'transparent'; } }
-function closeST(){ document.getElementById('st-ov').style.display='none'; }
-function saveKey(){ apiKey=document.getElementById('api-in').value.trim(); ls('gemKey',apiKey); closeST(); toast('Clé API enregistrée'); }
-
-// --- IA GEMINI (CORRECTION DU MODÈLE AUTOMATIQUE) ---
-function buildSystemPrompt() { 
-  return `Tu es SNIPER V5, une IA de trading d'élite.
-Ton identité : Tu es un pro de Wall Street, chill, arrogant mais protecteur. Tu tutoies l'utilisateur ("Maestro").
-Vocabulaire : Utilise le jargon crypto.
-Mission : Fournir une analyse concise, chirurgicale et pertinente.`; 
+function toggleSystem() {
+  isSystemOn = !isSystemOn;
+  const btn = document.getElementById('btn-toggle');
+  btn.className = isSystemOn ? 'btn-sm green' : 'btn-sm red';
+  btn.textContent = isSystemOn ? '🟢 SYSTÈME ON' : '🔴 SYSTÈME OFF';
+  if(isSystemOn) connectWS(); else if(ws) ws.close();
 }
 
-async function callGemini(userMsg) {
-  if (!apiKey) throw new Error("Clé API absente. Impossible d'analyser le marché.");
-  if (Object.keys(prices).length === 0) throw new Error("Connexion Binance en cours...");
-
-  // Détection auto du modèle pour éviter l'erreur "v1beta"
-  if (!activeGeminiModel) {
-    try {
-      const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models`, { headers: { 'x-goog-api-key': apiKey } });
-      const listData = await listResp.json();
-      if (listData.models) {
-        const validModels = listData.models.filter(m => m.supportedGenerationMethods?.includes("generateContent"));
-        const bestModel = validModels.find(m => m.name.includes("flash")) || validModels.find(m => m.name.includes("pro")) || validModels[0];
-        if (bestModel) activeGeminiModel = bestModel.name.replace('models/', '');
-      }
-    } catch (e) { console.warn("Recherche de modèle échouée."); }
-  }
-
-  const useModel = activeGeminiModel || "gemini-pro"; 
-
-  // Prix en temps réel invisibles ajoutés de force
-  const allPrices = Object.keys(prices).map(p => `${p}=$${prices[p]?.price?.toFixed(2)}`).join(' | ');
-  const forcedContext = `\n\n[SYSTÈME : PRIX RÉELS OBLIGATOIRES -> ${allPrices}. UTILISE CES PRIX EXACTS.]`;
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${useModel}:generateContent`;
-  const payload = {
-    contents: [{ role: "user", parts: [{ text: buildSystemPrompt() + "\n\nMessage : " + userMsg + forcedContext }] }],
-    generationConfig: { temperature: 0.5, maxOutputTokens: 2000 }
-  };
-
-  const resp = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey }, body: JSON.stringify(payload) });
-  const data = await resp.json();
-  
-  if (!resp.ok) {
-    activeGeminiModel = null; 
-    throw new Error(data.error?.message || "Erreur réseau de l'IA.");
-  }
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Silence réseau.';
+function toast(m){ 
+  const t=document.querySelector('.tst'); t.textContent=m; t.style.opacity=1;
+  setTimeout(()=>t.style.opacity=0, 2000);
 }
 
-function addAIMsg(text){
-  const chat = document.getElementById('chat');
-  const div = document.createElement('div'); div.className = 'cmsg-ai';
-  let formattedText = text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
-  div.innerHTML = `<div style="font-size:10px; color:var(--cyan); margin-bottom:6px; font-weight:700; font-family:var(--font-mono);">SNIPER IA ✦</div>${formattedText}`;
-  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
-}
-
-async function sendChat(){
-  if(!isSystemOn){ toast('Allumez le système pour discuter.', 'err'); return; }
-  const inp = document.getElementById('ci'); const msg = inp.value.trim(); if(!msg) return;
-  if(!apiKey){ toast('Authentification API requise','err'); return; }
-  
+// --- IA GEMINI ---
+async function sendChat() {
+  const inp = document.getElementById('ci'); const msg = inp.value.trim(); if(!msg || !apiKey) return;
   inp.value = '';
   const chat = document.getElementById('chat');
-  const userDiv = document.createElement('div'); userDiv.className = 'cmsg-user'; userDiv.textContent = msg;
-  chat.appendChild(userDiv); chat.scrollTop = chat.scrollHeight;
+  chat.innerHTML += `<div class="cmsg-user">${msg}</div>`;
   
-  const sb = document.getElementById('sb'); const status = document.getElementById('ai-st');
-  sb.disabled = true; status.textContent = '● ANALYSE EN COURS...'; status.style.color = 'var(--gold)';
-  
+  const pStr = Object.keys(prices).map(p=>`${p}:$${prices[p].price}`).join(' | ');
+  const sStr = Object.keys(signals).map(p=>`${p}:${signals[p].dir}(${signals[p].conf}%)`).join(' | ');
+
   try {
-    const reply = await callGemini(msg);
-    addAIMsg(reply);
-  } catch(e) {
-    addAIMsg('❌ Erreur : ' + e.message);
-  } finally {
-    sb.disabled = false; status.textContent = '● CONNECTÉ'; status.style.color = 'var(--green)';
-  }
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const prompt = `Tu es SNIPER IA. Trader pro, chill, tutoie l'utilisateur. 
+    Prix Live: ${pStr}. 
+    Signaux Algo: ${sStr}.
+    Réponds de façon experte au message : ${msg}`;
+    
+    const resp = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text:prompt}]}]}) });
+    const data = await resp.json();
+    const reply = data.candidates[0].content.parts[0].text;
+    chat.innerHTML += `<div class="cmsg-ai"><b>SNIPER IA :</b> ${reply.replace(/\n/g,'<br>')}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  } catch(e) { chat.innerHTML += `<div class="cmsg-ai" style="color:var(--red)">Erreur API Gemini. Vérifie ta clé.</div>`; }
 }
 
-// --- INIT ---
-function init(){
-  buildTicker(); switchPair('BTC'); updateWallet(); connectWS(); buildOpps();
+// --- INITIALISATION ---
+function init() {
+  document.getElementById('cap-v').textContent = capital.toFixed(2);
+  connectWS();
+  refreshAllSignals();
+  setInterval(refreshAllSignals, 60000); // Rafraîchit les signaux (Klines) toutes les minutes
 }
+
+function titleClick(){ pinBuf=''; document.getElementById('pin-ov').style.display='flex'; }
+function pk(v){ 
+  if(v==='C') pinBuf=''; else if(v==='D') pinBuf=pinBuf.slice(0,-1); else pinBuf+=v; 
+  if(pinBuf===PIN_CODE){ 
+    document.getElementById('pin-ov').style.display='none';
+    const k = prompt("Clé API Gemini :"); if(k) { apiKey=k; ls('gemKey',k); }
+  }
+}
+function closePIN(){ document.getElementById('pin-ov').style.display='none'; }
+
 document.addEventListener('DOMContentLoaded', init);
 </script>
+
+<div class="ov" id="pin-ov"></div> <div class="tst"></div>
 </body>
 </html>
