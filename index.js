@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIRA — Trading Terminal</title>
+  <style>
+    :root {
+      --bg-primary:   #0a0a0f;
+      --bg-secondary: #0f0f1a;
+      --bg-card:      #12121f;
+      --border:       #1e1e35;
+      --neon-cyan:    #00fff7;
+      --neon-green:   #00ff88;
+      --neon-red:     #ff4455;
+      --neon-orange:  #ff9500;
+      --text-primary: #e8e8ff;
+      --text-muted:   #6b6b9a;
+      --font-mono:    'Courier New', 'Consolas', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-mono); overflow-x: hidden; min-height: 100vh; }
+    #header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); transition: all 0.3s ease; }
+    #header .logo { font-size: 18px; font-weight: bold; color: var(--neon-cyan); letter-spacing: 4px; text-shadow: 0 0 10px rgba(0,255,247,0.5); }
+    #header .status-bar { display: flex; align-items: center; gap: 20px; font-size: 11px; color: var(--text-muted); }
+    #status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    #main { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; padding: 20px; }
+    .pair-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: border-color 0.3s; position: relative; overflow: hidden; }
+    .pair-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); opacity: 0.5; }
+    .pair-card:hover { border-color: var(--neon-cyan); }
+    .pair-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .pair-name { font-size: 16px; font-weight: bold; color: var(--neon-cyan); letter-spacing: 2px; }
+    .pair-price { font-size: 22px; font-weight: bold; color: var(--text-primary); margin-bottom: 4px; }
+    .pair-change { font-size: 12px; padding: 2px 8px; border-radius: 4px; }
+    .change-positive { color: var(--neon-green); background: rgba(0,255,136,0.1); }
+    .change-negative { color: var(--neon-red); background: rgba(255,68,85,0.1); }
+    .signal-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; letter-spacing: 1px; margin: 10px 0; }
+    .signal-buy  { background: rgba(0,255,136,0.15); color: var(--neon-green); border: 1px solid var(--neon-green); }
+    .signal-sell { background: rgba(255,68,85,0.15);  color: var(--neon-red);   border: 1px solid var(--neon-red); }
+    .signal-neu  { background: rgba(107,107,154,0.15); color: var(--text-muted); border: 1px solid var(--border); }
+    .indicators-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .indicator-block { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+    .indicator-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .indicator-value { font-size: 14px; font-weight: bold; color: var(--text-primary); margin-top: 2px; }
+    .rsi-high  { color: var(--neon-red); } .rsi-low   { color: var(--neon-green); } .rsi-mid   { color: var(--neon-orange); }
+    #footer { text-align: center; padding: 12px; font-size: 10px; color: var(--text-muted); border-top: 1px solid var(--border); }
+    #loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; gap: 16px; }
+    .spinner { width: 40px; height: 40px; border: 2px solid var(--border); border-top-color: var(--neon-cyan); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Style activé par le code secret */
+    body.admin-unlocked { box-shadow: inset 0 0 120px rgba(0, 255, 247, 0.1); }
+  </style>
+</head>
+<body>
+
+  <div id="header">
+    <div class="logo">◈ MIRA SYSTEM</div>
+    <div class="status-bar">
+      <div id="status-dot"></div>
+      <span id="status-text">Connexion...</span>
+      <span id="last-update">--:--:--</span>
+    </div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <div style="color: var(--text-muted); font-size: 12px; letter-spacing: 2px;">CONNEXION AU CORE MIRA...</div>
+  </div>
+
+  <div id="main" style="display: none;"></div>
+  <div id="footer">MIRA TRADING SYSTEM v1.0</div>
+
+  <script>
+    // URL À CHANGER PAR TON LIEN NGROK OU RENDER QUAND TU VOUDRAS ACCÉDER DEPUIS TON MOBILE
+    const API_URL = 'http://localhost:3001/api/market'; 
+    const REFRESH_MS = 3000;
+    let isFirstLoad = true;
+
+    function formatVolume(volume) {
+      if (volume >= 1e9) return `$${(volume / 1e9).toFixed(2)}B`;
+      if (volume >= 1e6) return `$${(volume / 1e6).toFixed(2)}M`;
+      return `$${volume.toFixed(0)}`;
+    }
+
+    function signalClass(signal) {
+      if (signal.includes('ACHAT')) return 'signal-buy';
+      if (signal.includes('VENTE')) return 'signal-sell';
+      return 'signal-neu';
+    }
+
+    function rsiClass(rsi) {
+      if (rsi === null || rsi === 'N/A') return '';
+      if (rsi >= 70) return 'rsi-high';
+      if (rsi <= 30) return 'rsi-low';
+      return 'rsi-mid';
+    }
+
+    function buildCard(symbol, data) {
+      const changePositive = data.change24h >= 0;
+      const changeClass    = changePositive ? 'change-positive' : 'change-negative';
+      const changeSign     = changePositive ? '+' : '';
+
+      const ind1h = data.indicators?.['1h'] || {};
+      const ind4h = data.indicators?.['4h'] || {};
+
+      const rsi1h = ind1h.rsi ?? 'N/A';
+      const rsi4h = ind4h.rsi ?? 'N/A';
+      const ema20 = ind1h.ema20 ?? 'N/A';
+      const macdH = ind1h.macd?.histogram?.toFixed(2) ?? 'N/A';
+      const bbUp  = ind1h.bb?.upper?.toFixed(2) ?? 'N/A';
+      const bbLow = ind1h.bb?.lower?.toFixed(2) ?? 'N/A';
+
+      return `
+        <div class="pair-card" id="card-${symbol}">
+          <div class="pair-header">
+            <div class="pair-name">${symbol.replace('USDT', '')}/USDT</div>
+            <div class="pair-change ${changeClass}">
+              ${changeSign}${data.change24h?.toFixed(2)}%
+            </div>
+          </div>
+          <div class="pair-price">$${data.price?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+          <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">
+            Vol: ${formatVolume(data.volume24h)}
+          </div>
+          <div class="signal-badge ${signalClass(data.signal)}">${data.signal}</div>
+          <div class="indicators-grid">
+            <div class="indicator-block">
+              <div class="indicator-label">RSI 1H</div>
+              <div class="indicator-value ${rsiClass(rsi1h)}">${rsi1h}</div>
+            </div>
+            <div class="indicator-block">
+              <div class="indicator-label">RSI 4H</div>
+              <div class="indicator-value ${rsiClass(rsi4h)}">${rsi4h}</div>
+            </div>
+            <div class="indicator-block">
+              <div class="indicator-label">EMA20 1H</div>
+              <div class="indicator-value">$${typeof ema20 === 'number' ? ema20.toFixed(2) : ema20}</div>
+            </div>
+            <div class="indicator-block">
+              <div class="indicator-label">MACD Hist.</div>
+              <div class="indicator-value" style="color:${parseFloat(macdH)>=0 ? 'var(--neon-green)' : 'var(--neon-red)'}">
+                ${macdH}
+              </div>
+            </div>
+            <div class="indicator-block">
+              <div class="indicator-label">BB Haute</div>
+              <div class="indicator-value">$${bbUp}</div>
+            </div>
+            <div class="indicator-block">
+              <div class="indicator-label">BB Basse</div>
+              <div class="indicator-value">$${bbLow}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function updateDashboard() {
+      try {
+        const response = await fetch(API_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const json = await response.json();
+
+        document.getElementById('status-text').textContent = 'EN LIGNE';
+        document.getElementById('status-dot').style.background = 'var(--neon-green)';
+        document.getElementById('status-dot').style.boxShadow = '0 0 8px var(--neon-green)';
+        document.getElementById('last-update').textContent = new Date().toLocaleTimeString('fr-FR');
+
+        if (isFirstLoad) {
+          const main = document.getElementById('main');
+          main.innerHTML = Object.entries(json.pairs).map(([symbol, data]) => buildCard(symbol, data)).join('');
+          document.getElementById('loading').style.display = 'none';
+          main.style.display = 'grid';
+          isFirstLoad = false;
+        } else {
+          Object.entries(json.pairs).forEach(([symbol, data]) => {
+            const card = document.getElementById(`card-${symbol}`);
+            if (card) {
+              const temp = document.createElement('div');
+              temp.innerHTML = buildCard(symbol, data);
+              card.replaceWith(temp.firstElementChild);
+            }
+          });
+        }
+      } catch (error) {
+        document.getElementById('status-text').textContent = 'HORS LIGNE';
+        document.getElementById('status-dot').style.background = 'var(--neon-red)';
+        document.getElementById('status-dot').style.boxShadow = '0 0 8px var(--neon-red)';
+      }
+    }
+
+    updateDashboard();
+    setInterval(updateDashboard, REFRESH_MS);
+
+    // ============================================================
+    // MODE SECRET (Validation Automatique)
+    // ============================================================
+    let keyBuffer = '';
+    document.addEventListener('keydown', (e) => {
+      keyBuffer += e.key;
+      if (keyBuffer.length > 4) keyBuffer = keyBuffer.slice(-4);
+      
+      if (keyBuffer === '1704') {
+        document.body.classList.add('admin-unlocked');
+        document.getElementById('header').style.borderBottom = '1px solid var(--neon-cyan)';
+        
+        // Ajoute le tag ADMIN si pas déjà présent
+        const statusText = document.getElementById('status-text');
+        if(!statusText.textContent.includes('ADMIN')) {
+          statusText.textContent += ' [ADMIN UNLOCKED]';
+        }
+        
+        keyBuffer = ''; // Réinitialise pour éviter les doubles frappes
+      }
+    });
+  </script>
+</body>
+</html>
